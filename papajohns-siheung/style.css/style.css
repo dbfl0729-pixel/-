@@ -1,0 +1,207 @@
+/* ================== 전역 설정 및 폰트 ================== */
+:root {
+    --color-primary: #5c6c4c; /* 올리브색 */
+    --color-light: #f4f6f1;   /* 밝은 배경색 */
+    --color-dark: #333;
+    --color-accent: #c43026;  /* 파파존스 레드 */
+    --font-ko: 'Gmarket Sans', sans-serif;
+    --font-en: Helvetica, Arial, sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: var(--font-ko);
+    color: var(--color-dark);
+    background-color: var(--color-light);
+    line-height: 1.6;
+}
+
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+
+/* ================== 상단 배너 (Header) 스타일 ================== */
+.main-header {
+    background-color: var(--color-primary);
+    color: white;
+    padding: 15px 0;
+}
+
+.header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo { font-size: 1.5em; }
+
+.main-nav ul { display: flex; gap: 25px; }
+
+.main-nav a {
+    font-weight: 500;
+    padding: 5px 10px;
+    transition: color 0.3s;
+}
+.main-nav a:hover { color: var(--color-accent); }
+
+/* ================== 메인 콘텐츠 (Main) 스타일 (index.html, pizza.html 공통) ================== */
+.content-wrapper {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* index.html 전용 스타일 */
+.welcome-section {
+    text-align: center;
+    font-size: 1.2em;
+    margin-bottom: 40px;
+    padding: 10px 0;
+    border-bottom: 2px solid var(--color-primary);
+}
+
+.grid-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+.info-card {
+    background-color: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.info-card h3 {
+    color: var(--color-primary);
+    margin-bottom: 15px;
+}
+
+.highlight-text {
+    font-size: 1.4em;
+    font-weight: 700;
+    color: var(--color-accent);
+    margin-bottom: 5px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: 700;
+    margin-top: 15px;
+    transition: background-color 0.3s;
+}
+
+.btn-primary {
+    background-color: var(--color-primary);
+    color: white;
+}
+.btn-primary:hover {
+    background-color: #4a5740;
+}
+
+.tel-link {
+    color: var(--color-accent);
+    font-weight: 700;
+}
+
+/* ================== 하단 정보 (Footer) 스타일 ================== */
+footer {
+    background-color: var(--color-dark);
+    color: #ccc;
+    padding: 30px 0;
+    font-size: 0.9em;
+    margin-top: 50px;
+    text-align: center;
+}
+
+/* ================== 피자 메뉴 페이지 (pizza.html) 스타일 ================== */
+.page-title {
+    text-align: center;
+    font-size: 2em;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: 40px;
+}
+
+.menu-section {
+    margin-bottom: 60px;
+    padding: 30px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+    font-size: 1.6em;
+    color: var(--color-dark);
+    border-bottom: 2px solid var(--color-light);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.event-title {
+    color: var(--color-accent); 
+}
+
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 30px;
+}
+
+.menu-item {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.menu-item img {
+    width: 100%;
+    height: auto;
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+.menu-item h4 {
+    font-size: 1.2em;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.price-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-top: 1px solid #eee;
+    margin-top: 10px;
+}
+
+.price-box .price {
+    font-size: 1.1em;
+    font-weight: 700;
+    color: var(--color-accent);
+}
+
+.add-to-cart-btn {
+    width: 100%;
+    border: none;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+
+/* 모바일 조정 */
+@media (max-width: 768px) {
+    .grid-layout, .menu-grid {
+        grid-template-columns: 1fr;
+    }
+}
