@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>피자 메뉴 (올리브 테마)</title>
-    <!-- Tailwind CSS 로드 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
     <style>
         /* 올리브 테마 커스텀 변수 및 스타일 */
         :root {
             --primary-color: #059669; /* Emerald 600 - 메인 올리브/그린 */
+            --secondary-color: #065f46; /* Emerald 800 - 강조색 */
         }
         body { font-family: 'Noto Sans KR', 'Inter', sans-serif; }
         .nav-link { 
@@ -31,12 +31,48 @@
             color: white; 
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
         }
+
+        /* 모달 스타일 추가 */
+        .modal {
+            display: none; /* 초기 상태는 숨김 */
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+            padding-top: 50px;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            position: relative;
+        }
+        .close-btn {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close-btn:hover,
+        .close-btn:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
     <div class="max-w-7xl mx-auto">
         <header class="bg-white shadow-lg sticky top-0 z-20 p-5 rounded-b-xl">
-            <h1 class="text-4xl font-extrabold text-[var(--primary-color)] text-center tracking-tight">피자 메뉴</h1>
+            <h1 class="text-4xl font-extrabold text-[var(--primary-color)] text-center tracking-tight">시흥은행점 파파존스 메뉴판</h1>
             <nav class="mt-4 flex justify-center space-x-4">
                 <a href="#" class="nav-link">홈</a>
                 <a href="#" class="nav-link active-tab">피자</a>
@@ -48,61 +84,98 @@
         </header>
 
         <main class="p-8">
-            <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b-2 border-[var(--primary-color)] pb-2">🍕 프리미엄 피자 목록</h2>
-            <div id="menu-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                <!-- JavaScript에 의해 메뉴가 여기에 채워집니다. -->
+            <div class="bg-yellow-50 border-l-4 border-yellow-500 text-yellow-800 p-4 mb-6 rounded-lg shadow-sm">
+                <h3 class="text-xl font-bold">📢 금요일 한정 베스트메뉴 라지사이즈 1+1 이벤트</h3>
+                <p class="text-sm mt-1"><strong>[금요일 한정]</strong> 1+1 적용! ※ L사이즈 한정, 방문 포장 전용 (상세 조건은 장바구니에서 자동 적용)</p>
             </div>
             
-            <!-- 알림 메시지 (JavaScript에서 사용) -->
+            <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b-2 border-[var(--primary-color)] pb-2">🍕 피자 메뉴 목록 (25종)</h2>
+            <div id="menu-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                </div>
+            
             <div id="alert-box" class="fixed bottom-5 right-5 z-50 p-4 bg-emerald-600 text-white rounded-xl shadow-2xl hidden transition-opacity duration-300 opacity-0"></div>
         </main>
     </div>
 
+    <div id="option-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="document.getElementById('option-modal').style.display='none'">&times;</span>
+            <h3 id="modal-title" class="text-2xl font-bold text-[var(--primary-color)] mb-4"></h3>
+            
+            <div class="space-y-4">
+                <p id="modal-topping" class="text-gray-600 text-sm border-b pb-2"></p>
+                
+                <div class="flex items-center justify-between p-3 bg-gray-100 rounded-lg">
+                    <label for="size-select" class="font-semibold text-gray-800">사이즈 선택:</label>
+                    <select id="size-select" class="p-2 border border-gray-300 rounded-lg focus:ring-emerald-500 focus:border-emerald-500"></select>
+                </div>
+                
+                <div class="p-3 bg-gray-100 rounded-lg">
+                    <label for="crust-select" class="font-semibold text-gray-800 block mb-1">크러스트 선택 (추가금 발생):</label>
+                    <select id="crust-select" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-emerald-500 focus:border-emerald-500"></select>
+                </div>
+                
+                <p id="size-warning" class="text-sm font-bold text-red-500 text-center"></p>
+            </div>
+            
+            <div class="mt-6 pt-4 border-t border-gray-200 flex items-center justify-between">
+                <span class="text-xl font-extrabold text-[var(--secondary-color)]">총 금액: <span id="final-price-display">0원</span></span>
+                <button id="add-to-cart-btn" class="bg-emerald-600 hover:bg-emerald-700 text-white text-lg font-semibold px-6 py-3 rounded-full transition duration-200 shadow-md transform hover:scale-105">
+                    장바구니에 담기
+                </button>
+            </div>
+        </div>
+    </div>
+
+
     <script>
-        // --- 1. 메뉴 데이터 ---
-        const menuStructure = {
-            'pizza': {
-                icon: '🍕',
-                label: '피자',
-                title: '피자 메뉴 (Pizza)',
-                items: [
-                    { id: 'p1', ko: '크리스피 치즈 페퍼로니', en: 'crispy_cheese_pepperoni', price: 29500 },
-                    { id: 'p2', ko: '쉬림프 알프레도', en: 'shrimp_alfredo', price: 31000 },
-                    { id: 'p3', ko: '크리스피 치즈 트리플', en: 'crispy_cheese_triple', price: 28500 },
-                    { id: 'p4', ko: 'BBQ 숏 립 크런치', en: 'bbq_short_rib_crunch', price: 35000 },
-                    { id: 'p5', ko: '더블 핫 멕시칸', en: 'double_hot_mexican', price: 30500 },
-                    { id: 'p6', ko: '슈퍼 파파스', en: 'super_papas', price: 26000 },
-                    { id: 'p7', ko: '존스 페이보릿', en: 'johns_favorite', price: 27500 },
-                    { id: 'p8', ko: '올 미트', en: 'all_meat', price: 28000 },
-                    { id: 'p9', ko: '스파이시 치킨 랜치', en: 'spicy_chicken_ranch', price: 29000 },
-                    { id: 'p10', ko: '치킨 BBQ', en: 'chicken_bbq', price: 27000 },
-                    { id: 'p11', ko: '아이리쉬 포테이토', en: 'irish_potato', price: 26500 },
-                    { id: 'p12', ko: '멜로우 콘크림', en: 'mellow_corncream', price: 25500 },
-                    { id: 'p13', ko: '스타라이트 바질', en: 'starlight_basil', price: 31500 },
-                    { id: 'p14', ko: '더블 치즈버거', en: 'double_cheeseburger', price: 30000 },
-                    { id: 'p15', ko: '불고기 프리미엄', en: 'bulgogi_premium', price: 29500 },
-                    { id: 'p16', ko: '마르게리따', en: 'margherita', price: 23000 },
-                    { id: 'p17', ko: '페퍼로니', en: 'pepperoni', price: 24000 },
-                    { id: 'p18', ko: '하와이안', en: 'hawaiian', price: 23500 },
-                    { id: 'p19', ko: '가든 스페셜', en: 'garden_special', price: 25000 },
-                    { id: 'p20', ko: '햄 머쉬룸 식스치즈', en: 'ham_mushroom_sixcheese', price: 27000 },
-                    { id: 'p21', ko: '식스 치즈', en: 'six_cheese', price: 26000 },
-                    { id: 'p22', ko: '위스콘신 치즈 포테이토', en: 'wisconsin_cheese_potato', price: 28500 },
-                    { id: 'p23', ko: '스파이시 이탈리안', en: 'spicy_italian', price: 27500 },
-                    { id: 'p24', ko: '그린 마르게리따', en: 'green_margherita', price: 25000 },
-                    { id: 'p25', ko: '그린 가든 스페셜', en: 'green_garden_special', price: 26500 },
-                ]
-            }
+        // --- 1. 메뉴 데이터 및 로직 정의 ---
+        
+        // 1+1 이벤트가 적용되는 피자 ID 목록 (7종)
+        const EVENT_PIZZA_IDS = ['P05', 'P06', 'P08', 'P09', 'P10', 'P15', 'P16'];
+
+        // 피자 전체 메뉴 데이터 (25종) - 고객님 정보 반영
+        const MENU_DATA = {
+            'P01': { img: 'IMG_7782.jpeg', name: '바베큐 숏립 크런치', priceL: 34500, priceF: 41900, topping: '한 판 가득 소갈비, 오리지널 아메리칸 BBQ! 치즈와 바삭한 식감까지 더한 리얼 고기 피자. 기본토핑: 바베큐 소스, 소갈비살, 3블랜드 치즈, 감자후레이크, 양파', isEvent: false, sizes: ['L', 'F'], crusts: ['original', 'thin', 'cheeseroll', 'goldring', 'spicygarliccheeseroll', 'croissant'] },
+            'P02': { img: 'IMG_7783.jpeg', name: '멜로우 콘크림', priceL: 27500, priceF: 33900, priceP: 41500, topping: '부드러운 옥수수크림과 콘&파인애플을 더한 달콤한 피자. 기본토핑: 갈릭 랜치 소스, 파인애플, 콘, 양파, 체다 치즈, 포테이토', isEvent: false, sizes: ['L', 'F', 'P'], crusts: ['original', 'thin', 'cheeseroll', 'goldring', 'spicygarliccheeseroll', 'croissant'] },
+            'P03': { img: 'IMG_7784.jpeg', name: '스타라이트 바질', priceL: 33500, priceF: 39900, priceP: 48500, topping: '입안 가득 바질의 향긋함과 고소한 치즈의 풍미가 느껴지는 특별한 별모양 피자. 기본토핑: 베이컨, 양송이, 치즈, 햄, 토마토, 바질마요 소스, 갈릭 소스, 스트링 치즈', isEvent: false, sizes: ['L', 'F', 'P'], crusts: ['original'] },
+            'P04': { img: 'IMG_7785.jpeg', name: '더블 핫 앤 스파이시 멕시칸', priceL: 33500, priceF: 39900, topping: '새로운 맛의 스파이시 갈릭 치즈롤과 할라페뇨의 만남. 기본토핑: 토마토 소스, 비프, 피망, 양파, 토마토, 블랙올리브, 할라페뇨, 모짜렐라 치즈', isEvent: false, sizes: ['L', 'F'], crusts: ['original', 'spicygarliccheeseroll'] }, 
+            'P05': { img: 'IMG_7786.jpeg', name: '수퍼 파파스', priceR: 19900, priceL: 28500, priceF: 33900, priceP: 42500, topping: '신선한 토마토 소스 위에 각종 고기와 채소가 듬뿍 토핑된 베스트 피자. 기본토핑: 토마토 소스, 이탈리안 소시지, 양파, 청피망, 양송이, 블랙 올리브, 햄, 페퍼로니', isEvent: true, sizes: ['R', 'L', 'F', 'P'], crusts: ['original', 'thin', 'cheeseroll', 'goldring', 'spicygarliccheeseroll', 'croissant'] },
+            'P06': { img: 'IMG_7787.jpeg', name: '존스 페이버릿', priceL: 29500, priceF: 34900, priceP: 45500, topping: '이탈리안 소시지, 페퍼로니와 6종의 치즈가 만들어 내는 진한 풍미의 베스트 셀러. 기본토핑: 6종 치즈, 이탈리안 소시지, 페퍼로니, 이탈리안 허브', isEvent: true, sizes: ['L', 'F', 'P'], crusts: ['original', 'thin', 'cheeseroll', 'goldring', 'spicygarliccheeseroll', 'croissant'] },
+            'P07': { img: 'IMG_7895.jpeg', name: '올미트', priceR: 19900, priceL: 29500, priceF: 34900, priceP: 45500, topping: '페퍼로니, 햄, 이탈리안 소시지, 비프토핑까지 파파존스의 엄선된 고기토핑으로 꽉 채운 피자. 기본토핑: 이탈리안 소시지, 베이컨, 비프, 햄, 페퍼로니', isEvent: false, sizes: ['R', 'L', 'F', 'P'], crusts: ['original', 'thin', 'cheeseroll', 'goldring', 'spicygarliccheeseroll', 'croissant'] },
+            'P08': { img: 'IMG_7789.jpeg', name: '스파이시 치킨랜치', priceR: 19900, priceL: 29500, priceF: 34900, priceP: 43500, topping: '은은한 향과 맛의 랜치 소스, 그릴드 치킨, 상큼한 토마토와 할라페뇨가 토핑. 기본토핑: 갈릭 랜치 소스, 그릴드 치킨, 베이컨, 토마토, 할라페뇨', isEvent: true, sizes: ['R', 'L', 'F', 'P'], crusts: ['original', 'thin', 'cheeseroll', 'goldring', 'spicygarliccheeseroll', 'croissant'] },
+            'P09': { img: 'IMG_7790.jpeg', name: '아이리쉬 포테이토', priceR: 18900, priceL: 27500, priceF: 32900, priceP: 40500, topping: '진한 갈릭 소스와 담백한 포테이토 청크의 조화로 사랑 받는 베스트 셀러. 기본토핑: 토마토 소스, 포테이토, 베이컨, 양송이, 콘, 양파, 갈릭 소스', isEvent: true, sizes: ['R', 'L', 'F', 'P'], crusts: ['original', 'thin', 'cheeseroll', 'goldring', 'spicygarliccheeseroll', 'croissant'] },
+            'P10': { img: 'IMG_7791.jpeg', name: '치킨 바베큐', priceR: 18900, priceL: 27500, priceF: 32900, priceP: 40500, topping: '새콤달콤한 타바스코 BBQ 소스와 두툼한 그릴드 치킨. 기본토핑: 토마토 소스, 그릴드 치킨, 베이컨, 양파, 타바스코 BBQ 소스', isEvent: true, sizes: ['R', 'L', 'F', 'P'], crusts: ['original', 'thin', 'cheeseroll', 'goldring', 'spicygarliccheeseroll', 'croissant'] },
+            'P11': { img: 'IMG_7798.jpeg', name: '크리스피 치즈 페퍼로니 피자', priceF: 31900, topping: '얇은 씬도우 바닥에 파마산+로마노 치즈가 더해져 더욱 바삭함. 기본토핑: 2블랜드 치즈, 토마토 소스, 모짜렐라 치즈, 페퍼로니', isEvent: false, sizes: ['F'], crusts: ['thin'] }, 
+            'P12': { img: 'IMG_7799.jpeg', name: '크리스피 치즈 트리플 피자', priceF: 33900, topping: '바삭한 투치즈 크러스트 엣지에 알프레도 소스, 양송이, 햄이 6가지 치즈와 조화. 기본토핑: 2블랜드 치즈, 알프레도 소스, 모짜렐라 치즈, 스트링 치즈, 이탈리안 허브 시즈닝', isEvent: false, sizes: ['F'], crusts: ['thin'] },
+            'P13': { img: 'IMG_7800.jpeg', name: '햄 머쉬룸 식스 치즈', priceL: 28500, priceF: 33900, priceP: 42500, topping: '알프레도 소스, 양송이 버섯, 햄이 6가지 치즈와 조화. 기본토핑: 알프레도소스, 양송이버섯, 양파, 햄, 치즈, 2블랜드 치즈, 3블랜드 치즈, 후추', isEvent: false, sizes: ['L', 'F', 'P'], crusts: ['original', 'thin', 'cheeseroll', 'goldring', 'spicygarliccheeseroll', 'croissant'] },
+            'P14': { img: 'IMG_7801.jpeg', name: '위스콘신 치즈 포테이토', priceL: 29500, priceF: 35900, priceP: 45500, topping: '진한 맥앤치즈 베이스 소스에 6가지 치즈와 풍부한 토핑. 기본토핑: 맥앤치즈 소스, 베이컨, 햄, 페퍼로니, 포테이토, 3블랜드 치즈, 2블랜드 치즈', isEvent: false, sizes: ['L', 'F', 'P'], crusts: ['original', 'cheeseroll', 'goldring', 'spicygarliccheeseroll', 'croissant'] }, 
+            'P15': { img: 'IMG_78152.jpeg', name: '더블 치즈버거', priceL: 29500, priceF: 34900, priceP: 43500, topping: '제스티 버거 소스위에 비프와 상큼한 토마토, 피클이 어우진 풍부한 맛. 기본토핑: 제스티 버거 소스, 비프, 토마토, 피클', isEvent: true, sizes: ['L', 'F', 'P'], crusts: ['original', 'thin', 'cheeseroll', 'goldring', 'spicygarliccheeseroll', 'croissant'] },
+            'P16': { img: 'IMG_8153.jpeg', name: '프리미엄 직화불고기', priceL: 29500, priceF: 34900, priceP: 43500, topping: '정통 직화 불고기, 신선한 채소 토핑으로 누구나 좋아할수 있는 스테디 셀러. 기본토핑: 불고기 소스, 표고, 청피망, 양파, 불고기', isEvent: true, sizes: ['L', 'F', 'P'], crusts: ['original', 'thin', 'cheeseroll', 'goldring', 'spicygarliccheeseroll', 'croissant'] },
+            'P17': { img: 'IMG_7803.jpeg', name: '식스 치즈', priceL: 26500, priceF: 31900, priceP: 39500, topping: '6종의 치즈 맛을 풍부하게 느낄 수 있는 정통 치즈피자. 기본토핑: 6종 치즈', isEvent: false, sizes: ['L', 'F', 'P'], crusts: ['original', 'thin', 'cheeseroll', 'goldring', 'spicygarliccheeseroll', 'croissant'] },
+            'P18': { img: 'IMG_7802.jpeg', name: '스파이시 이탈리안', priceL: 27500, priceF: 33900, priceP: 40500, topping: '이탈리안 소시지의 두툼한 식감과 크러쉬드 레드페퍼의 매운맛. 기본토핑: 이탈리안 소시지, 페퍼로니, 크러쉬드 레드페퍼', isEvent: false, sizes: ['L', 'F', 'P'], crusts: ['original', 'thin', 'cheeseroll', 'goldring', 'spicygarliccheeseroll', 'croissant'] },
+            'P19': { img: 'IMG_78150.jpeg', name: '슈림프 알프레도', priceF: 34900, topping: '얇고 바삭한 씬도우 위에 부드러운 알프레도 소스와 탱탱한 새우. 기본토핑: 알프레도 소스, 새우, 토마토, 피클, 그릴드 치킨, 양송이', isEvent: false, sizes: ['F'], crusts: ['thin'] }, 
+            'P20': { img: 'IMG_7792.jpeg', name: '마가리타', priceR: 16900, priceL: 23500, priceF: 28900, priceP: 36500, topping: '파파존스 특유의 진한 토마토 소스와 최상급 모짜렐라 치즈. 기본토핑: 토마토 소스, 모짜렐라 치즈', isEvent: false, sizes: ['R', 'L', 'F', 'P'], crusts: ['original', 'thin', 'cheeseroll', 'goldring', 'spicygarliccheeseroll', 'croissant'] },
+            'P21': { img: 'IMG_7793.jpeg', name: '페퍼로니', priceR: 17900, priceL: 25500, priceF: 30900, priceP: 38500, topping: '쫄깃쫄깃 짭조름한 페퍼로니와 고소한 치즈. 기본토핑: 토마토 소스, 페퍼로니', isEvent: false, sizes: ['R', 'L', 'F', 'P'], crusts: ['original', 'thin', 'cheeseroll', 'goldring', 'spicygarliccheeseroll', 'croissant'] },
+            'P22': { img: 'IMG_7794.jpeg', name: '하와이안', priceR: 17900, priceL: 26500, priceF: 32900, priceP: 39500, topping: '새콤달콤한 파인애플과 햄, 쫀득한 모짜렐라 치즈. 기본토핑: 토마토 소스, 파인애플, 햄', isEvent: false, sizes: ['R', 'L', 'F', 'P'], crusts: ['original', 'thin', 'cheeseroll', 'goldring', 'spicygarliccheeseroll', 'croissant'] },
+            'P23': { img: 'IMG_7795.jpeg', name: '가든 스페셜', priceR: 17900, priceL: 26500, priceF: 31900, priceP: 39500, topping: '양송이, 청피망, 올리브, 양파, 토마토등의 신선한채소. 기본토핑: 토마토 소스, 양송이, 청피망, 양파, 블랙 올리브, 토마토', isEvent: false, sizes: ['R', 'L', 'F', 'P'], crusts: ['original', 'thin', 'cheeseroll', 'goldring', 'spicygarliccheeseroll', 'croissant'] },
+            'P24': { img: 'IMG_8152.jpeg', name: '그린잇 식물성 마가리타', priceL: 26500, topping: '전통있는 SHEESE사의 비건치즈와 신선한 토마토 소스의 깔끔한 풍미. 기본토핑: 비건치즈, 토마토 소스', isEvent: false, sizes: ['L'], crusts: ['original'] },
+            'P25': { img: 'IMG_8152.jpeg', name: '그린잇 식물성 가든스페셜', priceL: 29500, topping: '비건치즈와 신선한 채소가 어우러진 웰빙 채식 피자. 기본토핑: 토마토 소스, 비건 치즈, 양송이, 청피망, 양파, 블랙 올리브, 토마토', isEvent: false, sizes: ['L'], crusts: ['original'] }
         };
 
-        // 장바구니 로직을 위해 모든 메뉴 아이템을 단일 배열로 변환
-        const allMenuItems = menuStructure['pizza'].items.map(item => ({
-            ...item,
-            category: '피자'
-        }));
+        // 크러스트 정보 (가격은 L/F/P 순서)
+        const CRUST_OPTIONS = [
+            { value: 'original', name: '오리지널 크러스트', desc: '쫄깃하고 고소한 기본', priceL: 0, priceF: 0, priceP: 0 },
+            { value: 'thin', name: '씬 (Thin)', desc: '바삭한 식감', priceL: 0, priceF: 0, priceP: 0 },
+            { value: 'cheeseroll', name: '치즈롤', desc: '스트링 치즈의 유혹', priceL: 4000, priceF: 5000, priceP: 6000 },
+            { value: 'goldring', name: '골드링', desc: '고구마 무스와 스트링 치즈', priceL: 4000, priceF: 5000, priceP: 6000 },
+            { value: 'spicygarliccheeseroll', name: '스파이시 갈릭 치즈롤', desc: '진한 갈릭 향과 레드페퍼', priceL: 4000, priceF: 5000, priceP: 6000 },
+            { value: 'croissant', name: '크루아상', desc: '바삭한 버터 풍미 (P 사이즈만 추가금)', priceL: 0, priceF: 0, priceP: 6000 }
+        ];
 
-
-        // --- 2. 장바구니 로직 (addToCart만 남깁니다) ---
+        let currentSelectedItem = null;
+        
+        // --- 2. 장바구니 로직 (addToCart) ---
         const CART_KEY = 'papa_menu_cart';
 
         function getCart() {
@@ -123,39 +196,16 @@
             }
         }
 
-        // HTML에서 호출될 함수
-        window.addToCart = function(itemId) {
-            const item = allMenuItems.find(i => i.id === itemId);
-            if (!item) return;
-
-            const cart = getCart();
-            const existingItem = cart.find(i => i.id === itemId);
-
-            if (existingItem) {
-                existingItem.quantity += 1;
-            } else {
-                cart.push({ ...item, quantity: 1 });
-            }
-
-            saveCart(cart);
-            showAlert(`${item.ko}가 장바구니에 추가되었습니다.`, 'bg-emerald-600');
-        }
-
-
         // --- 3. UI 렌더링 및 유틸리티 ---
-
-        // alert() 대신 사용할 알림 박스 함수
-        window.showAlert = function(message, bgColorClass) {
+        function showAlert(message, bgColorClass) {
             const alertBox = document.getElementById('alert-box');
             if (alertBox) {
                 alertBox.textContent = message;
                 alertBox.className = `fixed bottom-5 right-5 z-50 p-4 ${bgColorClass} text-white rounded-xl shadow-2xl transition-opacity duration-300 opacity-0`;
                 alertBox.style.display = 'block';
                 
-                // Fade in
                 setTimeout(() => alertBox.style.opacity = '1', 10);
                 
-                // Fade out
                 setTimeout(() => {
                     alertBox.style.opacity = '0';
                     setTimeout(() => alertBox.style.display = 'none', 300);
@@ -164,61 +214,200 @@
         }
         
         // 메뉴 페이지 렌더링 함수
-        function renderMenuItems(categoryKey) {
+        function renderMenuItems() {
             const containerElement = document.getElementById('menu-list');
-            const categoryData = menuStructure[categoryKey];
-
-            if (!categoryData || !containerElement) {
-                console.error(`Category ${categoryKey} not found or container missing.`);
-                return;
-            }
-
             containerElement.innerHTML = '';
             
-            categoryData.items.forEach(item => {
-                const card = createMenuItemCard(item);
+            Object.keys(MENU_DATA).forEach(id => {
+                const item = MENU_DATA[id];
+                const card = createMenuItemCard(id, item);
                 containerElement.appendChild(card);
             });
         }
 
-        function createMenuItemCard(item) {
+        function createMenuItemCard(id, item) {
             const card = document.createElement('div');
             card.className = 'menu-card bg-white p-5 rounded-xl shadow-xl border border-gray-100 flex flex-col justify-between cursor-pointer hover:shadow-2xl transition duration-300';
+            card.setAttribute('data-id', id);
             
-            const priceText = item.price.toLocaleString('ko-KR');
-            const priceDisplay = `₩ ${priceText}`;
+            // 기본 가격은 L 사이즈, 없으면 가능한 사이즈 중 최저가
+            const basePrice = item.priceL || item[`price${item.sizes[0]}`];
+            const priceText = basePrice ? basePrice.toLocaleString('ko-KR') : '가격문의';
+            const priceDisplay = basePrice ? `₩ ${priceText} (L기준)` : '가격문의';
 
-            // 가상의 이미지 URL (올리브 테마 색상 적용)
-            const imageUrl = `https://placehold.co/600x400/065f46/ffffff?text=${encodeURIComponent(item.en.replace(/_/g, ' ').toUpperCase())}`;
+            const imageUrl = `assets/images/pizza/${item.img}`;
             
+            // 1+1 이벤트 태그
+            const eventTag = item.isEvent ? `<span class="absolute top-3 left-3 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full shadow-md">1+1 대상</span>` : '';
+
             card.innerHTML = `
-                <img src="${imageUrl}" alt="${item.ko}" class="w-full h-36 object-cover rounded-lg mb-4 shadow-inner transform transition duration-500 hover:scale-[1.03]" onerror="this.onerror=null;this.src='https://placehold.co/600x400/D1FAE5/065F46?text=Image+Not+Available';">
+                <div class="relative">
+                    ${eventTag}
+                    <img src="${imageUrl}" alt="${item.name}" class="w-full h-36 object-cover rounded-lg mb-4 shadow-inner transform transition duration-500 hover:scale-[1.03]" 
+                        onerror="this.onerror=null;this.src='https://placehold.co/600x400/D1FAE5/065F46?text=${encodeURIComponent(item.name)}';">
+                </div>
                 
                 <div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-1">${item.ko}</h3>
-                    <p class="text-sm text-gray-500 italic mb-3 font-inter">${item.en.replace(/_/g, ' ')}</p>
+                    <h3 class="text-xl font-bold text-gray-900 mb-1">${item.name}</h3>
+                    <p class="text-sm text-gray-500 italic mb-3">${item.topping.split('. ')[0]}</p>
                 </div>
                 
                 <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between">
                     <span class="text-lg font-extrabold text-[var(--primary-color)]">
                         ${priceDisplay}
                     </span>
-                    <button class="add-to-cart-btn bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold px-4 py-2 rounded-full transition duration-200 shadow-md transform hover:scale-105" onclick="addToCart('${item.id}')">
-                        장바구니 담기
+                    <button class="add-to-cart-btn bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold px-4 py-2 rounded-full transition duration-200 shadow-md transform hover:scale-105" onclick="openOptionModal('${id}')">
+                        상세 보기 & 선택
                     </button>
                 </div>
             `;
             return card;
         }
 
-        // --- 4. 초기화 함수 ---
+        // --- 4. 모달 및 옵션 로직 ---
+        window.openOptionModal = function(pizzaId) {
+            currentSelectedItem = MENU_DATA[pizzaId];
+            if (!currentSelectedItem) return;
+
+            document.getElementById('modal-title').textContent = currentSelectedItem.name;
+            document.getElementById('modal-topping').textContent = '주요 토핑: ' + currentSelectedItem.topping;
+            
+            // 사이즈 옵션 업데이트
+            const sizeSelect = document.getElementById('size-select');
+            sizeSelect.innerHTML = '';
+            
+            currentSelectedItem.sizes.forEach(size => {
+                const price = currentSelectedItem[`price${size}`];
+                const option = document.createElement('option');
+                option.value = size;
+                option.textContent = `${size} 사이즈 (${price.toLocaleString()}원)`;
+                option.setAttribute('data-price', price);
+                sizeSelect.appendChild(option);
+            });
+            sizeSelect.value = currentSelectedItem.priceL ? 'L' : sizeSelect.options[0].value; 
+
+            // 크러스트 옵션 업데이트
+            const crustSelect = document.getElementById('crust-select');
+            crustSelect.innerHTML = '';
+            
+            CRUST_OPTIONS.filter(c => currentSelectedItem.crusts.includes(c.value)).forEach(crust => {
+                const option = document.createElement('option');
+                option.value = crust.value;
+                option.textContent = `${crust.name} (${crust.desc}) ${crust.priceL > 0 ? '(추가금 발생)' : ''}`;
+                crustSelect.appendChild(option);
+            });
+            crustSelect.value = 'original'; 
+            
+            updatePrice();
+            document.getElementById('option-modal').style.display = 'block';
+        }
+
+        // 가격 계산 로직
+        function updatePrice() {
+            if (!currentSelectedItem) return;
+
+            const sizeSelect = document.getElementById('size-select');
+            const crustSelect = document.getElementById('crust-select');
+            
+            const selectedSize = sizeSelect.value;
+            const basePrice = parseInt(sizeSelect.options[sizeSelect.selectedIndex].getAttribute('data-price'));
+            const selectedCrustValue = crustSelect.value;
+            
+            const crustOption = CRUST_OPTIONS.find(c => c.value === selectedCrustValue);
+            let crustAddPrice = 0;
+
+            // 크러스트 추가금 계산 로직 (기존 로직 유지)
+            if (crustOption && (crustOption.priceL > 0 || crustOption.value === 'croissant')) {
+                if (selectedSize === 'L') crustAddPrice = crustOption.priceL;
+                else if (selectedSize === 'F') crustAddPrice = crustOption.priceF;
+                else if (selectedSize === 'P') crustAddPrice = crustOption.priceP;
+            }
+            // 레귤러 사이즈 크러스트 불가 로직 (R 사이즈는 P05, P07, P08, P09, P10, P20~P23만 가짐)
+            if (selectedSize === 'R' && selectedCrustValue !== 'original' && selectedCrustValue !== 'thin') { // THIN은 R 사이즈에서 선택 불가하지만 일단 로직은 유지
+                crustSelect.value = 'original';
+                crustAddPrice = 0;
+                showAlert('레귤러 사이즈는 크러스트 변경이 불가능합니다. 오리지널 크러스트로 설정됩니다.', 'bg-yellow-600');
+            }
+
+            let finalPrice = basePrice + crustAddPrice;
+
+            // 1+1 이벤트 제한 조건 표시 및 버튼 활성화/비활성화
+            const warningText = document.getElementById('size-warning');
+            const addToCartBtn = document.getElementById('add-to-cart-btn');
+
+            if (currentSelectedItem.isEvent) {
+                if (selectedSize !== 'L') {
+                    warningText.textContent = "⚠️ 1+1 이벤트는 L 사이즈만 가능합니다. L 사이즈로 선택하세요."; 
+                    addToCartBtn.disabled = true;
+                    addToCartBtn.textContent = "L 사이즈로 변경해야 주문 가능";
+                    addToCartBtn.classList.replace('bg-emerald-600', 'bg-gray-400');
+                    addToCartBtn.classList.remove('hover:bg-emerald-700');
+                } else {
+                    warningText.textContent = "1+1 이벤트 적용 가능 (L 사이즈)"; 
+                    addToCartBtn.disabled = false;
+                    addToCartBtn.textContent = "장바구니에 담기";
+                    addToCartBtn.classList.replace('bg-gray-400', 'bg-emerald-600');
+                    addToCartBtn.classList.add('hover:bg-emerald-700');
+                }
+            } else {
+                warningText.textContent = "";
+                addToCartBtn.disabled = false;
+                addToCartBtn.textContent = "장바구니에 담기";
+                addToCartBtn.classList.replace('bg-gray-400', 'bg-emerald-600');
+                addToCartBtn.classList.add('hover:bg-emerald-700');
+            }
+
+
+            document.getElementById('final-price-display').textContent = finalPrice.toLocaleString() + '원 (추가금: ' + crustAddPrice.toLocaleString() + '원)';
+        }
+
+        // 장바구니 담기 버튼 로직
+        document.getElementById('add-to-cart-btn').onclick = function() {
+            const sizeSelect = document.getElementById('size-select');
+            const crustSelect = document.getElementById('crust-select');
+            const selectedSize = sizeSelect.value;
+            const isEvent = currentSelectedItem.isEvent;
+
+            if (isEvent && selectedSize !== 'L') {
+                showAlert('1+1 이벤트 대상 피자는 L 사이즈만 주문 가능합니다.', 'bg-red-600');
+                return; 
+            }
+
+            const crustName = crustSelect.options[crustSelect.selectedIndex].text;
+            const itemPriceText = document.getElementById('final-price-display').textContent.split('(')[0].replace(/[^0-9]/g, '');
+            const itemPrice = parseInt(itemPriceText);
+            
+            const item = {
+                id: currentSelectedItem.id,
+                name: currentSelectedItem.name,
+                size: selectedSize,
+                crust: crustName,
+                price: itemPrice, 
+                isEvent: isEvent,
+                isBOGO: false, // 1+1 로직은 장바구니 페이지에서 최종 계산됨
+                quantity: 1
+            };
+
+            const cart = getCart();
+            cart.push(item);
+            saveCart(cart);
+            
+            document.getElementById('option-modal').style.display = 'none';
+            showAlert(`${item.name} (${item.size}, ${item.crust.split('(')[0].trim()})가 장바구니에 담겼습니다.`, 'bg-emerald-600');
+        };
+
+        // 이벤트 리스너 등록
         document.addEventListener('DOMContentLoaded', function() {
             try {
                 // 피자 메뉴 렌더링 시작
-                renderMenuItems('pizza');
+                renderMenuItems();
+                
+                // 모달 옵션 변경 감지
+                document.getElementById('size-select').addEventListener('change', updatePrice);
+                document.getElementById('crust-select').addEventListener('change', updatePrice);
             } catch (e) {
                 console.error("메뉴 렌더링 중 오류 발생:", e);
-                document.getElementById('menu-list').innerHTML = '<p class="text-red-500 col-span-full">메뉴를 불러오는 중 심각한 오류가 발생했습니다. 개발자 콘솔을 확인해주세요.</p>';
+                document.getElementById('menu-list').innerHTML = '<p class="text-red-500 col-span-full">메뉴를 불러오는 중 오류가 발생했습니다.</p>';
             }
         });
     </script>
