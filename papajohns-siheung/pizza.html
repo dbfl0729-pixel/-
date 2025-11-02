@@ -74,12 +74,12 @@
         <header class="bg-white shadow-lg sticky top-0 z-20 p-5 rounded-b-xl">
             <h1 class="text-4xl font-extrabold text-[var(--primary-color)] text-center tracking-tight">시흥은행점 파파존스 메뉴판</h1>
             <nav class="mt-4 flex justify-center space-x-4">
-                <a href="#" class="nav-link">홈</a>
-                <a href="#" class="nav-link active-tab">피자</a>
-                <a href="#" class="nav-link">사이드</a>
-                <a href="#" class="nav-link">음료</a>
-                <a href="#" class="nav-link">소스/피클</a>
-                <a href="#" class="nav-link text-gray-600 font-bold hover:text-green-800">장바구니</a>
+                <a href="index.html" class="nav-link">홈</a>
+                <a href="pizza.html" class="nav-link active-tab">피자</a>
+                <a href="side.html" class="nav-link">사이드</a>
+                <a href="drink.html" class="nav-link">음료</a>
+                <a href="sauce.html" class="nav-link">소스/피클</a>
+                <a href="cart.html" class="nav-link text-gray-600 font-bold hover:text-green-800">장바구니</a>
             </nav>
         </header>
 
@@ -150,7 +150,7 @@
             'P12': { img: 'IMG_7799.jpeg', name: '크리스피 치즈 트리플 피자', priceF: 33900, topping: '바삭한 투치즈 크러스트 엣지에 알프레도 소스, 양송이, 햄이 6가지 치즈와 조화. 기본토핑: 2블랜드 치즈, 알프레도 소스, 모짜렐라 치즈, 스트링 치즈, 이탈리안 허브 시즈닝', isEvent: false, sizes: ['F'], crusts: ['thin'] },
             'P13': { img: 'IMG_7800.jpeg', name: '햄 머쉬룸 식스 치즈', priceL: 28500, priceF: 33900, priceP: 42500, topping: '알프레도 소스, 양송이 버섯, 햄이 6가지 치즈와 조화. 기본토핑: 알프레도소스, 양송이버섯, 양파, 햄, 치즈, 2블랜드 치즈, 3블랜드 치즈, 후추', isEvent: false, sizes: ['L', 'F', 'P'], crusts: ['original', 'thin', 'cheeseroll', 'goldring', 'spicygarliccheeseroll', 'croissant'] },
             'P14': { img: 'IMG_7801.jpeg', name: '위스콘신 치즈 포테이토', priceL: 29500, priceF: 35900, priceP: 45500, topping: '진한 맥앤치즈 베이스 소스에 6가지 치즈와 풍부한 토핑. 기본토핑: 맥앤치즈 소스, 베이컨, 햄, 페퍼로니, 포테이토, 3블랜드 치즈, 2블랜드 치즈', isEvent: false, sizes: ['L', 'F', 'P'], crusts: ['original', 'cheeseroll', 'goldring', 'spicygarliccheeseroll', 'croissant'] }, 
-            'P15': { img: 'IMG_78152.jpeg', name: '더블 치즈버거', priceL: 29500, priceF: 34900, priceP: 43500, topping: '제스티 버거 소스위에 비프와 상큼한 토마토, 피클이 어우진 풍부한 맛. 기본토핑: 제스티 버거 소스, 비프, 토마토, 피클', isEvent: true, sizes: ['L', 'F', 'P'], crusts: ['original', 'thin', 'cheeseroll', 'goldring', 'spicygarliccheeseroll', 'croissant'] },
+            'P15': { img: 'IMG_8152.jpeg', name: '더블 치즈버거', priceL: 29500, priceF: 34900, priceP: 43500, topping: '제스티 버거 소스위에 비프와 상큼한 토마토, 피클이 어우진 풍부한 맛. 기본토핑: 제스티 버거 소스, 비프, 토마토, 피클', isEvent: true, sizes: ['L', 'F', 'P'], crusts: ['original', 'thin', 'cheeseroll', 'goldring', 'spicygarliccheeseroll', 'croissant'] },
             'P16': { img: 'IMG_8153.jpeg', name: '프리미엄 직화불고기', priceL: 29500, priceF: 34900, priceP: 43500, topping: '정통 직화 불고기, 신선한 채소 토핑으로 누구나 좋아할수 있는 스테디 셀러. 기본토핑: 불고기 소스, 표고, 청피망, 양파, 불고기', isEvent: true, sizes: ['L', 'F', 'P'], crusts: ['original', 'thin', 'cheeseroll', 'goldring', 'spicygarliccheeseroll', 'croissant'] },
             'P17': { img: 'IMG_7803.jpeg', name: '식스 치즈', priceL: 26500, priceF: 31900, priceP: 39500, topping: '6종의 치즈 맛을 풍부하게 느낄 수 있는 정통 치즈피자. 기본토핑: 6종 치즈', isEvent: false, sizes: ['L', 'F', 'P'], crusts: ['original', 'thin', 'cheeseroll', 'goldring', 'spicygarliccheeseroll', 'croissant'] },
             'P18': { img: 'IMG_7802.jpeg', name: '스파이시 이탈리안', priceL: 27500, priceF: 33900, priceP: 40500, topping: '이탈리안 소시지의 두툼한 식감과 크러쉬드 레드페퍼의 매운맛. 기본토핑: 이탈리안 소시지, 페퍼로니, 크러쉬드 레드페퍼', isEvent: false, sizes: ['L', 'F', 'P'], crusts: ['original', 'thin', 'cheeseroll', 'goldring', 'spicygarliccheeseroll', 'croissant'] },
@@ -235,6 +235,7 @@
             const priceText = basePrice ? basePrice.toLocaleString('ko-KR') : '가격문의';
             const priceDisplay = basePrice ? `₩ ${priceText} (L기준)` : '가격문의';
 
+            // ⚠️ 이미지 경로: assets/images/pizza 폴더의 파일을 정확히 지정합니다.
             const imageUrl = `assets/images/pizza/${item.img}`;
             
             // 1+1 이벤트 태그
@@ -277,7 +278,9 @@
             sizeSelect.innerHTML = '';
             
             currentSelectedItem.sizes.forEach(size => {
-                const price = currentSelectedItem[`price${size}`];
+                const priceKey = `price${size}`;
+                const price = currentSelectedItem[priceKey];
+                
                 const option = document.createElement('option');
                 option.value = size;
                 option.textContent = `${size} 사이즈 (${price.toLocaleString()}원)`;
@@ -316,18 +319,25 @@
             const crustOption = CRUST_OPTIONS.find(c => c.value === selectedCrustValue);
             let crustAddPrice = 0;
 
-            // 크러스트 추가금 계산 로직 (기존 로직 유지)
-            if (crustOption && (crustOption.priceL > 0 || crustOption.value === 'croissant')) {
-                if (selectedSize === 'L') crustAddPrice = crustOption.priceL;
-                else if (selectedSize === 'F') crustAddPrice = crustOption.priceF;
-                else if (selectedSize === 'P') crustAddPrice = crustOption.priceP;
+            // 크러스트 추가금 계산 로직
+            if (crustOption) {
+                const priceKey = `price${selectedSize}`;
+                // 가격 정보가 있을 때만 추가금 적용 (R 사이즈에 대한 처리 포함)
+                if (crustOption[priceKey] !== undefined) {
+                    crustAddPrice = crustOption[priceKey];
+                }
             }
-            // 레귤러 사이즈 크러스트 불가 로직 (R 사이즈는 P05, P07, P08, P09, P10, P20~P23만 가짐)
-            if (selectedSize === 'R' && selectedCrustValue !== 'original' && selectedCrustValue !== 'thin') { // THIN은 R 사이즈에서 선택 불가하지만 일단 로직은 유지
+            
+            // R 사이즈 크러스트 불가 로직 (씬(thin) 크러스트는 L, F, P 사이즈에만 적용 가능)
+            if (selectedSize === 'R' && selectedCrustValue !== 'original') {
+                 // R 사이즈에서는 오리지널 외 크러스트가 원래 선택 불가능하지만, 메뉴 데이터에서 막지 않은 경우 여기서 강제함.
+                 // 현재 MENU_DATA에서는 R 사이즈 피자들은 대부분 thin을 허용하고 있지 않음.
+                 // 다만, R사이즈는 기본적으로 오리지널만 선택 가능하도록 합니다.
                 crustSelect.value = 'original';
                 crustAddPrice = 0;
                 showAlert('레귤러 사이즈는 크러스트 변경이 불가능합니다. 오리지널 크러스트로 설정됩니다.', 'bg-yellow-600');
             }
+
 
             let finalPrice = basePrice + crustAddPrice;
 
@@ -393,7 +403,7 @@
             saveCart(cart);
             
             document.getElementById('option-modal').style.display = 'none';
-            showAlert(`${item.name} (${item.size}, ${item.crust.split('(')[0].trim()})가 장바구니에 담겼습니다.`, 'bg-emerald-600');
+            showAlert(`${item.name} (${item.size}, ${crustName.split('(')[0].trim()})가 장바구니에 담겼습니다.`, 'bg-emerald-600');
         };
 
         // 이벤트 리스너 등록
@@ -407,7 +417,7 @@
                 document.getElementById('crust-select').addEventListener('change', updatePrice);
             } catch (e) {
                 console.error("메뉴 렌더링 중 오류 발생:", e);
-                document.getElementById('menu-list').innerHTML = '<p class="text-red-500 col-span-full">메뉴를 불러오는 중 오류가 발생했습니다.</p>';
+                document.getElementById('menu-list').innerHTML = '<p class="text-red-500 col-span-full">메뉴를 불러오는 중 오류가 발생했습니다. 개발자 콘솔을 확인해주세요.</p>';
             }
         });
     </script>
