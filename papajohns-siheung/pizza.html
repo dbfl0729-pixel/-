@@ -1,387 +1,284 @@
 <!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>피자 메뉴 | 파파존스 은행점</title>
-  <link rel="stylesheet" href="assets/css/style.css">
-  <script src="assets/js/cart.js" defer></script>
-  <style>
-    /* 최소 스타일 보강: 필요 없으면 제거 */
-    .menu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
-    .menu-card{border:1px solid #eee;border-radius:10px;overflow:hidden;background:#fff;display:flex;flex-direction:column}
-    .menu-card img{width:100%;height:180px;object-fit:cover}
-    .menu-card .body{padding:12px;display:flex;flex-direction:column;gap:6px}
-    .badges{display:flex;gap:6px;flex-wrap:wrap}
-    .badge{font-size:.75rem;border:1px solid #ddd;border-radius:6px;padding:2px 6px}
-    .badge.best{border-color:#d00}
-    .badge.oneplus{border-color:#0a7}
-    .badge.thin{border-color:#333}
-    .sizes{font-size:.9rem;color:#333;display:flex;flex-wrap:wrap;gap:6px}
-    .sizes .pill{border:1px solid #ddd;border-radius:999px;padding:2px 8px}
-    .toppings{font-size:.85rem;color:#666;line-height:1.4}
-    .price{font-weight:600}
-    .menu-link{color:inherit;text-decoration:none}
-    #cart-summary{position:sticky;bottom:0;padding:12px;border-top:1px solid #eee;background:#fff}
-    .btn{display:inline-block;padding:10px 14px;border-radius:8px}
-    .btn-red{background:#d60000;color:#fff;text-align:center}
-    .filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
-    .filter-bar button{border:1px solid #ccc;border-radius:999px;padding:6px 10px;background:#fff}
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>파파존스 시흥은행점 | 메뉴판</title>
+<style>
+:root{--brand:#104C55;--bg:#F8F9FB;--ink:#111;--muted:#6b7280;--warn:#ef4444}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans KR",sans-serif;color:var(--ink);background:var(--bg)}
+header{position:sticky;top:0;background:#fff;border-bottom:1px solid #e5e7eb;z-index:30}
+.wrap{max-width:1100px;margin:0 auto;padding:16px}
+.brand{font-weight:800;color:var(--brand);font-size:20px}
+.tel{margin-left:auto;background:var(--brand);color:#fff;padding:6px 10px;border-radius:8px;font-weight:700}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+nav a{padding:8px 12px;border-radius:999px;border:1px solid #e5e7eb;text-decoration:none;color:var(--ink);font-weight:700;background:#fff}
+nav a.active{background:var(--brand);color:#fff;border-color:var(--brand)}
+main{padding:20px 0}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+.card{grid-column:span 12;background:#fff;border:1px solid #e5e7eb;border-radius:14px;overflow:hidden;display:flex;gap:14px}
+@media(min-width:720px){.card{grid-column:span 6}}
+@media(min-width:1024px){.card{grid-column:span 4}}
+.thumb{width:36%;min-height:140px;background:#f3f4f6;object-fit:cover}
+.info{padding:12px;flex:1}
+.name{font-weight:900}
+.desc{color:var(--muted);font-size:13px;margin:4px 0 8px}
+.meta{font-size:12px;color:#374151;line-height:1.5}
+.price{margin-top:6px;font-weight:900}
+.badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:900;margin-right:6px}
+.b-best{background:#fde68a}.b-two{background:#bbf7d0}.b-th{background:#e5e7eb}.b-nc{background:#e0e7ff}
+select,button{border:1px solid #e5e7eb;border-radius:10px;padding:8px 10px;background:#fff;font-weight:700}
+button.primary{background:var(--brand);color:#fff;border-color:var(--brand)}
+.note{font-size:12px;color:var(--muted)}
+.hide{display:none}
+.hero{background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:16px}
+.admin{margin-top:10px;display:grid;gap:10px}
+textarea{width:100%;min-height:160px;border:1px solid #e5e7eb;border-radius:10px;padding:10px;font-family:ui-monospace,Consolas,Menlo,monospace}
+.warn{color:var(--warn)}
+</style>
 </head>
 <body>
 <header>
-  <nav class="nav">
-    <a href="index.html">홈</a>
-    <a href="pizza.html" aria-current="page">피자</a>
-    <a href="side.html">사이드</a>
-    <a href="drink.html">음료</a>
-    <a href="sauce_pickle.html">소스/피클</a>
-  </nav>
+  <div class="wrap" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+    <div class="brand">파파존스 시흥은행점 메뉴판</div>
+    <span class="badge b-nc">대량 파싱 지원</span>
+    <div class="tel">전화: 031-XXXX-XXXX</div>
+  </div>
+  <div class="wrap">
+    <nav id="tabs">
+      <a href="#home" class="active">첫화면</a>
+      <a href="#pizza">피자</a>
+      <a href="#sides">사이드</a>
+      <a href="#drinks">음료&소스</a>
+      <a href="#deals">제휴할인</a>
+    </nav>
+  </div>
 </header>
 
-<main class="container menu-list-page">
-  <h1>🍕 피자 메뉴</h1>
+<main class="wrap">
+  <!-- 첫화면 + 관리자 파서 -->
+  <section id="home" class="view">
+    <div class="hero">
+      <h3 style="margin:0 0 8px">데이터 붙여넣기 → 자동 생성</h3>
+      <div class="note">IMG_로 시작하는 줄마다 새 항목으로 인식한다. 예: <code>IMG_7786.jpeg : 수퍼 파파스(best) : ...</code></div>
+      <div class="admin">
+        <textarea id="bulk" placeholder="여기에 방금 보낸 피자 목록 원문을 그대로 붙여 넣으세요."></textarea>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="primary" onclick="applyBulk()">파싱 후 적용</button>
+          <button onclick="demoFill()">샘플 3종 채우기</button>
+          <div class="note">키워드 인식: <b>BEST</b>, <b>best</b>, <b>1+1</b>, <b>TH전용</b>, <b>*TH전용*</b>, <b>크러스트 선택 없음</b>.</div>
+        </div>
+      </div>
+    </div>
+    <div style="height:12px"></div>
+    <div class="grid" id="featured"></div>
+  </section>
 
-  <div class="filter-bar" aria-label="퀵 필터">
-    <button data-filter="ALL">전체</button>
-    <button data-filter="BEST">BEST</button>
-    <button data-filter="1+1">1+1</button>
-    <button data-filter="TH">TH 전용</button>
-    <button data-filter="VEGAN">그린잇</button>
-    <button data-filter="SPICY">매운맛</button>
-  </div>
+  <!-- 피자 -->
+  <section id="pizza" class="view hide">
+    <div class="grid" id="pizzaList"></div>
+    <div class="note" style="margin-top:8px">
+      일부 품목은 크러스트 변경 불가. TH전용은 씬·특정 사이즈 전용. 별표/전용/선택없음 표기 시 자동 비활성화.
+    </div>
+  </section>
 
-  <section id="pizza-list" class="menu-grid" aria-live="polite"></section>
+  <!-- 사이드/음료 -->
+  <section id="sides" class="view hide"><div class="note">사이드는 추후 동일 방식으로 붙여넣기 파싱 가능. 필드 키워드가 없으면 이름·가격만 표시.</div><div id="sideList" class="grid"></div></section>
+  <section id="drinks" class="view hide"><div id="drinkList" class="grid"></div></section>
 
-  <section aria-labelledby="crust-guide-title" style="margin:24px 0">
-    <h2 id="crust-guide-title">크러스트 안내</h2>
-    <ul>
-      <li><strong>오리지널</strong> 쫄깃하고 고소한 기본</li>
-      <li><strong>크루아상</strong> 겹겹이 바삭, 버터 풍미</li>
-      <li><strong>스파이시 갈릭 치즈롤</strong> 갈릭 향 + 투블랜드 치즈 + 레드페퍼</li>
-      <li><strong>골드링</strong> 고구마 무스 + 스트링 치즈</li>
-      <li><strong>치즈롤</strong> 체다가 뿌려진 엣지 속 스트링 치즈</li>
-      <li><strong>THIN</strong> 바삭한 식감, 토핑 풍미 강조</li>
-    </ul>
-    <p style="font-size:.9rem;color:#555">
-      ※ 골드링/치즈롤/스파이시 갈릭 치즈롤 변경 시 L +4,000원, F +5,000원, P +6,000원. 크루아상 변경 시 P +6,000원.
-      패밀리 사이즈 주문 시 씬 크러스트 무료 변경. 일부 품목은 변경 불가.
-      레귤러 사이즈는 크러스트 변경 불가.
-    </p>
+  <!-- 제휴 -->
+  <section id="deals" class="view hide">
+    <div class="hero">
+      <h3 style="margin:0 0 8px">제휴·이벤트</h3>
+      <ul>
+        <li><span class="badge b-two">1+1</span> 표시 제품: 동일 또는 낮은 금액 1판 증정</li>
+        <li><span class="badge b-th">TH전용</span> 제품은 TH 사이즈/도우 전용</li>
+      </ul>
+      <div class="note">점포 정책에 맞춰 문구 수정.</div>
+    </div>
   </section>
 </main>
 
-<div id="cart-summary">
-  <h2>총 주문 금액: <span id="total-price">0</span>원</h2>
-  <a class="btn btn-red" href="checkout.html">주문하기</a>
-</div>
-
-<!-- 데이터: 가격은 숫자만, 표시는 렌더러가 포맷 -->
-<script type="application/json" id="pizza-data">
-[
-  {
-    "id":"p1","img":"images/IMG_7782.jpeg",
-    "name":"바베큐 숏립 크런치","desc":"소갈비와 아메리칸 BBQ, 치즈와 바삭한 식감",
-    "toppings":["바베큐 소스","소갈비살","3블랜드 치즈","감자후레이크","양파"],
-    "sizes":{"L":34500,"F":41900},
-    "crust":["오리지널","씬","치즈롤","골드링","스파이시갈릭치즈롤","크루아상"],
-    "badges":[]
-  },
-  {
-    "id":"p2","img":"images/IMG_7783.jpeg",
-    "name":"멜로우 콘크림","desc":"옥수수크림과 콘 & 파인애플의 달콤한 조합",
-    "toppings":["갈릭 랜치 소스","파인애플","콘","양파","체다 치즈","포테이토"],
-    "sizes":{"L":27500,"F":33900,"P":41500},
-    "crust":["오리지널","씬","치즈롤","골드링","스파이시갈릭치즈롤","크루아상"],
-    "badges":[]
-  },
-  {
-    "id":"p3","img":"images/IMG_7784.jpeg",
-    "name":"스타라이트 바질","desc":"바질 향과 고소한 치즈, 별모양 프리미엄",
-    "toppings":["베이컨","양송이버섯","치즈","햄","토마토","바질마요","갈릭 소스","스트링 치즈"],
-    "sizes":{"L":33500,"F":39900,"P":48500},
-    "crust":["선택불가"],
-    "badges":[]
-  },
-  {
-    "id":"p4","img":"images/IMG_7785.jpeg",
-    "name":"더블 핫 앤 스파이시 멕시칸","desc":"스파이시 갈릭 치즈롤과 할라페뇨의 강렬한 매콤함",
-    "toppings":["토마토 소스","비프","피망","양파","토마토","블랙올리브","할라페뇨","모짜렐라"],
-    "sizes":{"L":33500,"F":39900},
-    "crust":["스파이시갈릭치즈롤"],
-    "badges":["BEST","SPICY"]
-  },
-  {
-    "id":"p5","img":"images/IMG_7786.jpeg",
-    "name":"수퍼 파파스","desc":"고기와 채소 듬뿍, 베스트 메뉴",
-    "toppings":["토마토 소스","모짜렐라","이탈리안 소시지","양파","청피망","양송이","블랙 올리브","햄","페퍼로니"],
-    "sizes":{"R":19900,"L":28500,"F":33900,"P":42500},
-    "crust":["오리지널","씬","치즈롤","골드링","스파이시갈릭치즈롤","크루아상"],
-    "badges":["BEST","1+1"]
-  },
-  {
-    "id":"p6","img":"images/IMG_7787.jpeg",
-    "name":"존스 페이버릿","desc":"이탈리안 소시지, 페퍼로니, 6치즈의 진한 풍미",
-    "toppings":["토마토 소스","모짜렐라","아시아고","폰티나","프로볼로네","로마노","파마산","이탈리안 소시지","페퍼로니","허브"],
-    "sizes":{"L":29500,"F":34900,"P":45500},
-    "crust":["오리지널","씬","치즈롤","골드링","스파이시갈릭치즈롤","크루아상"],
-    "badges":["BEST","1+1"]
-  },
-  {
-    "id":"p7","img":"images/IMG_7895.jpeg",
-    "name":"올미트","desc":"고기 토핑으로 꽉 찬 미트 피자",
-    "toppings":["토마토 소스","모짜렐라","이탈리안 소시지","베이컨","비프","햄","페퍼로니"],
-    "sizes":{"R":19900,"L":29500,"F":34900,"P":45500},
-    "crust":["오리지널","씬","치즈롤","골드링","스파이시갈릭치즈롤","크루아상"],
-    "badges":[]
-  },
-  {
-    "id":"p8","img":"images/IMG_7789.jpeg",
-    "name":"스파이시 치킨랜치","desc":"랜치 소스와 치킨, 토마토, 할라페뇨",
-    "toppings":["갈릭 랜치 소스","모짜렐라","그릴드 치킨","베이컨","토마토","할라페뇨"],
-    "sizes":{"R":19900,"L":29500,"F":34900,"P":43500},
-    "crust":["오리지널","씬","치즈롤","골드링","스파이시갈릭치즈롤","크루아상"],
-    "badges":["1+1","SPICY"]
-  },
-  {
-    "id":"p9","img":"images/IMG_7790.jpeg",
-    "name":"아이리쉬 포테이토","desc":"갈릭 소스와 포테이토 청크의 조화",
-    "toppings":["토마토 소스","모짜렐라","포테이토","베이컨","양송이","콘","양파","갈릭 소스"],
-    "sizes":{"R":18900,"L":27500,"F":32900,"P":40500},
-    "crust":["오리지널","씬","치즈롤","골드링","스파이시갈릭치즈롤","크루아상"],
-    "badges":["1+1"]
-  },
-  {
-    "id":"p10","img":"images/IMG_7791.jpeg",
-    "name":"치킨 바베큐","desc":"타바스코 BBQ 소스와 두툼한 치킨",
-    "toppings":["토마토 소스","모짜렐라","그릴드 치킨","베이컨","양파","타바스코 BBQ"],
-    "sizes":{"R":18900,"L":27500,"F":32900,"P":40500},
-    "crust":["오리지널","씬","치즈롤","골드링","스파이시갈릭치즈롤","크루아상"],
-    "badges":["1+1"]
-  },
-  {
-    "id":"p11","img":"images/IMG_7798.jpeg",
-    "name":"크리스피 치즈 페퍼로니","desc":"투치즈 엣지의 얇고 바삭한 THIN 피자",
-    "toppings":["2블랜드 치즈(파마산,로마노)","토마토 소스","모짜렐라","페퍼로니"],
-    "sizes":{"F":31900},
-    "crust":["THIN"],
-    "badges":["TH"]
-  },
-  {
-    "id":"p12","img":"images/IMG_7799.jpeg",
-    "name":"크리스피 치즈 트리플","desc":"투치즈 엣지 + 알프레도 소스의 조화",
-    "toppings":["2블랜드 치즈","토마토 소스","알프레도 소스","모짜렐라","스트링 치즈","허브 시즈닝"],
-    "sizes":{"F":33900},
-    "crust":["THIN"],
-    "badges":["TH"]
-  },
-  {
-    "id":"p13","img":"images/IMG_7800.jpeg",
-    "name":"햄 머쉬룸 식스 치즈","desc":"알프레도 베이스에 6치즈와 햄, 버섯",
-    "toppings":["알프레도 소스","양송이버섯","양파","햄","치즈","2블랜드","3블랜드","후추"],
-    "sizes":{"L":28500,"F":33900,"P":42500},
-    "crust":["오리지널","씬","치즈롤","골드링","스파이시갈릭치즈롤","크루아상"],
-    "badges":[]
-  },
-  {
-    "id":"p14","img":"images/IMG_7801.jpeg",
-    "name":"위스콘신 치즈 포테이토","desc":"맥앤치즈 베이스에 6치즈와 포테이토",
-    "toppings":["맥앤치즈 소스","모짜렐라","베이컨","햄","페퍼로니","포테이토","토마토","3블랜드","2블랜드"],
-    "sizes":{"L":29500,"F":35900,"P":45500},
-    "crust":["오리지널","치즈롤","골드링","스파이시갈릭치즈롤","크루아상"],
-    "badges":[]
-  },
-  {
-    "id":"p15","img":"images/IMG_78152.jpeg",
-    "name":"더블 치즈버거","desc":"제스티 버거 소스와 비프, 피클",
-    "toppings":["제스티 버거 소스","모짜렐라","비프","토마토","피클"],
-    "sizes":{"L":29500,"F":34900,"P":43500},
-    "crust":["오리지널","씬","치즈롤","골드링","스파이시갈릭치즈롤","크루아상"],
-    "badges":["1+1"]
-  },
-  {
-    "id":"p16","img":"images/IMG_8153.jpeg",
-    "name":"프리미엄 직화불고기","desc":"정통 직화 불고기와 신선한 채소",
-    "toppings":["불고기 소스","모짜렐라","표고","청피망","양파","불고기"],
-    "sizes":{"L":29500,"F":34900,"P":43500},
-    "crust":["오리지널","씬","치즈롤","골드링","스파이시갈릭치즈롤","크루아상"],
-    "badges":["1+1"]
-  },
-  {
-    "id":"p17","img":"images/IMG_7803.jpeg",
-    "name":"식스 치즈","desc":"6종 치즈의 정통 치즈피자",
-    "toppings":["토마토 소스","모짜렐라","아시아고","폰티나","프로볼로네","로마노","파마산","허브"],
-    "sizes":{"L":26500,"F":31900,"P":39500},
-    "crust":["오리지널","씬","치즈롤","골드링","스파이시갈릭치즈롤","크루아상"],
-    "badges":[]
-  },
-  {
-    "id":"p18","img":"images/IMG_7802.jpeg",
-    "name":"스파이시 이탈리안","desc":"소시지와 크러쉬드 레드페퍼의 매운 맛",
-    "toppings":["토마토 소스","모짜렐라","이탈리안 소시지","페퍼로니","크러쉬드 레드페퍼"],
-    "sizes":{"L":27500,"F":33900,"P":40500},
-    "crust":["오리지널","씬","치즈롤","골드링","스파이시갈릭치즈롤","크루아상"],
-    "badges":["SPICY"]
-  },
-  {
-    "id":"p19","img":"images/IMG_78150.jpeg",
-    "name":"슈림프 알프레도","desc":"얇고 바삭한 도우 위 알프레도와 새우",
-    "toppings":["알프레도 소스","모짜렐라","새우","토마토","피클","그릴드 치킨","양송이"],
-    "sizes":{"F":34900},
-    "crust":["THIN"],
-    "badges":["TH"]
-  },
-  {
-    "id":"p20","img":"images/IMG_7792.jpeg",
-    "name":"마가리타","desc":"진한 토마토 소스와 최상급 모짜렐라",
-    "toppings":["토마토 소스","모짜렐라"],
-    "sizes":{"R":16900,"L":23500,"F":28900,"P":36500},
-    "crust":["오리지널","씬","치즈롤","골드링","스파이시갈릭치즈롤","크루아상"],
-    "badges":[]
-  },
-  {
-    "id":"p21","img":"images/IMG_7793.jpeg",
-    "name":"페퍼로니","desc":"짭조름한 페퍼로니와 고소한 치즈",
-    "toppings":["토마토 소스","모짜렐라","페퍼로니"],
-    "sizes":{"R":17900,"L":25500,"F":30900,"P":38500},
-    "crust":["오리지널","씬","치즈롤","골드링","스파이시갈릭치즈롤","크루아상"],
-    "badges":[]
-  },
-  {
-    "id":"p22","img":"images/IMG_7794.jpeg",
-    "name":"하와이안","desc":"파인애플과 햄의 상큼한 조합",
-    "toppings":["토마토 소스","모짜렐라","파인애플","햄"],
-    "sizes":{"R":17900,"L":26500,"F":32900,"P":39500},
-    "crust":["오리지널","씬","치즈롤","골드링","스파이시갈릭치즈롤","크루아상"],
-    "badges":[]
-  },
-  {
-    "id":"p23","img":"images/IMG_7795.jpeg",
-    "name":"가든 스페셜","desc":"신선한 채소가 토핑된 베지 피자",
-    "toppings":["토마토 소스","모짜렐라","양송이","청피망","양파","블랙 올리브","토마토"],
-    "sizes":{"R":17900,"L":26500,"F":31900,"P":39500},
-    "crust":["오리지널","씬","치즈롤","골드링","스파이시갈릭치즈롤","크루아상"],
-    "badges":[]
-  },
-  {
-    "id":"p24","img":"images/IMG_8152.jpeg",
-    "name":"그린잇 식물성 마가리타","desc":"SHEESE 비건치즈와 토마토 소스",
-    "toppings":["비건 치즈","토마토 소스"],
-    "sizes":{"L":26500},
-    "crust":["선택불가"],
-    "badges":["VEGAN"]
-  },
-  {
-    "id":"p25","img":"images/IMG_8152.jpeg",
-    "name":"그린잇 식물성 가든스페셜","desc":"비건치즈와 신선 채소의 웰빙 채식 피자",
-    "toppings":["토마토 소스","비건 치즈","양송이","청피망","양파","블랙 올리브","토마토"],
-    "sizes":{"L":29500},
-    "crust":["선택불가"],
-    "badges":["VEGAN"]
-  }
-]
-</script>
-
 <script>
-  // 유틸
-  const fmt = n => n.toLocaleString('ko-KR');
+/* ---------- 라우팅 ---------- */
+const tabs = document.querySelectorAll('#tabs a');
+const views = document.querySelectorAll('.view');
+function goto(hash){
+  tabs.forEach(a=>a.classList.toggle('active', a.getAttribute('href')===hash));
+  views.forEach(v=>v.classList.toggle('hide','#'+v.id!==hash));
+  history.replaceState(null,'',hash);
+}
+tabs.forEach(a=>a.addEventListener('click',e=>{e.preventDefault();goto(a.getAttribute('href'));}));
+if(!location.hash) history.replaceState(null,'','#home'); else goto(location.hash);
 
-  // 렌더
-  const data = JSON.parse(document.getElementById('pizza-data').textContent);
-  const listEl = document.getElementById('pizza-list');
+/* ---------- 데이터 상태 ---------- */
+let items = []; // 파싱 결과 저장
 
-  function badgeEl(text){
-    const span = document.createElement('span');
-    span.className = 'badge';
-    if(text === 'BEST') span.classList.add('best');
-    if(text === '1+1') span.classList.add('oneplus');
-    if(text === 'TH') span.classList.add('thin');
-    if(text === 'SPICY') span.title = '매운맛';
-    if(text === 'VEGAN') span.title = '그린잇';
-    span.textContent = text;
-    return span;
-  }
-
-  function makeCard(p){
-    const a = document.createElement('a');
-    a.className = 'menu-link';
-    a.href = '#'; // 상세 페이지 없으면 # 유지. 있으면 파일 경로 연결.
-
-    const card = document.createElement('article');
-    card.className = 'menu-card';
-    card.id = p.id;
-    card.dataset.name = p.name;
-
-    // 이미지
-    const img = document.createElement('img');
-    img.src = p.img;
-    img.alt = p.name + ' 이미지';
-    card.appendChild(img);
-
-    // 본문
-    const body = document.createElement('div');
-    body.className = 'body';
-
-    const h3 = document.createElement('h3');
-    h3.textContent = p.name;
-    body.appendChild(h3);
-
-    const badges = document.createElement('div');
-    badges.className = 'badges';
-    (p.badges||[]).forEach(b => badges.appendChild(badgeEl(b)));
-    if(p.badges?.length) body.appendChild(badges);
-
-    const desc = document.createElement('p');
-    desc.textContent = p.desc;
-    body.appendChild(desc);
-
-    const tops = document.createElement('p');
-    tops.className = 'toppings';
-    tops.textContent = '기본토핑: ' + p.toppings.join(', ');
-    body.appendChild(tops);
-
-    const sizes = document.createElement('div');
-    sizes.className = 'sizes';
-    const sizeMap = {R:'레귤러(23cm)',L:'라지(31cm)',F:'패밀리(36cm)',P:'파티(41cm)'};
-    Object.entries(p.sizes).forEach(([k,v])=>{
-      const pill = document.createElement('span');
-      pill.className = 'pill';
-      pill.innerHTML = `${sizeMap[k]} <span class="price">${fmt(v)}원</span>`;
-      sizes.appendChild(pill);
-    });
-    body.appendChild(sizes);
-
-    const crust = document.createElement('p');
-    crust.className = 'toppings';
-    crust.textContent = '크러스트: ' + (p.crust?.join(' / ') || '선택불가');
-    body.appendChild(crust);
-
-    card.appendChild(body);
-    a.appendChild(card);
-    return a;
-  }
-
-  function render(filter='ALL'){
-    listEl.innerHTML = '';
-    const items = data.filter(p=>{
-      if(filter==='ALL') return true;
-      if(filter==='BEST') return p.badges?.includes('BEST');
-      if(filter==='1+1') return p.badges?.includes('1+1');
-      if(filter==='TH') return p.badges?.includes('TH');
-      if(filter==='VEGAN') return p.badges?.includes('VEGAN');
-      if(filter==='SPICY') return p.badges?.includes('SPICY');
-      return true;
-    });
-    items.forEach(p=>listEl.appendChild(makeCard(p)));
-  }
-
-  render();
-
-  // 필터 버튼
-  document.querySelectorAll('.filter-bar button').forEach(btn=>{
-    btn.addEventListener('click',()=>render(btn.dataset.filter));
+/* ---------- 파서 ---------- */
+/*
+입력 규칙:
+- 시작: "IMG_*.jpg|jpeg|png" 로 시작하는 줄 → 새 항목
+- " : " 또는 " -" 으로 이름/설명 구분
+- "기본토핑:" 줄 파싱 → toppings[]
+- "가격" 줄 파싱 → prices{regular,large,family,party,th}
+- "오리지널/ 씬/ ..." 줄 파싱 → crust[]
+- 배지: BEST/best, 1+1, TH전용, 크러스트 선택 없음
+*/
+function normalizeNumber(s){
+  if(!s) return null;
+  s = s.replace(/[^\d.,]/g,'').replace(/\./g,',');
+  const parts = s.split(',');
+  const n = parseInt(parts.join(''),10);
+  return isFinite(n) ? n : null;
+}
+function parsePrices(line){
+  // 예: "가격 레귤러1-2인용(23cm)19,900원 / 라지2-3인용(31cm)28,500원 / 패밀리3-4인용(36cm)33.900원 / 파티5-6인용(41cm)42,500원 (오리지널기준)"
+  const map = {};
+  const m = line.replace(/가격/,'').split(/[\/|]/);
+  m.forEach(seg=>{
+    const s = seg.trim();
+    const size =
+      /레귤러/.test(s) ? 'regular' :
+      /라지/.test(s) ? 'large' :
+      /패밀리/.test(s) ? 'family' :
+      /파티/.test(s) ? 'party' :
+      /TH|전용/.test(s) ? 'th' : null;
+    const priceMatch = s.match(/([\d.,]+)\s*원?/);
+    if(size && priceMatch){
+      map[size] = normalizeNumber(priceMatch[1]);
+    }
   });
+  return map;
+}
+function parseCrust(line){
+  // "오리지널/ 씬/ 치즈롤/ ..." → 배열
+  return line.split(/[\/,]/).map(s=>s.trim()).filter(Boolean);
+}
+function flagBadges(str){
+  const b=[];
+  if(/BEST|\(best\)|베스트/i.test(str)) b.push('BEST');
+  if(/1\+1|행사\s*피자/i.test(str)) b.push('1+1');
+  if(/TH전용|TH\s*전용|TH전용\*|\*TH전용\*/i.test(str)) b.push('TH전용');
+  if(/크러스트\s*선택\s*없음|크러스트\s*없음/i.test(str)) b.push('크러스트 없음');
+  return b;
+}
+function applyBulk(){
+  const raw = document.getElementById('bulk').value;
+  if(!raw.trim()){ alert('데이터를 붙여 넣으세요.'); return; }
+  const lines = raw.split(/\r?\n/).map(l=>l.trim()).filter(l=>l.length>0);
+  const blocks = [];
+  let cur = null;
+  const startRe = /^IMG_\d+.*\.(?:jpe?g|png)/i;
+  lines.forEach(l=>{
+    if(startRe.test(l)){
+      if(cur) blocks.push(cur);
+      cur = [l];
+    } else if(cur){
+      cur.push(l);
+    }
+  });
+  if(cur) blocks.push(cur);
+
+  const parsed = blocks.map(block=>{
+    // 첫 줄: "IMG_xxxx.jpeg : 이름 : 설명..." 형태
+    const first = block[0];
+    const img = first.match(/(IMG_\d+[^:\s)]*\.(?:jpe?g|png))/i)?.[1] || '';
+    // 이름과 한줄 설명
+    let nameDesc = first.replace(img,'').replace(/^[:\s\-]+/,'');
+    if(!nameDesc && block[1]) nameDesc = block[1];
+    const parts = nameDesc.split(/\s*:\s*/);
+    const name = (parts[0]||'이름없음').replace(/\(best\)/i,'').trim();
+    const desc = (parts.slice(1).join(' : ') || '').trim();
+    const badges = flagBadges(first+' '+block.join(' '));
+
+    // 기본토핑
+    const topLine = block.find(x=>/^기본토핑\s*[:：]/.test(x)) || '';
+    const toppings = topLine.replace(/^기본토핑\s*[:：]/,'').split(/[,\s·]+/).map(s=>s.trim()).filter(Boolean);
+
+    // 가격
+    const priceLine = block.find(x=>/^가격/.test(x)) || '';
+    const prices = parsePrices(priceLine);
+
+    // 크러스트
+    let crust = [];
+    const crustLine = block.find(x=>/(오리지널|씬|치즈롤|골드링|스파이시|크루아상|크러스트 선택 없음)/.test(x));
+    if(crustLine){
+      if(/크러스트 선택 없음|크러스트 없음/.test(crustLine) || badges.includes('TH전용')){
+        crust = [];
+      } else {
+        crust = parseCrust(crustLine.replace(/선택가능|선택|가능|TH전용.*/g,''));
+      }
+    }
+
+    return {img,name,desc,toppings,prices,crust,badges};
+  });
+
+  items = parsed;
+  render();
+  goto('#pizza');
+}
+
+/* ---------- 렌더 ---------- */
+function badgeSpan(b){
+  if(b==='BEST') return '<span class="badge b-best">BEST</span>';
+  if(b==='1+1') return '<span class="badge b-two">1+1</span>';
+  if(b==='TH전용') return '<span class="badge b-th">TH전용</span>';
+  if(b==='크러스트 없음') return '<span class="badge b-nc">크러스트 없음</span>';
+  return '';
+}
+function priceText(p){
+  const order = ['regular','large','family','party','th'];
+  const nam = {regular:'레귤러',large:'라지',family:'패밀리',party:'파티',th:'TH'};
+  const parts=[];
+  order.forEach(k=>{ if(p[k]) parts.push(`${nam[k]} ${p[k].toLocaleString('ko-KR')}원`);});
+  return parts.join(' / ');
+}
+function render(){
+  // 홈 featured: BEST 또는 1+1 우선 상위 6개
+  const feat = document.getElementById('featured');
+  const hot = [...items].filter(x=>x.badges.some(b=>b==='BEST'||b==='1+1')).slice(0,6);
+  feat.innerHTML = hot.map(cardHTML).join('');
+
+  // 피자 리스트
+  const list = document.getElementById('pizzaList');
+  list.innerHTML = items.map(cardHTML).join('');
+}
+function cardHTML(x){
+  const crustTxt = x.crust && x.crust.length ? x.crust.join(' / ') : '크러스트 선택 불가';
+  return `
+  <article class="card">
+    <img class="thumb" alt="${x.name}" src="${x.img}" onerror="this.style.background='#e5e7eb';this.removeAttribute('src')">
+    <div class="info">
+      <div class="name">${x.badges.map(badgeSpan).join('')}${x.name}</div>
+      <div class="desc">${x.desc||''}</div>
+      <div class="meta"><b>토핑</b> ${x.toppings.join(', ')||'-'}</div>
+      <div class="meta"><b>크러스트</b> ${crustTxt}</div>
+      <div class="price">${priceText(x.prices)||''}</div>
+    </div>
+  </article>`;
+}
+
+/* ---------- 데모 ---------- */
+function demoFill(){
+  const demo = `
+IMG_7786.jpeg : 수퍼 파파스(best) : 신선한 토마토 소스 위에 각종 고기와 채소가 듬뿍
+기본토핑 : 토마토 소스, 모짜렐라 치즈, 이탈리안 소시지, 양파, 청피망, 양송이, 블랙 올리브, 햄, 페퍼로니
+가격 레귤러1-2인용(23cm)19,900원 / 라지2-3인용(31cm)28,500원 / 패밀리3-4인용(36cm)33,900원 / 파티5-6인용(41cm)42,500원 (오리지널기준)
+오리지널/ 씬/ 치즈롤/ 골드링/ 스파이시갈릭치즈롤/ 크루아상(한정) 선택가능
+**1+1행사 피자**
+
+IMG_7787.jpeg : 존스 페이버릿(best) : 이탈리안 소시지, 페퍼로니와 6종 치즈
+기본토핑 ; 토마토 소스, 모짜렐라 치즈, 아시아고 치즈, 폰티나 치즈, 프로볼로네 치즈, 로마노 치즈, 파마산 치즈, 이탈리안 소시지, 페퍼로니, 이탈리안 허브
+가격 라지2-3인용(31cm)29,500원 / 패밀리3-4인용(36cm)34,900원 / 파티5-6인용(41cm)45,500원 (오리지널기준)
+오리지널/ 씬/ 치즈롤/ 골드링/ 스파이시갈릭치즈롤/ 크루아상(한정) 선택가능
+**1+1행사 피자**
+
+IMG_7798.jpeg : 크리스피 치즈 페퍼로니 피자 : TH전용 치즈엣지
+기본토핑: 2블랜드 치즈(파마산, 로마노), 토마토 소스, 모짜렐라 치즈, 페퍼로니
+패밀리3-4인용(36cm)31,900 *TH전용*
+`;
+  document.getElementById('bulk').value = demo.trim();
+}
 </script>
 </body>
 </html>
