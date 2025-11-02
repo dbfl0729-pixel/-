@@ -225,7 +225,7 @@
             });
         }
 
-        function createMenuItemCard(id, item) {
+                function createMenuItemCard(id, item) {
             const card = document.createElement('div');
             card.className = 'menu-card bg-white p-5 rounded-xl shadow-xl border border-gray-100 flex flex-col justify-between cursor-pointer hover:shadow-2xl transition duration-300';
             card.setAttribute('data-id', id);
@@ -236,7 +236,9 @@
             const priceDisplay = basePrice ? `₩ ${priceText} (L기준)` : '가격문의';
 
             // ⚠️ 이미지 경로: assets/images/pizza 폴더의 파일을 정확히 지정합니다.
+            // onError를 사용하여 파일이 없을 경우 대비 (이 부분이 중요합니다!)
             const imageUrl = `assets/images/pizza/${item.img}`;
+            const placeholderUrl = `https://placehold.co/600x400/D1FAE5/065F46?text=${encodeURIComponent(item.name.toUpperCase().replace(/\s/g, '+'))}`;
             
             // 1+1 이벤트 태그
             const eventTag = item.isEvent ? `<span class="absolute top-3 left-3 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full shadow-md">1+1 대상</span>` : '';
@@ -245,7 +247,7 @@
                 <div class="relative">
                     ${eventTag}
                     <img src="${imageUrl}" alt="${item.name}" class="w-full h-36 object-cover rounded-lg mb-4 shadow-inner transform transition duration-500 hover:scale-[1.03]" 
-                        onerror="this.onerror=null;this.src='https://placehold.co/600x400/D1FAE5/065F46?text=${encodeURIComponent(item.name)}';">
+                        onerror="this.onerror=null;this.src='${placeholderUrl}';">
                 </div>
                 
                 <div>
