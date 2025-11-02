@@ -237,3 +237,167 @@ h2 {
 .mt-30 {
     margin-top: 30px;
 }
+/* ------------------- */
+/* 5. 피자 메뉴 페이지 (추가 스타일) */
+/* ------------------- */
+
+.menu-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.menu-item {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden; /* 이미지 모서리 처리 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.3s;
+}
+
+.menu-item:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.item-image {
+    width: 100%;
+    height: 200px; /* 이미지 높이 통일 */
+    object-fit: cover; /* 이미지가 잘리더라도 영역을 채우도록 설정 */
+}
+
+.item-details {
+    padding: 15px;
+}
+
+.item-title {
+    font-size: 22px;
+    color: #CC0000;
+    margin-top: 0;
+}
+
+.item-description {
+    font-size: 14px;
+    color: #666;
+    height: 40px; /* 설명 높이 통일 */
+    overflow: hidden;
+}
+
+.item-price {
+    font-weight: 700;
+    color: #333;
+    margin: 10px 0;
+}
+
+.event-tag {
+    font-weight: 700;
+    color: #556B2F; /* 올리브색 강조 */
+    border: 1px solid #556B2F;
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.event-tag.no-event {
+    color: #666;
+    border-color: #EEE;
+}
+
+.btn-detail {
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 12px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    border-radius: 0 0 10px 10px; /* 아래쪽만 둥글게 */
+}
+
+.btn-detail:hover {
+    background-color: #0056b3;
+}
+
+/* ------------------- */
+/* 6. 상세 옵션 팝업 (Modal) 디자인 */
+/* ------------------- */
+
+.modal {
+    display: none; /* 기본적으로 숨김 */
+    position: fixed; 
+    z-index: 1000; /* 최상단에 표시 */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.7); /* 반투명 배경 */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto; /* 화면 중앙에 위치 */
+    padding: 30px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 600px;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+    color: #333;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.option-section {
+    border-bottom: 1px solid #eee;
+    padding: 15px 0;
+}
+
+.option-section h4 {
+    color: #556B2F;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+#size-select, #crust-select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.warning-text {
+    color: #CC0000;
+    font-size: 14px;
+    font-weight: 500;
+    margin-left: 10px;
+}
+
+.final-price {
+    font-size: 24px;
+    font-weight: 700;
+    text-align: right;
+    margin-top: 20px;
+    color: #CC0000;
+}
+
+#add-to-cart-btn {
+    width: 100%;
+    margin-top: 20px;
+}
