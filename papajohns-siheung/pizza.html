@@ -1,85 +1,226 @@
-<!DOCTYPE html>
+<!DOCTYPE:html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>피자 메뉴 - 시흥은행점 파파존스</title>
-    <link href="https://hangeul.pstatic.net/hangeul_static/css/gmarket-sans.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <title>피자 메뉴 (올리브 테마)</title>
+    <!-- Tailwind CSS 로드 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* 올리브 테마 커스텀 변수 및 스타일 */
+        :root {
+            --primary-color: #059669; /* Emerald 600 - 메인 올리브/그린 */
+        }
+        body { font-family: 'Noto Sans KR', 'Inter', sans-serif; }
+        .nav-link { 
+            padding: 8px 12px; 
+            border-radius: 9999px;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+        .nav-link:not(.active-tab) { 
+            color: #4b5563; /* gray-600 */
+            background-color: transparent;
+        }
+        .nav-link:hover:not(.active-tab) { 
+            background-color: #f3f4f6; /* gray-100 */
+        }
+        .active-tab { 
+            background-color: var(--primary-color);
+            color: white; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+        }
+    </style>
 </head>
-<body>
-    
-    <header class="main-header">
-        <div class="header-container">
-            <h1 class="logo">시흥은행점 파파존스 메뉴판</h1>
-            <nav class="main-nav">
-                <ul>
-                    <li><a href="index.html">홈</a></li>
-                    <li><a href="pizza.html" class="active">피자</a></li>
-                    <li><a href="side.html">사이드</a></li>
-                    <li><a href="drink.html">음료&소스</a></li>
-                    <li><a href="partner-sale.html">제휴사 할인</a></li>
-                    <li><a href="cart.html" class="cart-btn">장바구니 🛒</a></li>
-                </ul>
+<body class="bg-gray-50 min-h-screen">
+    <div class="max-w-7xl mx-auto">
+        <header class="bg-white shadow-lg sticky top-0 z-20 p-5 rounded-b-xl">
+            <h1 class="text-4xl font-extrabold text-[var(--primary-color)] text-center tracking-tight">피자 메뉴</h1>
+            <nav class="mt-4 flex justify-center space-x-4">
+                <a href="#" class="nav-link">홈</a>
+                <a href="#" class="nav-link active-tab">피자</a>
+                <a href="#" class="nav-link">사이드</a>
+                <a href="#" class="nav-link">음료</a>
+                <a href="#" class="nav-link">소스/피클</a>
+                <a href="#" class="nav-link text-gray-600 font-bold hover:text-green-800">장바구니</a>
             </nav>
-        </div>
-    </header>
+        </header>
 
-    <main class="content-wrapper">
-        <h2>🍕 파파존스 피자 메뉴 (총 25종)</h2>
-        
-        <section class="info-card event-banner">
-    <h3 class="highlight-text">📢 금요일 한정 베스트메뉴 라지사이즈 1+1 이벤트</h3>
-    <p><strong>[금요일 한정]</strong> 1+1 적용! 🍕</p>
-    <p class="small-info">※ 이벤트 상세 조건 (L사이즈 한정, 방문 포장 전용)은 장바구니에서 자동 적용됩니다.</p>
-</section>
-
-        <section class="menu-category">
-            <div class="menu-list" id="pizza-menu-list">
-                <p>메뉴를 불러오는 중...</p>
-            </div>
-        </section>
-    </main>
-    
-    <div id="option-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <h3 id="modal-title"></h3>
-            
-            <div class="option-section">
-                <h4>피자 정보 및 맛</h4>
-                <p id="modal-info"></p>
-                <p id="modal-topping"></p>
+        <main class="p-8">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b-2 border-[var(--primary-color)] pb-2">🍕 프리미엄 피자 목록</h2>
+            <div id="menu-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- JavaScript에 의해 메뉴가 여기에 채워집니다. -->
             </div>
             
-            <div class="option-section">
-                <h4>사이즈 선택 <span id="size-warning" class="warning-text"></span></h4>
-                <select id="size-select">
-                    </select>
-            </div>
-            
-            <div class="option-section">
-                <h4>크러스트 선택 (추가금 발생)</h4>
-                <select id="crust-select">
-                    </select>
-            </div>
-            
-            <div class="final-price">
-                총 금액: <span id="final-price-display">0원</span>
-            </div>
-            
-            <button id="add-to-cart-btn" class="btn btn-primary">장바구니에 담기</button>
-        </div>
+            <!-- 알림 메시지 (JavaScript에서 사용) -->
+            <div id="alert-box" class="fixed bottom-5 right-5 z-50 p-4 bg-emerald-600 text-white rounded-xl shadow-2xl hidden transition-opacity duration-300 opacity-0"></div>
+        </main>
     </div>
 
-    <footer>
-        <div class="footer-container">
-            <p>파파존스피자 시흥은행점 | 031-313-6995</p>
-            <p>주소: 경기 시흥시 은행로 86 1층 106호</p>
-        </div>
-    </footer>
-    
-    <script src="assets/js/cart.js"></script>
+    <script>
+        // --- 1. 메뉴 데이터 ---
+        const menuStructure = {
+            'pizza': {
+                icon: '🍕',
+                label: '피자',
+                title: '피자 메뉴 (Pizza)',
+                items: [
+                    { id: 'p1', ko: '크리스피 치즈 페퍼로니', en: 'crispy_cheese_pepperoni', price: 29500 },
+                    { id: 'p2', ko: '쉬림프 알프레도', en: 'shrimp_alfredo', price: 31000 },
+                    { id: 'p3', ko: '크리스피 치즈 트리플', en: 'crispy_cheese_triple', price: 28500 },
+                    { id: 'p4', ko: 'BBQ 숏 립 크런치', en: 'bbq_short_rib_crunch', price: 35000 },
+                    { id: 'p5', ko: '더블 핫 멕시칸', en: 'double_hot_mexican', price: 30500 },
+                    { id: 'p6', ko: '슈퍼 파파스', en: 'super_papas', price: 26000 },
+                    { id: 'p7', ko: '존스 페이보릿', en: 'johns_favorite', price: 27500 },
+                    { id: 'p8', ko: '올 미트', en: 'all_meat', price: 28000 },
+                    { id: 'p9', ko: '스파이시 치킨 랜치', en: 'spicy_chicken_ranch', price: 29000 },
+                    { id: 'p10', ko: '치킨 BBQ', en: 'chicken_bbq', price: 27000 },
+                    { id: 'p11', ko: '아이리쉬 포테이토', en: 'irish_potato', price: 26500 },
+                    { id: 'p12', ko: '멜로우 콘크림', en: 'mellow_corncream', price: 25500 },
+                    { id: 'p13', ko: '스타라이트 바질', en: 'starlight_basil', price: 31500 },
+                    { id: 'p14', ko: '더블 치즈버거', en: 'double_cheeseburger', price: 30000 },
+                    { id: 'p15', ko: '불고기 프리미엄', en: 'bulgogi_premium', price: 29500 },
+                    { id: 'p16', ko: '마르게리따', en: 'margherita', price: 23000 },
+                    { id: 'p17', ko: '페퍼로니', en: 'pepperoni', price: 24000 },
+                    { id: 'p18', ko: '하와이안', en: 'hawaiian', price: 23500 },
+                    { id: 'p19', ko: '가든 스페셜', en: 'garden_special', price: 25000 },
+                    { id: 'p20', ko: '햄 머쉬룸 식스치즈', en: 'ham_mushroom_sixcheese', price: 27000 },
+                    { id: 'p21', ko: '식스 치즈', en: 'six_cheese', price: 26000 },
+                    { id: 'p22', ko: '위스콘신 치즈 포테이토', en: 'wisconsin_cheese_potato', price: 28500 },
+                    { id: 'p23', ko: '스파이시 이탈리안', en: 'spicy_italian', price: 27500 },
+                    { id: 'p24', ko: '그린 마르게리따', en: 'green_margherita', price: 25000 },
+                    { id: 'p25', ko: '그린 가든 스페셜', en: 'green_garden_special', price: 26500 },
+                ]
+            }
+        };
 
+        // 장바구니 로직을 위해 모든 메뉴 아이템을 단일 배열로 변환
+        const allMenuItems = menuStructure['pizza'].items.map(item => ({
+            ...item,
+            category: '피자'
+        }));
+
+
+        // --- 2. 장바구니 로직 (addToCart만 남깁니다) ---
+        const CART_KEY = 'papa_menu_cart';
+
+        function getCart() {
+            try {
+                const cartString = localStorage.getItem(CART_KEY);
+                return cartString ? JSON.parse(cartString) : [];
+            } catch (e) {
+                console.error("Error reading cart from localStorage:", e);
+                return [];
+            }
+        }
+
+        function saveCart(cart) {
+            try {
+                localStorage.setItem(CART_KEY, JSON.stringify(cart));
+            } catch (e) {
+                console.error("Error saving cart to localStorage:", e);
+            }
+        }
+
+        // HTML에서 호출될 함수
+        window.addToCart = function(itemId) {
+            const item = allMenuItems.find(i => i.id === itemId);
+            if (!item) return;
+
+            const cart = getCart();
+            const existingItem = cart.find(i => i.id === itemId);
+
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ ...item, quantity: 1 });
+            }
+
+            saveCart(cart);
+            showAlert(`${item.ko}가 장바구니에 추가되었습니다.`, 'bg-emerald-600');
+        }
+
+
+        // --- 3. UI 렌더링 및 유틸리티 ---
+
+        // alert() 대신 사용할 알림 박스 함수
+        window.showAlert = function(message, bgColorClass) {
+            const alertBox = document.getElementById('alert-box');
+            if (alertBox) {
+                alertBox.textContent = message;
+                alertBox.className = `fixed bottom-5 right-5 z-50 p-4 ${bgColorClass} text-white rounded-xl shadow-2xl transition-opacity duration-300 opacity-0`;
+                alertBox.style.display = 'block';
+                
+                // Fade in
+                setTimeout(() => alertBox.style.opacity = '1', 10);
+                
+                // Fade out
+                setTimeout(() => {
+                    alertBox.style.opacity = '0';
+                    setTimeout(() => alertBox.style.display = 'none', 300);
+                }, 3000);
+            }
+        }
+        
+        // 메뉴 페이지 렌더링 함수
+        function renderMenuItems(categoryKey) {
+            const containerElement = document.getElementById('menu-list');
+            const categoryData = menuStructure[categoryKey];
+
+            if (!categoryData || !containerElement) {
+                console.error(`Category ${categoryKey} not found or container missing.`);
+                return;
+            }
+
+            containerElement.innerHTML = '';
+            
+            categoryData.items.forEach(item => {
+                const card = createMenuItemCard(item);
+                containerElement.appendChild(card);
+            });
+        }
+
+        function createMenuItemCard(item) {
+            const card = document.createElement('div');
+            card.className = 'menu-card bg-white p-5 rounded-xl shadow-xl border border-gray-100 flex flex-col justify-between cursor-pointer hover:shadow-2xl transition duration-300';
+            
+            const priceText = item.price.toLocaleString('ko-KR');
+            const priceDisplay = `₩ ${priceText}`;
+
+            // 가상의 이미지 URL (올리브 테마 색상 적용)
+            const imageUrl = `https://placehold.co/600x400/065f46/ffffff?text=${encodeURIComponent(item.en.replace(/_/g, ' ').toUpperCase())}`;
+            
+            card.innerHTML = `
+                <img src="${imageUrl}" alt="${item.ko}" class="w-full h-36 object-cover rounded-lg mb-4 shadow-inner transform transition duration-500 hover:scale-[1.03]" onerror="this.onerror=null;this.src='https://placehold.co/600x400/D1FAE5/065F46?text=Image+Not+Available';">
+                
+                <div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-1">${item.ko}</h3>
+                    <p class="text-sm text-gray-500 italic mb-3 font-inter">${item.en.replace(/_/g, ' ')}</p>
+                </div>
+                
+                <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between">
+                    <span class="text-lg font-extrabold text-[var(--primary-color)]">
+                        ${priceDisplay}
+                    </span>
+                    <button class="add-to-cart-btn bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold px-4 py-2 rounded-full transition duration-200 shadow-md transform hover:scale-105" onclick="addToCart('${item.id}')">
+                        장바구니 담기
+                    </button>
+                </div>
+            `;
+            return card;
+        }
+
+        // --- 4. 초기화 함수 ---
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                // 피자 메뉴 렌더링 시작
+                renderMenuItems('pizza');
+            } catch (e) {
+                console.error("메뉴 렌더링 중 오류 발생:", e);
+                document.getElementById('menu-list').innerHTML = '<p class="text-red-500 col-span-full">메뉴를 불러오는 중 심각한 오류가 발생했습니다. 개발자 콘솔을 확인해주세요.</p>';
+            }
+        });
+    </script>
 </body>
 </html>
