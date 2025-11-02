@@ -185,15 +185,18 @@ document.addEventListener('DOMContentLoaded', () => {
         // 1+1 이벤트 제한 조건 표시 및 버튼 비활성화
         const warningText = document.getElementById('size-warning');
         if (currentSelectedItem.isEvent) {
-            if (selectedSize !== 'L') {
-                warningText.textContent = "⚠️ 1+1 이벤트는 L 사이즈 (방문 포장)만 가능합니다. (사이즈업 불가)";
-                document.getElementById('add-to-cart-btn').disabled = true;
-                document.getElementById('add-to-cart-btn').textContent = "L 사이즈로 변경해야 주문 가능";
-            } else {
-                warningText.textContent = "금요일 1+1 이벤트 가능 (L 사이즈)";
-                document.getElementById('add-to-cart-btn').disabled = false;
-                document.getElementById('add-to-cart-btn').textContent = "장바구니에 담기";
-            }
+    if (selectedSize !== 'L') {
+        // 이 부분은 L사이즈 제한 조건을 명확히 전달하기 위해 유지합니다.
+        warningText.textContent = "⚠️ 1+1 이벤트는 L 사이즈만 가능합니다. L 사이즈로 선택하세요."; 
+        document.getElementById('add-to-cart-btn').disabled = true;
+        document.getElementById('add-to-cart-btn').textContent = "L 사이즈로 변경해야 주문 가능";
+    } else {
+        // 이 부분도 이벤트 적용 가능 상태를 명확히 표시하기 위해 유지합니다.
+        warningText.textContent = "1+1 이벤트 적용 가능 (L 사이즈)"; 
+        document.getElementById('add-to-cart-btn').disabled = false;
+        document.getElementById('add-to-cart-btn').textContent = "장바구니에 담기";
+    }
+}
         } else {
             warningText.textContent = "";
             document.getElementById('add-to-cart-btn').disabled = false;
