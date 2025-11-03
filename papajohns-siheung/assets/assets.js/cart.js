@@ -317,12 +317,6 @@ const handleOnePlusOneOrder = (itemData) => {
         return;
     }
 
-    // 이미 카트에 있는 피자는 중복 선택 불가 (편의상)
-    if (onePlusOneCart.some(p => p.id === itemData.id)) {
-        alert('⚠️ 이미 선택된 피자입니다. 다른 피자를 선택해 주세요.');
-        return;
-    }
-
     // 1+1 카트에 추가
     onePlusOneCart.push(itemData);
 
