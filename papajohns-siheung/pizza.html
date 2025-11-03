@@ -14,7 +14,6 @@
             --danger-color: #d9534f;
             --info-color: #46b8da;
         }
-
         body {
             font-family: var(--font-family);
             margin: 0;
@@ -22,8 +21,6 @@
             background-color: #f8f8f8;
             color: var(--text-color);
         }
-
-        /* (헤더, 네비게이션 스타일은 이전과 동일) */
         header {
             background-color: var(--main-color);
             color: var(--white);
@@ -31,11 +28,7 @@
             text-align: center;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        header h1 {
-            margin: 0;
-            font-size: 1.5em;
-            letter-spacing: 2px;
-        }
+        header h1 { margin: 0; font-size: 1.5em; letter-spacing: 2px; }
         nav {
             background-color: var(--white);
             border-bottom: 1px solid #eee;
@@ -61,11 +54,7 @@
             background-color: var(--accent-color);
             color: var(--text-color);
         }
-        nav ul li a:hover {
-            background-color: var(--accent-color);
-        }
-
-        /* 크러스트 요약 안내 스타일 (이전과 동일) */
+        nav ul li a:hover { background-color: var(--accent-color); }
         .crust-summary {
             background-color: var(--white);
             padding: 20px;
@@ -109,11 +98,7 @@
             color: var(--danger-color);
             line-height: 1.5;
         }
-        .crust-note-price span {
-            color: var(--text-color);
-        }
-
-        /* 피자 메뉴판 스타일 */
+        .crust-note-price span { color: var(--text-color); }
         .pizza-menu-container {
             padding: 20px;
             max-width: 1200px;
@@ -141,9 +126,7 @@
             display: flex;
             flex-direction: column;
         }
-        .pizza-card:hover {
-            transform: translateY(-5px);
-        }
+        .pizza-card:hover { transform: translateY(-5px); }
         .pizza-card-header {
             padding: 15px;
             background-color: var(--main-color);
@@ -178,7 +161,6 @@
             color: #666;
             margin-bottom: 10px;
         }
-        /* 가격 노트 스타일 (수정됨) */
         .pizza-price-notes {
             margin-bottom: 15px;
             border: 1px solid #eee;
@@ -195,15 +177,12 @@
             color: var(--main-color);
             margin-right: 5px;
         }
-        /* 계산/옵션 선택 UX 개선 스타일 (이전과 동일) */
         .pizza-options {
             padding: 15px;
             border-top: 1px dashed #ddd;
             background-color: #f9f9f9;
         }
-        .option-group {
-            margin-bottom: 10px;
-        }
+        .option-group { margin-bottom: 10px; }
         .option-group label {
             display: block;
             font-weight: bold;
@@ -249,9 +228,7 @@
             transition: background-color 0.2s;
             margin-top: 15px;
         }
-        .add-to-bill-btn:hover {
-            background-color: #3b523c;
-        }
+        .add-to-bill-btn:hover { background-color: #3b523c; }
         .crust-note-small {
             font-size: 0.8em;
             color: var(--danger-color);
@@ -261,9 +238,7 @@
             border-radius: 5px;
             margin-top: 5px;
         }
-        .vegan-badge {
-            background-color: #4CAF50 !important; /* 녹색 */
-        }
+        .vegan-badge { background-color: #4CAF50 !important; }
         .thin-note {
             font-size: 0.8em;
             color: var(--info-color);
@@ -282,7 +257,6 @@
             border-radius: 5px;
             margin-top: 5px;
         }
-        /* (푸터 스타일은 이전과 동일) */
         footer {
             background-color: #333;
             color: #ccc;
@@ -291,13 +265,8 @@
             font-size: 0.9em;
             margin-top: 40px;
         }
-        footer p {
-            margin: 5px 0;
-        }
-        footer a {
-            color: var(--accent-color);
-            text-decoration: none;
-        }
+        footer p { margin: 5px 0; }
+        footer a { color: var(--accent-color); text-decoration: none; }
     </style>
 </head>
 <body>
@@ -308,12 +277,12 @@
     
     <nav>
         <ul>
-            <li><a href="index.html">🏠 첫 화면</a></li>
+            <li><a href="#">🏠 첫 화면</a></li>
             <li><a href="pizza.html">🍕 피자</a></li>
-            <li><a href="sides.html">🍗 사이드</a></li>
-            <li><a href="drinks_sauces.html">🥤 음료 & 소스</a></li>
-            <li><a href="discounts.html">💸 제휴 할인</a></li>
-            <li><a href="bill.html">🧾 계산서</a></li>
+            <li><a href="#">🍗 사이드</a></li>
+            <li><a href="#">🥤 음료 & 소스</a></li>
+            <li><a href="#">💸 제휴 할인</a></li>
+            <li><a href="#">🧾 계산서</a></li>
         </ul>
     </nav>
 
@@ -357,7 +326,7 @@
                 <div class="pizza-card-header">
                     <h3>1. 바베큐 숏립 크런치 <span class="badge">NEW</span></h3>
                 </div>
-                <img src="IMG_7782.JPEP" alt="바베큐 숏립 크런치 피자 이미지">
+                <img src="IMG_7782.jpeg" alt="바베큐 숏립 크런치 피자 이미지"> 
                 <div class="pizza-card-body">
                     <p>한 판 가득 소갈비, 오리지널 아메리칸 BBQ! 치즈와 바삭한 식감까지 더한 리얼 고기 피자</p>
                     <div class="pizza-price-notes">
@@ -373,7 +342,7 @@
                             <option value="cheeseroll" data-add="4000">치즈롤 (+4,000~)</option><option value="goldring" data-add="4000">골드링 (+4,000~)</option>
                             <option value="spicygarlic" data-add="4000">스파이시 갈릭 치즈롤 (+4,000~)</option><option value="croissant" data-add="6000">크루아상 (+6,000)</option>
                         </select>
-                        <p id="crust-add-text-1" style="font-size: 0.8em; color: var(--danger-color); margin-top: 5px;"></p>
+                        <p id="crust-add-text-1" style="font-size: 0.8em; color: var(--danger-color); margin-top: 5px;"></p> 
                     </div>
                     <div class="current-price">총 금액: <span id="total-price-1">0</span>원</div>
                     <button class="add-to-bill-btn" data-pizza-id="1">🧾 계산서에 담기</button>
@@ -386,7 +355,7 @@
                  data-name="멜로우 콘크림">
                 
                 <div class="pizza-card-header"><h3>2. 멜로우 콘크림</h3></div>
-                <img src="IMG_7783.JPEP" alt="멜로우 콘크림 피자 이미지">
+                <img src="IMG_7783.jpeg" alt="멜로우 콘크림 피자 이미지">
                 <div class="pizza-card-body">
                     <p>부드러운 옥수수크림과 콘&파인애플을 더한 달콤한 피자</p>
                     <div class="pizza-price-notes">
@@ -415,7 +384,7 @@
                  data-name="스타라이트 바질">
                 
                 <div class="pizza-card-header"><h3>3. 스타라이트 바질 <span class="badge">별모양</span></h3></div>
-                <img src="IMG_7784.JPEP" alt="스타라이트 바질 피자 이미지">
+                <img src="IMG_7784.jpeg" alt="스타라이트 바질 피자 이미지">
                 <div class="pizza-card-body">
                     <p>입안 가득 바질의 향긋함과 고소한 치즈의 풍미가 느껴지는 오직 스타라이트 바질만의 특별한 별모양 프리미엄 피자</p>
                     <div class="pizza-price-notes">
@@ -437,7 +406,7 @@
                  data-name="더블 핫 앤 스파이시 멕시칸">
                 
                 <div class="pizza-card-header"><h3>4. 더블 핫 앤 스파이시 멕시칸</h3></div>
-                <img src="IMG_7785.JPEP" alt="더블 핫 앤 스파이시 멕시칸 피자 이미지">
+                <img src="IMG_7785.jpeg" alt="더블 핫 앤 스파이시 멕시칸 피자 이미지">
                 <div class="pizza-card-body">
                     <p>새로운 맛의 스파이시 갈릭 치즈롤과 할라페뇨의 만남으로 강렬한 매콤함이 가득한 피자</p>
                     <div class="pizza-price-notes">
@@ -451,6 +420,7 @@
                         <select id="crust-4" class="crust-select">
                             <option value="original">오리지널</option>
                             <option value="spicygarlic" data-add="4000">스파이시 갈릭 치즈롤 (+4,000~)</option>
+                            <option value="croissant" data-add="6000">크루아상 (+6,000)</option>
                         </select>
                         <p id="crust-add-text-4" style="font-size: 0.8em; color: var(--danger-color); margin-top: 5px;"></p>
                     </div>
@@ -466,7 +436,7 @@
                  data-name="수퍼 파파스">
                 
                 <div class="pizza-card-header"><h3>5. 수퍼 파파스 <span class="badge">BEST / 1+1</span></h3></div>
-                <img src="IMG_7786.JPEP" alt="수퍼 파파스 피자 이미지">
+                <img src="IMG_7786.jpeg" alt="수퍼 파파스 피자 이미지"> 
                 <div class="pizza-card-body">
                     <p>신선한 토마토 소스 위에 각종 고기와 채소가 듬뿍 토핑된 파파존스의 베스트 피자</p>
                     <div class="pizza-price-notes">
@@ -495,7 +465,7 @@
                  data-name="존스 페이버릿">
                 
                 <div class="pizza-card-header"><h3>6. 존스 페이버릿 <span class="badge">BEST / 1+1</span></h3></div>
-                <img src="IMG_7787.JPEP" alt="존스 페이버릿 피자 이미지">
+                <img src="IMG_7787.jpeg" alt="존스 페이버릿 피자 이미지">
                 <div class="pizza-card-body">
                     <p>이탈리안 소시지, 페퍼로니와 6종의 치즈가 만들어 내는 진한 풍미의 파파존스 베스트 셀러 피자</p>
                     <div class="pizza-price-notes">
@@ -524,7 +494,7 @@
                  data-name="올미트">
                 
                 <div class="pizza-card-header"><h3>7. 올미트</h3></div>
-                <img src="IMG_7895.JPEP" alt="올미트 피자 이미지">
+                <img src="IMG_7895.jpeg" alt="올미트 피자 이미지">
                 <div class="pizza-card-body">
                     <p>페퍼로니, 햄, 이탈리안 소시지, 비프토핑까지 파파존스의 엄선된 고기토핑으로 꽉 채운 환상의 미트 피자</p>
                     <div class="pizza-price-notes">
@@ -553,7 +523,7 @@
                  data-name="스파이시 치킨랜치">
                 
                 <div class="pizza-card-header"><h3>8. 스파이시 치킨랜치 <span class="badge">1+1</span></h3></div>
-                <img src="IMG_7789.JPEP" alt="스파이시 치킨랜치 피자 이미지">
+                <img src="IMG_7789.jpeg" alt="스파이시 치킨랜치 피자 이미지">
                 <div class="pizza-card-body">
                     <p>은은한 향과 맛의 랜치 소스, 그릴드 치킨, 상큼한 토마토와 할라페뇨가 토핑의 피자</p>
                     <div class="pizza-price-notes">
@@ -582,7 +552,7 @@
                  data-name="아이리쉬 포테이토">
                 
                 <div class="pizza-card-header"><h3>9. 아이리쉬 포테이토 <span class="badge">1+1</span></h3></div>
-                <img src="IMG_7790.JPEP" alt="아이리쉬 포테이토 피자 이미지">
+                <img src="IMG_7790.jpeg" alt="아이리쉬 포테이토 피자 이미지">
                 <div class="pizza-card-body">
                     <p>진한 갈릭 소스와 담백한 포테이토 청크의 조화로 누구에게나 사랑 받는 베스트 셀러 피자</p>
                     <div class="pizza-price-notes">
@@ -611,7 +581,7 @@
                  data-name="치킨 바베큐">
                 
                 <div class="pizza-card-header"><h3>10. 치킨 바베큐 <span class="badge">1+1</span></h3></div>
-                <img src="IMG_7791.JPEP" alt="치킨 바베큐 피자 이미지">
+                <img src="IMG_7791.jpeg" alt="치킨 바베큐 피자 이미지">
                 <div class="pizza-card-body">
                     <p>새콤달콤한 타바스코 BBQ 소스와 두툼한 그릴드 치킨이 어우러져 파파존스만의 특별한 맛을 내는 치킨 피자</p>
                     <div class="pizza-price-notes">
@@ -640,7 +610,7 @@
                  data-name="크리스피 치즈 페퍼로니">
                 
                 <div class="pizza-card-header"><h3>11. 크리스피 치즈 페퍼로니 <span class="badge">THIN 전용</span></h3></div>
-                <img src="IMG_7798.JPEP" alt="크리스피 치즈 페퍼로니 피자 이미지">
+                <img src="IMG_7798.jpeg" alt="크리스피 치즈 페퍼로니 피자 이미지">
                 <div class="pizza-card-body">
                     <p>얇은 씬도우 바닥에 파마산+로마노 치즈가 더해져 더욱 바삭함과 치즈의 고소한 풍미</p>
                     <div class="pizza-price-notes">
@@ -649,7 +619,7 @@
                     </div>
                 </div>
                 <div class="pizza-options">
-                    <div class="option-group"><label for="size-11">사이즈 선택:</label><select id="size-11" class="size-select"><option value="F">패밀리(F) - 31,900원</option></select></div>
+                    <div class="option-group"><label for="size-11">사이즈 선택:</label><select id="size-11" class="size-select"><option value="F - 31,900원">패밀리(F) - 31,900원</option></select></div>
                     <div class="thin-note">* THIN(씬) 크러스트 전용 메뉴이며, 사이즈 및 크러스트 변경 불가.</div>
                     <div class="current-price">총 금액: <span id="total-price-11">31,900</span>원</div>
                     <button class="add-to-bill-btn" data-pizza-id="11">🧾 계산서에 담기</button>
@@ -662,7 +632,7 @@
                  data-name="크리스피 치즈 트리플">
                 
                 <div class="pizza-card-header"><h3>12. 크리스피 치즈 트리플 <span class="badge">THIN 전용</span></h3></div>
-                <img src="IMG_7799.JPEP" alt="크리스피 치즈 트리플 피자 이미지">
+                <img src="IMG_7799.jpeg" alt="크리스피 치즈 트리플 피자 이미지">
                 <div class="pizza-card-body">
                     <p>바삭한 식감의 투치즈 크러스트 엣지에 부드럽고 진한 맛을 느낄 수 있는 알프레도 소스, 양송이 버섯, 햄이 6가지 치즈와 조화를 이루는 피자</p>
                     <div class="pizza-price-notes">
@@ -671,7 +641,7 @@
                     </div>
                 </div>
                 <div class="pizza-options">
-                    <div class="option-group"><label for="size-12">사이즈 선택:</label><select id="size-12" class="size-select"><option value="F">패밀리(F) - 33,900원</option></select></div>
+                    <div class="option-group"><label for="size-12">사이즈 선택:</label><select id="size-12" class="size-select"><option value="F - 33,900원">패밀리(F) - 33,900원</option></select></div>
                     <div class="thin-note">* THIN(씬) 크러스트 전용 메뉴이며, 사이즈 및 크러스트 변경 불가.</div>
                     <div class="current-price">총 금액: <span id="total-price-12">33,900</span>원</div>
                     <button class="add-to-bill-btn" data-pizza-id="12">🧾 계산서에 담기</button>
@@ -684,7 +654,7 @@
                  data-name="햄 머쉬룸 식스 치즈">
                 
                 <div class="pizza-card-header"><h3>13. 햄 머쉬룸 식스 치즈</h3></div>
-                <img src="IMG_7800.JPEP" alt="햄 머쉬룸 식스 치즈 피자 이미지">
+                <img src="IMG_7800.jpeg" alt="햄 머쉬룸 식스 치즈 피자 이미지">
                 <div class="pizza-card-body">
                     <p>바삭한 식감의 투치즈 크러스트 엣지에 부드럽고 진한 맛을 느낄 수 있는 알프레도 소스, 양송이 버섯, 햄이 6가지 치즈와 조화를 이루는 피자</p>
                     <div class="pizza-price-notes">
@@ -713,7 +683,7 @@
                  data-name="위스콘신 치즈 포테이토">
                 
                 <div class="pizza-card-header"><h3>14. 위스콘신 치즈 포테이토</h3></div>
-                <img src="IMG_7801.JPEP" alt="위스콘신 치즈 포테이토 피자 이미지">
+                <img src="IMG_7801.jpeg" alt="위스콘신 치즈 포테이토 피자 이미지">
                 <div class="pizza-card-body">
                     <p>진한 맥앤치즈 베이스 소스에 6가지 치즈, 햄, 베이컨, 페퍼로니, 담백하고 두툼한 감자청크의 조화</p>
                     <div class="pizza-price-notes">
@@ -742,7 +712,7 @@
                  data-name="더블 치즈버거">
                 
                 <div class="pizza-card-header"><h3>15. 더블 치즈버거 <span class="badge">1+1</span></h3></div>
-                <img src="IMG_78152.JPEP" alt="더블 치즈버거 피자 이미지">
+                <img src="IMG_78152.jpeg" alt="더블 치즈버거 피자 이미지">
                 <div class="pizza-card-body">
                     <p>제스티 버거 소스위에 비프와 상큼한 토마토, 피클이 어우진 풍부한 맛을 즐길 수 있는 피자</p>
                     <div class="pizza-price-notes">
@@ -771,7 +741,7 @@
                  data-name="프리미엄 직화불고기">
                 
                 <div class="pizza-card-header"><h3>16. 프리미엄 직화불고기 <span class="badge">1+1</span></h3></div>
-                <img src="IMG_8153.JPEP" alt="프리미엄 직화불고기 피자 이미지">
+                <img src="IMG_8153.jpeg" alt="프리미엄 직화불고기 피자 이미지">
                 <div class="pizza-card-body">
                     <p>정통 직화 불고기, 신선한 채소 토핑으로 누구나 좋아할수 있는 파파존스의 스테디 셀러 피자</p>
                     <div class="pizza-price-notes">
@@ -800,12 +770,12 @@
                  data-name="식스 치즈">
                 
                 <div class="pizza-card-header"><h3>17. 식스 치즈</h3></div>
-                <img src="IMG_7803.JPEP" alt="식스 치즈 피자 이미지">
+                <img src="IMG_7803.jpeg" alt="식스 치즈 피자 이미지">
                 <div class="pizza-card-body">
                     <p>모짜렐라, 로마노, 파마산, 아시아고, 폰티나, 프로볼로네 6종의 치즈 맛을 풍부하게 느낄 수 있는 정통 치즈피자</p>
                     <div class="pizza-price-notes">
                         <div class="price-item"><strong>피자 맛 설명:</strong> 6종의 치즈 맛을 풍부하게 느낄 수 있는 정통 치즈 피자</div>
-                        <div class="price-item"><strong>기본 토핑:</strong> 토마토 소스, 모짜렐라 치즈, 아시아고, 폰티나, 프로볼로네, 로마노, 파마산 치즈, 이탈리안 허브</div>
+                        <div class="price-item"><strong>기본 토핑:</strong> 토마토 소스, 모짜렐라 치즈, 아시아고 치즈, 폰티나 치즈, 프로볼로네 치즈, 로마노 치즈, 파마산 치즈, 이탈리안 허브</div>
                     </div>
                 </div>
                 <div class="pizza-options">
@@ -829,7 +799,7 @@
                  data-name="스파이시 이탈리안">
                 
                 <div class="pizza-card-header"><h3>18. 스파이시 이탈리안</h3></div>
-                <img src="IMG_7802.JPEP" alt="스파이시 이탈리안 피자 이미지">
+                <img src="IMG_7802.jpeg" alt="스파이시 이탈리안 피자 이미지">
                 <div class="pizza-card-body">
                     <p>듬뿍 들어간 이탈리안 소시지의 두툼한 식감과 크러쉬드 레드페퍼의 매운맛이 어우러진 뛰어난 맛과 향의 피자</p>
                     <div class="pizza-price-notes">
@@ -858,7 +828,7 @@
                  data-name="슈림프 알프레도">
                 
                 <div class="pizza-card-header"><h3>19. 슈림프 알프레도 <span class="badge">THIN 전용</span></h3></div>
-                <img src="IMG_78150.JPEP" alt="슈림프 알프레도 피자 이미지">
+                <img src="IMG_8150.jpeg" alt="슈림프 알프레도 피자 이미지">
                 <div class="pizza-card-body">
                     <p>얇고 바삭한 씬도우 위에 부드러운 알프레도 소스와 탱탱한 새우가 만들어내는 풍부한 맛이 특징인 피자</p>
                     <div class="pizza-price-notes">
@@ -867,7 +837,7 @@
                     </div>
                 </div>
                 <div class="pizza-options">
-                    <div class="option-group"><label for="size-19">사이즈 선택:</label><select id="size-19" class="size-select"><option value="F">패밀리(F) - 34,900원</option></select></div>
+                    <div class="option-group"><label for="size-19">사이즈 선택:</label><select id="size-19" class="size-select"><option value="F - 34,900원">패밀리(F) - 34,900원</option></select></div>
                     <div class="thin-note">* THIN(씬) 크러스트 전용 메뉴이며, 사이즈 및 크러스트 변경 불가.</div>
                     <div class="current-price">총 금액: <span id="total-price-19">34,900</span>원</div>
                     <button class="add-to-bill-btn" data-pizza-id="19">🧾 계산서에 담기</button>
@@ -880,7 +850,7 @@
                  data-name="마가리타">
                 
                 <div class="pizza-card-header"><h3>20. 마가리타 <span class="badge">CLASSIC</span></h3></div>
-                <img src="IMG_7792.JPEP" alt="마가리타 피자 이미지">
+                <img src="IMG_7792.jpeg" alt="마가리타 피자 이미지">
                 <div class="pizza-card-body">
                     <p>파파존스 특유의 진한 토마토 소스와 최상급 모짜렐라 치즈가 토핑된 치즈피자</p>
                     <div class="pizza-price-notes">
@@ -909,7 +879,7 @@
                  data-name="페퍼로니">
                 
                 <div class="pizza-card-header"><h3>21. 페퍼로니 <span class="badge">CLASSIC</span></h3></div>
-                <img src="IMG_7793.JPEP" alt="페퍼로니 피자 이미지">
+                <img src="IMG_7793.jpeg" alt="페퍼로니 피자 이미지">
                 <div class="pizza-card-body">
                     <p>쫄깃쫄깃 짭조름한 페퍼로니와 고소한 치즈가 토핑된 피자</p>
                     <div class="pizza-price-notes">
@@ -938,7 +908,7 @@
                  data-name="하와이안">
                 
                 <div class="pizza-card-header"><h3>22. 하와이안 <span class="badge">CLASSIC</span></h3></div>
-                <img src="IMG_7794.JPEP" alt="하와이안 피자 이미지">
+                <img src="IMG_7794.jpeg" alt="하와이안 피자 이미지">
                 <div class="pizza-card-body">
                     <p>새콤달콤한 파인애플과 햄, 쫀득한 모짜렐라 치즈 토핑으로 상큼한 맛이 특징인 피자</p>
                     <div class="pizza-price-notes">
@@ -967,7 +937,7 @@
                  data-name="가든 스페셜">
                 
                 <div class="pizza-card-header"><h3>23. 가든 스페셜 <span class="badge">CLASSIC</span></h3></div>
-                <img src="IMG_7795.JPEP" alt="가든 스페셜 피자 이미지">
+                <img src="IMG_7795.jpeg" alt="가든 스페셜 피자 이미지">
                 <div class="pizza-card-body">
                     <p>토마토 소스 위에 양송이, 청피망, 올리브, 양파, 토마토등의 신선한채소가 토핑된 피자</p>
                     <div class="pizza-price-notes">
@@ -996,7 +966,7 @@
                  data-name="그린잇 식물성 마가리타">
                 
                 <div class="pizza-card-header"><h3>24. 그린잇 식물성 마가리타 <span class="badge vegan-badge">VEGAN</span></h3></div>
-                <img src="IMG_8152.JPEP" alt="그린잇 식물성 마가리타 피자 이미지">
+                <img src="IMG_8152.jpeg" alt="그린잇 식물성 마가리타 피자 이미지">
                 <div class="pizza-card-body">
                     <p>전통있는 SHEESE사의 비건치즈와 신선한 토마토 소스의 만남으로 깔끔한 풍미</p>
                     <div class="pizza-price-notes">
@@ -1005,7 +975,7 @@
                     </div>
                 </div>
                 <div class="pizza-options">
-                    <div class="option-group"><label for="size-24">사이즈 선택:</label><select id="size-24" class="size-select"><option value="L">라지(L) - 26,500원</option></select></div>
+                    <div class="option-group"><label for="size-24">사이즈 선택:</label><select id="size-24" class="size-select"><option value="L - 26,500원">라지(L) - 26,500원</option></select></div>
                     <div class="crust-note-small">* 비건 전용 피자로 사이즈/크러스트 변경 불가합니다.</div>
                     <div class="current-price">총 금액: <span id="total-price-24">26,500</span>원</div>
                     <button class="add-to-bill-btn" data-pizza-id="24">🧾 계산서에 담기</button>
@@ -1018,7 +988,7 @@
                  data-name="그린잇 식물성 가든스페셜">
                 
                 <div class="pizza-card-header"><h3>25. 그린잇 식물성 가든스페셜 <span class="badge vegan-badge">VEGAN</span></h3></div>
-                <img src="IMG_8152.JPEP" alt="그린잇 식물성 가든스페셜 피자 이미지">
+                <img src="IMG_8152.jpeg" alt="그린잇 식물성 가든스페셜 피자 이미지">
                 <div class="pizza-card-body">
                     <p>전통있는 SHEESE사의 비건치즈와 신선한 채소가 어우러진 처음 맛보는 웰빙 채식 피자</p>
                     <div class="pizza-price-notes">
@@ -1027,7 +997,7 @@
                     </div>
                 </div>
                 <div class="pizza-options">
-                    <div class="option-group"><label for="size-25">사이즈 선택:</label><select id="size-25" class="size-select"><option value="L">라지(L) - 29,500원</option></select></div>
+                    <div class="option-group"><label for="size-25">사이즈 선택:</label><select id="size-25" class="size-select"><option value="L - 29,500원">라지(L) - 29,500원</option></select></div>
                     <div class="crust-note-small">* 비건 전용 피자로 사이즈/크러스트 변경 불가합니다.</div>
                     <div class="current-price">총 금액: <span id="total-price-25">29,500</span>원</div>
                     <button class="add-to-bill-btn" data-pizza-id="25">🧾 계산서에 담기</button>
@@ -1044,15 +1014,15 @@
     </footer>
 
     <script>
-        // 크러스트 사이즈별 추가금액 정보 (이전과 동일)
+        // 크러스트 사이즈별 추가금액 정보
         const CRUST_ADD_PRICES = {
             'L': { 'cheeseroll': 4000, 'goldring': 4000, 'spicygarlic': 4000, 'croissant': 6000 },
             'F': { 'cheeseroll': 5000, 'goldring': 5000, 'spicygarlic': 5000, 'croissant': 6000 },
             'P': { 'cheeseroll': 6000, 'goldring': 6000, 'spicygarlic': 6000, 'croissant': 6000 },
-            'R': { 'cheeseroll': 0, 'goldring': 0, 'spicygarlic': 0, 'croissant': 0, 'thin': 0 }
+            // R 사이즈는 원칙적으로 추가 크러스트 변경 불가 (로직에서 처리)
         };
 
-        // 사이즈 코드별 이름 정보 (이전과 동일)
+        // 사이즈 코드별 이름 정보
         const SIZE_DETAILS = {
             'R': { name: '레귤러' },
             'L': { name: '라지' },
@@ -1065,7 +1035,7 @@
             return price.toLocaleString('ko-KR');
         }
 
-        // 선택된 옵션에 따라 총 가격을 업데이트하는 함수
+        // 선택된 옵션에 따라 총 가격을 업데이트하는 핵심 함수
         function updatePrice(pizzaId) {
             const card = document.getElementById(`pizza-${pizzaId}`);
             const sizeSelect = document.getElementById(`size-${pizzaId}`);
@@ -1073,62 +1043,58 @@
             const totalPriceSpan = document.getElementById(`total-price-${pizzaId}`);
             const crustAddText = document.getElementById(`crust-add-text-${pizzaId}`);
             
-            if (!sizeSelect || !totalPriceSpan) return; // sizeSelect는 모든 메뉴에 있음
+            // 사이즈 선택 항목이 없는 메뉴(고정가격)는 업데이트를 건너뜀 (예: 11, 12, 19, 24, 25번)
+            if (!sizeSelect || !totalPriceSpan) return; 
 
             const selectedOptionValue = sizeSelect.value;
-            const parts = selectedOptionValue.split('-');
+            // 예시: 'L - 28,500원'을 'L'과 '28500'으로 분리
+            const parts = selectedOptionValue.split('-'); 
             
-            // selectedSize: 'L', basePrice: 28500
-            const selectedSize = parts[0].trim().replace(/\(.*\)/, ''); 
+            const selectedSize = parts[0].trim(); 
             const basePriceText = parts[1] ? parts[1].replace(/,/g, '').replace('원', '').trim() : '0';
-            const basePrice = parseInt(basePriceText) || 0;
+            let basePrice = parseInt(basePriceText) || 0;
             
-            const selectedCrust = crustSelect ? crustSelect.value : 'original'; // 크러스트 선택바가 없으면 기본으로 설정
+            const selectedCrust = crustSelect ? crustSelect.value : 'original'; 
             
             let crustAddPrice = 0;
-            let crustLimitMessage = '';
-            let isCrustValid = true;
-            
+            let isCrustValid = true; // 크러스트 선택이 유효한지 확인
+
             if (crustAddText) crustAddText.textContent = ''; 
 
-            // 크러스트 선택바가 있는 경우에만 유효성 및 추가금 계산
             if (crustSelect) {
+                // 1. 레귤러(R) 사이즈 크러스트 변경 불가 체크
                 if (selectedSize === 'R') {
-                    if (selectedCrust !== 'original') {
+                    if (selectedCrust !== 'original' && selectedCrust !== 'thin') {
                         isCrustValid = false;
-                        crustLimitMessage = '* 레귤러 사이즈는 크러스트 변경이 불가합니다.';
-                    }
-                } else if (selectedCrust === 'original') {
-                    crustAddPrice = 0;
-                } else if (selectedCrust === 'thin') {
-                    if (selectedSize === 'P') {
-                        isCrustValid = false;
-                        crustLimitMessage = '* 씬(THIN) 크러스트는 파티(P) 사이즈에 적용 불가합니다.';
-                    } else {
+                        crustAddText.textContent = '* R 사이즈는 추가 크러스트 변경이 불가합니다.';
+                        crustSelect.value = 'original'; // 기본으로 강제 변경
+                    } else if (selectedCrust === 'thin') {
                         crustAddPrice = 0;
-                        crustAddText.textContent = `(씬 크러스트는 ${selectedSize} 사이즈 무료 변경입니다.)`;
+                        crustAddText.textContent = '(씬 크러스트는 R 사이즈 무료 변경입니다.)';
                     }
-                } else {
+                // 2. 파티(P) 사이즈 씬(THIN) 크러스트 불가 체크
+                } else if (selectedSize === 'P' && selectedCrust === 'thin') {
+                    isCrustValid = false;
+                    crustAddText.textContent = '* 씬(THIN) 크러스트는 파티(P) 사이즈에 적용 불가합니다.';
+                    crustSelect.value = 'original'; // 기본으로 강제 변경
+                } 
+                // 3. 정상적인 크러스트 추가금 계산 (L, F, P 사이즈 + 추가 크러스트)
+                else if (selectedCrust !== 'original' && selectedCrust !== 'thin') {
                     crustAddPrice = CRUST_ADD_PRICES[selectedSize] ? CRUST_ADD_PRICES[selectedSize][selectedCrust] || 0 : 0;
+                    if (crustAddPrice > 0) {
+                        crustAddText.textContent = `(크러스트 추가금: +${formatPrice(crustAddPrice)}원)`;
+                    } else {
+                         // 크루아상 크러스트는 모든 사이즈 6,000원으로 고정 (L/F/P 모두 6000으로 CRUST_ADD_PRICES에 정의됨)
+                         crustAddText.textContent = `(크루아상 크러스트 추가금: +6,000원)`;
+                    }
+                } else if (selectedCrust === 'thin') {
+                    crustAddPrice = 0;
+                    crustAddText.textContent = `(씬 크러스트는 ${selectedSize} 사이즈 무료 변경입니다.)`;
                 }
-            } else {
-                // 크러스트 선택바가 없는 메뉴 (THIN 전용, 비건 전용, 별모양 등)
-                isCrustValid = true; // 가격 변동 없음
-            }
+            } 
 
-            // 2. 최종 금액 계산 및 메시지 업데이트
-            let totalPrice = basePrice;
-            
-            if (isCrustValid) {
-                totalPrice = basePrice + crustAddPrice;
-                if (crustAddPrice > 0 && crustAddText) {
-                    crustAddText.textContent = `(크러스트 추가금: +${formatPrice(crustAddPrice)}원)`;
-                }
-            } else if (crustAddText) {
-                 if (crustLimitMessage) crustAddText.textContent = crustLimitMessage;
-                 // 유효하지 않은 크러스트 선택 시 추가금 미반영
-            }
-            
+            // 최종 금액 계산
+            let totalPrice = basePrice + crustAddPrice;
             totalPriceSpan.textContent = formatPrice(totalPrice);
         }
 
@@ -1142,18 +1108,18 @@
                 const crustSelect = document.getElementById(`crust-${pizzaId}`);
                 const addButton = card.querySelector('.add-to-bill-btn');
                 
-                // 사이즈 선택 옵션 설정 (데이터 속성 기반)
-                const availableSizes = JSON.parse(card.getAttribute('data-available-sizes'));
-                const prices = JSON.parse(card.getAttribute('data-prices'));
-                
-                if (sizeSelect) {
+                // 크러스트 선택창이 있는 메뉴에 대해서만 초기 세팅
+                if (sizeSelect && card.getAttribute('data-available-sizes').length > 0) {
+                    const availableSizes = JSON.parse(card.getAttribute('data-available-sizes'));
+                    const prices = JSON.parse(card.getAttribute('data-prices'));
+                    
                     sizeSelect.innerHTML = '';
                     availableSizes.forEach(sizeCode => {
                         const price = prices[sizeCode];
                         const formattedPrice = formatPrice(price);
                         const option = document.createElement('option');
                         
-                        // 최종 UX 반영: 선택바 옵션 -> 라지(L) - 28,500원
+                        // 옵션의 value에 사이즈와 가격을 모두 넣어 파싱의 기준점으로 사용
                         option.value = `${sizeCode} - ${formattedPrice}원`;
                         option.textContent = `${SIZE_DETAILS[sizeCode].name}(${sizeCode}) - ${formattedPrice}원`;
                         
@@ -1161,7 +1127,8 @@
                     });
                 }
 
-                // 이벤트 리스너 등록
+
+                // 이벤트 리스너 연결
                 if (sizeSelect) {
                     sizeSelect.addEventListener('change', () => { updatePrice(pizzaId); });
                 }
@@ -1169,11 +1136,24 @@
                     crustSelect.addEventListener('change', () => { updatePrice(pizzaId); });
                 }
 
+                // 초기 가격 설정 (고정가격 메뉴 및 드롭다운 메뉴 모두)
+                updatePrice(pizzaId);
+
+                // 계산서에 담기 버튼 클릭 로직
                 if (addButton) {
                     addButton.addEventListener('click', () => {
-                        const selectedSizeValue = sizeSelect ? sizeSelect.value : (availableSizes.length > 0 ? `${availableSizes[0]} - ${formatPrice(prices[availableSizes[0]])}원` : 'L - 0원');
-                        const selectedSizeCode = selectedSizeValue.split('-')[0].trim();
-                        const selectedCrustOption = crustSelect ? crustSelect.options[crustSelect.selectedIndex] : { textContent: '오리지널', value: 'original' };
+                        const selectedSizeValue = sizeSelect ? sizeSelect.value : card.querySelector('.option-group select').value;
+                        const selectedSizeCode = selectedSizeValue.split('-')[0].trim().replace(/\(.*\)/, '');
+                        
+                        let selectedCrustText = "선택 옵션 없음";
+                        if (crustSelect) {
+                            selectedCrustText = crustSelect.options[crustSelect.selectedIndex].textContent.split('(')[0].trim();
+                        } else {
+                            // 크러스트가 없는 메뉴에 대한 처리 (11, 12, 19, 24, 25번)
+                            const note = card.querySelector('.crust-note-small') || card.querySelector('.thin-note');
+                            selectedCrustText = note ? note.textContent.replace('* ', '').trim() : '기본 크러스트';
+                        }
+                        
                         const finalPrice = document.getElementById(`total-price-${pizzaId}`).textContent.replace(/,/g, '');
                         const pizzaName = card.getAttribute('data-name');
                         
@@ -1181,14 +1161,11 @@
                             🧾 계산서에 추가됨:
                             - 메뉴: ${pizzaName}
                             - 사이즈: ${selectedSizeCode}
-                            - 크러스트: ${selectedCrustOption.textContent.split('(')[0].trim()}
+                            - 크러스트: ${selectedCrustText}
                             - 최종 가격: ${finalPrice}원
                         `);
                     });
                 }
-
-                // 초기 가격 설정
-                updatePrice(pizzaId);
             });
         });
     </script>
