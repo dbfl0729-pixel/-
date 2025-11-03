@@ -260,3 +260,26 @@ document.addEventListener('DOMContentLoaded', () => {
         updatePrice(pizzaId);
     });
 });
+<script src="assets/js/cart.js"></script> 
+
+<script>
+    // createPizzaCard, appendPizzaCards 함수 정의...
+    // document.addEventListener('DOMContentLoaded', () => { ... appendPizzaCards() ... });
+</script>
+</body>
+    <script src="assets/js/cart.js"></script> 
+    
+    <script>
+        // cart.js에서 정의한 PIZZA_MENU, CRUST_OPTIONS, EVENT_PIZZA_IDS, formatPrice 함수를 사용
+        
+        // HTML 요소를 생성하는 함수 (이전 답변에서 제공된 createPizzaCard 함수)
+        const createPizzaCard = (pizza) => { /* ... (이전 답변의 createPizzaCard 내용) ... */ };
+        
+        // 피자 목록을 카테고리별로 분리하여 HTML에 추가하는 함수
+        const appendPizzaCards = () => { /* ... (이전 답변의 appendPizzaCards 내용) ... */ };
+        
+        // DOMContentLoaded 시점에 appendPizzaCards 실행 (이벤트 리스너가 중복될 수 있으므로, cart.js의 DOMContentLoaded 전에 실행되도록 주의)
+        document.addEventListener('DOMContentLoaded', appendPizzaCards);
+    </script>
+</body>
+</html>
