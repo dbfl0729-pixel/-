@@ -1292,3 +1292,96 @@
     // (이후 cart.js 파일의 DOMContentLoaded 이벤트 리스너가 가격 계산을 처리합니다)
 </script>
 </html>
+<script>
+    // cart.js에서 정의한 PIZZA_MENU, CRUST_OPTIONS, EVENT_PIZZA_IDS, isFriday() 함수를 사용한다고 가정합니다.
+    
+    // 현재 요일 확인
+    const isTodayFriday = new Date().getDay() === 5; 
+
+    // HTML 요소를 생성하는 함수
+    const createPizzaCard = (pizza) => {
+        const isEventPizza = EVENT_PIZZA_IDS.includes(pizza.id);
+        const isFridayEventActive = isEventPizza && isTodayFriday;
+        
+        // 크러스트 옵션 HTML 생성
+        const crustOptionsHtml = CRUST_OPTIONS.map(crust => {
+            let priceText = '';
+            // L 사이즈 기준으로 추가금 표시
+            if (crust.priceL > 0 && crust.value !== 'original' && crust.value !== 'thin') {
+                priceText = `(+${formatPrice(crust.priceL)}원)`;
+            } else if (crust.value === 'thin') {
+                priceText = `(F 사이즈 무료 변경)`;
+            }
+
+            return `<option value="${crust.value}">${crust.name.split('(')[0].trim()} ${priceText}</option>`;
+        }).join('');
+        
+        // 사이즈 옵션 HTML 생성
+        let sizeOptionsHtml;
+        let selectedL = (isFridayEventActive) ? 'selected' : ''; // 금요일엔 L 고정
+        
+        if (isFridayEventActive) {
+            // 금요일 1+1 피자는 L 사이즈만 선택 가능
+            sizeOptionsHtml = `<option value="L" selected>L (라지 / ${formatPrice(pizza.prices['L'])}원) - 1+1 고정</option>`;
+        } else {
+            // 그 외 피자/요일은 전체 사이즈 표시
+            sizeOptionsHtml = Object.keys(pizza.prices).map(size => {
+                const isLSize = size === 'L' ? 'selected' : '';
+                return `<option value="${size}" ${isLSize}>${size} (${formatPrice(pizza.prices[size])}원)</option>`;
+            }).join('');
+        }
+
+        const pizzaNameDisplay = isFridayEventActive 
+            ? `${pizza.name} <span class="event-badge event-friday">파파프라이데이 1+1</span>`
+            : `${pizza.name} ${isEventPizza ? '<span class="event-badge">1+1 가능</span>' : ''}`;
+
+        return `
+            <div class="menu-item ${isEventPizza ? 'event-pizza' : ''}" data-id="${pizza.id}" data-name="${pizza.name}">
+                <img src="assets/images/pizza-${pizza.id}.jpg" alt="${pizza.name}" class="pizza-image" onerror="this.onerror=null;this.src=''">
+                <h4>${pizzaNameDisplay}</h4>
+                <p class="description">${pizza.desc}</p>
+                
+                <div class="options-group">
+                    <label for="size-select-${pizza.id}">사이즈:</label>
+                    <select id="size-select-${pizza.id}" class="size-select" ${isFridayEventActive ? 'disabled' : ''}>
+                        ${sizeOptionsHtml}
+                    </select>
+                </div>
+                
+                <div class="options-group">
+                    <label for="crust-select-${pizza.id}">크러스트:</label>
+                    <select id="crust-select-${pizza.id}" class="crust-select">
+                        ${crustOptionsHtml}
+                    </select>
+                </div>
+
+                <div class="price-section">
+                    <strong>최종 가격: </strong>
+                    <span id="total-price-${pizza.id}" class="total-price">0</span>원
+                </div>
+
+                <button class="add-to-cart-btn">장바구니 담기</button>
+            </div>
+        `;
+    };
+    
+    // 피자 목록을 카테고리별로 분리하여 HTML에 추가 (이전 내용과 동일)
+    const appendPizzaCards = () => { /* ... (생략: 이전 코드와 동일) ... */ };
+    
+    // DOMContentLoaded 시점에 실행
+    document.addEventListener('DOMContentLoaded', () => {
+        // 1+1 이벤트 섹션 제목 업데이트
+        const eventTitle = document.getElementById('one-plus-one-pizzas');
+        if (eventTitle && isTodayFriday) {
+            eventTitle.innerHTML = '🎉 **파파프라이데이 1+1 (L 사이즈 고정)**';
+            eventTitle.style.color = '#CC0000';
+            // 이벤트 설명 문구 업데이트
+            const eventDesc = document.querySelector('#one-plus-one-pizzas + p');
+            if (eventDesc) {
+                 eventDesc.innerHTML = '<strong>* 1+1은 포장 전용이며, L 사이즈로 고정됩니다. 크러스트 추가금은 각각 별도 부과됩니다.</strong>';
+            }
+        }
+        
+        appendPizzaCards();
+    });
+</script>
