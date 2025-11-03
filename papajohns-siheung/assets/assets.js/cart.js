@@ -1,47 +1,46 @@
 // assets/js/cart.js
 
 // 1+1 이벤트가 적용되는 피자 ID 목록 (총 7종)
-// (수퍼 파파스, 존스 페이버릿, 스파이시 치킨랜치, 아이리쉬 포테이토, 더블 치즈버거, 프리미엄 직화불고기, 치킨 바베큐)
-const EVENT_PIZZA_IDS = ['P05', 'P06', 'P08', 'P09', 'P15', 'P16', 'P10'];
+const EVENT_PIZZA_IDS = ['P05', 'P06', 'P08', 'P09', 'P10', 'P15', 'P16'];
 
-// 크러스트 정보 (가격은 L/F/P 순서로 추정하여 적용)
+// 크러스트 정보 (가격은 L/F/P 사이즈 기준 추가금)
+// *주의: R 사이즈는 추가금이 없는 것으로 처리합니다.
 const CRUST_OPTIONS = [
-    { value: 'original', name: '오리지널 크러스트', desc: '쫄깃하고 고소한 기본 맛', priceL: 0, priceF: 0, priceP: 0 },
-    { value: 'thin', name: '씬 (Thin)', desc: '바삭한 식감, F 사이즈 무료 변경', priceL: 0, priceF: 0, priceP: 0 },
-    { value: 'cheeseroll', name: '치즈롤', desc: '스트링 치즈의 유혹', priceL: 4000, priceF: 5000, priceP: 6000 },
-    { value: 'goldring', name: '골드링', desc: '고구마 무스와 스트링 치즈', priceL: 4000, priceF: 5000, priceP: 6000 },
-    { value: 'spicygarliccheeseroll', name: '스파이시 갈릭 치즈롤', desc: '강렬한 매콤함과 치즈롤의 만남', priceL: 4000, priceF: 5000, priceP: 6000 },
-    // 사용자 메뉴에서 새로 확인된 크러스트 추가
-    { value: 'croissant', name: '크루아상', desc: '바삭하고 풍부한 크루아상 크러스트', priceL: 4000, priceF: 5000, priceP: 6000 },
+    { value: 'original', name: '오리지널 크러스트 (추가금 없음)', desc: '쫄깃하고 고소한 기본 맛', priceL: 0, priceF: 0, priceP: 0 },
+    { value: 'thin', name: '씬 (Thin) (F 사이즈 무료 변경)', desc: '바삭한 식감', priceL: 0, priceF: 0, priceP: 0 },
+    { value: 'cheeseroll', name: '치즈롤 (추가금 발생)', desc: '스트링 치즈의 유혹', priceL: 4000, priceF: 5000, priceP: 6000 },
+    { value: 'goldring', name: '골드링 (추가금 발생)', desc: '고구마 무스와 스트링 치즈', priceL: 4000, priceF: 5000, priceP: 6000 },
+    { value: 'spicygarliccheeseroll', name: '스파이시 갈릭 치즈롤 (추가금 발생)', desc: '강렬한 매콤함과 치즈롤', priceL: 4000, priceF: 5000, priceP: 6000 },
+    { value: 'croissant', name: '크루아상 (추가금 발생)', desc: '바삭하고 풍부한 크루아상 크러스트', priceL: 4000, priceF: 5000, priceP: 6000 },
 ];
 
 // **********************************************
 // 25가지 피자 메뉴 (사용자 제공 데이터 기준)
 // **********************************************
 const PIZZA_MENU = [
-    // NEW & SPECIAL (ID는 순서대로 재배열했습니다.)
+    // NEW & PREMIUM
     { 
         id: 'P01', name: '바베큐 숏립 크런치', category: 'NEW_PREMIUM', 
         desc: '한 판 가득 소갈비, 오리지널 아메리칸 BBQ! 치즈와 바삭한 식감까지 더한 리얼 고기 피자', 
-        prices: { L: 34500, F: 41900 }, // R, P 사이즈 없음
-        crustOptions: CRUST_OPTIONS.map(c => c.value) // 풀 리스트 선택 가능
+        prices: { L: 34500, F: 41900 },
+        crustOptions: CRUST_OPTIONS.map(c => c.value)
     },
     { 
         id: 'P02', name: '멜로우 콘크림', category: 'NEW_PREMIUM', 
         desc: '부드러운 옥수수크림과 콘&파인애플을 더한 달콤한 피자', 
         prices: { L: 27500, F: 33900, P: 41500 },
-        crustOptions: CRUST_OPTIONS.map(c => c.value) // 풀 리스트 선택 가능
+        crustOptions: CRUST_OPTIONS.map(c => c.value)
     },
     { 
         id: 'P03', name: '스타라이트 바질', category: 'NEW_PREMIUM', 
         desc: '입안 가득 바질의 향긋함과 고소한 치즈의 풍미가 느껴지는 오직 스타라이트 바질만의 특별한 별모양 프리미엄 피자', 
         prices: { L: 33500, F: 39900, P: 48500 },
-        crustOptions: ['original'] // 크러스트 선택 없음 (original 고정)
+        crustOptions: ['original'] // 크러스트 선택 없음 -> original 고정
     },
     { 
         id: 'P04', name: '더블 핫 앤 스파이시 멕시칸', category: 'SPECIALTY', 
         desc: '새로운 맛의 스파이시 갈릭 치즈롤과 할라페뇨의 만남으로 강렬한 매콤함이 가득한 피자', 
-        prices: { L: 33500, F: 39900 }, // R, P 사이즈 없음
+        prices: { L: 33500, F: 39900 },
         crustOptions: ['spicygarliccheeseroll'] // 스파이시갈릭치즈롤만 선택 가능
     },
 
@@ -55,14 +54,14 @@ const PIZZA_MENU = [
     { 
         id: 'P06', name: '존스 페이버릿(best)', category: 'BEST', 
         desc: '이탈리안 소시지, 페퍼로니와 6종의 치즈가 만들어 내는 진한 풍미의 파파존스 베스트 셀러 피자', 
-        prices: { L: 29500, F: 34900, P: 45500 }, // R 사이즈 없음
+        prices: { L: 29500, F: 34900, P: 45500 },
         crustOptions: CRUST_OPTIONS.map(c => c.value) // 1+1 행사 피자
     },
     { 
         id: 'P07', name: '올미트', category: 'BEST', 
         desc: '페퍼로니, 햄, 이탈리안 소시지, 비프토핑까지 파파존스의 엄선된 고기토핑으로 꽉 채운 환상의 미트 피자', 
         prices: { R: 19900, L: 29500, F: 34900, P: 45500 },
-        crustOptions: CRUST_OPTIONS.map(c => c.value) // R, L, F, P 모두 있음
+        crustOptions: CRUST_OPTIONS.map(c => c.value)
     },
     { 
         id: 'P08', name: '스파이시 치킨랜치', category: 'BEST', 
@@ -87,13 +86,13 @@ const PIZZA_MENU = [
     { 
         id: 'P11', name: '크리스피 치즈 페퍼로니 피자', category: 'THIN_EXCL', 
         desc: '파마산+로마노 치즈가 더해져 더욱 바삭함과 치즈의 고소한 풍미를 느낄 수 있는 TH전용 피자', 
-        prices: { F: 31900 }, // F 사이즈만, *TH 전용*
+        prices: { F: 31900 }, 
         crustOptions: ['thin'] // 씬 크러스트 고정
     },
     { 
         id: 'P12', name: '크리스피 치즈 트리플 피자', category: 'THIN_EXCL', 
         desc: '바삭한 식감의 투치즈 크러스트 엣지와 6가지 치즈가 조화를 이루는 TH전용 피자', 
-        prices: { F: 33900 }, // F 사이즈만, *TH 전용*
+        prices: { F: 33900 },
         crustOptions: ['thin'] // 씬 크러스트 고정
     },
     { 
@@ -128,14 +127,14 @@ const PIZZA_MENU = [
     },
     { 
         id: 'P18', name: '스파이시 이탈리안', category: 'SPECIALTY', 
-        desc: '듬뿍 들어간 이탈리안 소시지와 크러쉬드 레드페퍼의 매운맛이 어우러진 피자', 
+        desc: '듬뿍 들어간 이탈리안 소시지와 크러쉬드 레드페퍼의 매운맛이 어우러진 뛰어난 맛과 향의 피자', 
         prices: { L: 27500, F: 33900, P: 40500 },
         crustOptions: CRUST_OPTIONS.map(c => c.value)
     },
     { 
         id: 'P19', name: '슈림프 알프레도', category: 'THIN_EXCL', 
-        desc: '얇고 바삭한 씬도우 위에 부드러운 알프레도 소스와 탱탱한 새우가 만들어내는 풍부한 맛', 
-        prices: { F: 34900 }, // F 사이즈만, *TH 전용*
+        desc: '얇고 바삭한 씬도우 위에 부드러운 알프레도 소스와 탱탱한 새우가 만들어내는 풍부한 맛이 특징인 피자', 
+        prices: { F: 34900 },
         crustOptions: ['thin'] // 씬 크러스트 고정
     },
 
@@ -167,15 +166,21 @@ const PIZZA_MENU = [
     { 
         id: 'P24', name: '그린잇 식물성 마가리타', category: 'VEGAN', 
         desc: '전통있는 SHEESE사의 비건치즈와 신선한 토마토 소스의 만남으로 깔끔한 풍미', 
-        prices: { L: 26500 }, // R(31cm)은 L로 해석했습니다.
-        crustOptions: ['original'] // 크러스트 선택 없음 (original 고정)
+        prices: { L: 26500 },
+        crustOptions: ['original'] // 크러스트 선택 없음 -> original 고정
     },
     { 
         id: 'P25', name: '그린잇 식물성 가든스페셜', category: 'VEGAN', 
         desc: '전통있는 SHEESE사의 비건치즈와 신선한 채소가 어우러진 처음 맛보는 웰빙 채식 피자', 
-        prices: { L: 29500 }, // R(31cm)은 L로 해석했습니다.
-        crustOptions: ['original'] // 크러스트 선택 없음 (original 고정)
+        prices: { L: 29500 },
+        crustOptions: ['original'] // 크러스트 선택 없음 -> original 고정
     },
 ];
 
-// ... (이하 formatPrice, isFriday, updatePrice, calculateOnePlusOnePrice 등 기존 함수들은 그대로 유지)
+// **********************************************
+// [중요] 계산 로직 (이하 코드는 이전과 동일)
+// **********************************************
+const formatPrice = (price) => price.toLocaleString();
+const isFriday = () => new Date().getDay() === 5; // 금요일(5) 체크
+
+// ... (이하 updatePrice, calculateOnePlusOnePrice 등 기존 함수들은 그대로 유지)
