@@ -401,3 +401,47 @@ h2 {
     width: 100%;
     margin-top: 20px;
 }
+    /* (기존 CSS 생략...) */
+        .current-price {
+            text-align: right;
+            font-size: 1.3em;
+            font-weight: bold;
+            color: var(--danger-color);
+            margin-top: 10px;
+            margin-bottom: 10px;
+            padding-top: 5px;
+            border-top: 1px solid #eee;
+            /* Flexbox를 사용하여 총 금액과 세부 내역을 정렬 */
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+        .current-price small {
+            font-size: 0.7em;
+            color: #666;
+            font-weight: normal;
+            margin-left: 5px;
+        }
+
+        /* 🆕 추가된 가격 세부 내역 스타일 */
+        .price-breakdown {
+            width: 100%;
+            font-size: 0.85em;
+            color: #555;
+            font-weight: normal;
+            margin-top: 10px;
+            padding-top: 8px;
+            border-top: 1px dotted #ccc;
+            text-align: right; /* 오른쪽 정렬 */
+            line-height: 1.6;
+        }
+        .price-breakdown p {
+            margin: 0;
+        }
+        /* 🚨 에러 메시지 스타일 */
+        .price-breakdown .error-message {
+            color: var(--danger-color);
+            font-weight: bold;
+            margin-top: 5px;
+        }
+    /* (기존 CSS 생략...) */ 
