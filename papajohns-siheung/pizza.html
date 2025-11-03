@@ -1181,4 +1181,114 @@
     </script>
 
 </body>
+<main class="content-wrapper">
+    <h2>🍕 피자 메뉴 전체</h2>
+    
+    <h3 class="category-title" id="one-plus-one-pizzas">🔥 1+1 이벤트 피자 (7종)</h3>
+    <p style="color: #CC0000; font-weight: bold; margin-bottom: 20px;">* 매주 금요일, 방문 포장 시 1+1 (P05, P06, P08, P09, P10, P15, P16)</p>
+    <div class="menu-list">
+        </div>
+    
+    <h3 class="category-title">✨ 프리미엄 피자</h3>
+    <div class="menu-list">
+        </div>
+    
+    <h3 class="category-title">⭐️ 시그니처 피자</h3>
+    <div class="menu-list">
+        </div>
+    
+    <h3 class="category-title">📜 클래식 & 크러스트 피자</h3>
+    <div class="menu-list">
+        </div>
+
+    <h3 class="category-title">🆕 신제품 & 기타</h3>
+    <div class="menu-list">
+        </div>
+</main>
+
+
+<script>
+    // cart.js에서 정의한 PIZZA_MENU와 CRUST_OPTIONS를 활용합니다.
+    
+    // HTML 요소를 생성하는 함수 (모든 피자에 적용)
+    const createPizzaCard = (pizza) => {
+        const isEvent = EVENT_PIZZA_IDS.includes(pizza.id);
+        
+        // 가격 및 크러스트 옵션은 cart.js의 데이터를 사용
+        const crustOptionsHtml = CRUST_OPTIONS.map(crust => {
+            const sizeKey = 'L'; // 기본 L 사이즈 기준
+            let priceText = '';
+
+            // 치즈롤, 골드링 등 추가금이 있는 경우 가격 표시
+            if (crust.priceL > 0 && crust.value !== 'original' && crust.value !== 'thin') {
+                priceText = `(+${formatPrice(crust.priceL)}원)`;
+            } else if (crust.value === 'thin') {
+                priceText = `(F 사이즈 무료 변경)`;
+            }
+
+            return `<option value="${crust.value}">${crust.name.split('(')[0].trim()} ${priceText}</option>`;
+        }).join('');
+        
+        // 사이즈 옵션은 R, L, F, P 전체를 표시
+        const sizeOptionsHtml = Object.keys(pizza.prices).map(size => {
+            return `<option value="${size}">${size} (${formatPrice(pizza.prices[size])}원)</option>`;
+        }).join('');
+
+        return `
+            <div class="menu-item ${isEvent ? 'event-pizza' : ''}" data-id="${pizza.id}" data-name="${pizza.name}">
+                <img src="assets/images/pizza-${pizza.id}.jpg" alt="${pizza.name}" class="pizza-image" onerror="this.onerror=null;this.src=''">
+                <h4>${pizza.name} ${isEvent ? '<span class="event-badge">1+1</span>' : ''}</h4>
+                <p class="description">${pizza.desc}</p>
+                
+                <div class="options-group">
+                    <label for="size-select-${pizza.id}">사이즈:</label>
+                    <select id="size-select-${pizza.id}" class="size-select">
+                        ${sizeOptionsHtml}
+                    </select>
+                </div>
+                
+                <div class="options-group">
+                    <label for="crust-select-${pizza.id}">크러스트:</label>
+                    <select id="crust-select-${pizza.id}" class="crust-select">
+                        ${crustOptionsHtml}
+                    </select>
+                </div>
+
+                <div class="price-section">
+                    <strong>최종 가격: </strong>
+                    <span id="total-price-${pizza.id}" class="total-price">0</span>원
+                </div>
+
+                <button class="add-to-cart-btn">장바구니 담기</button>
+            </div>
+        `;
+    };
+    
+    // 피자 목록을 카테고리별로 분리하여 HTML에 추가
+    const appendPizzaCards = () => {
+        const menuListContainers = {
+            'Premium': document.querySelector('h3:nth-of-type(2) + .menu-list'),
+            'Signature': document.querySelector('h3:nth-of-type(3) + .menu-list'),
+            'Classic': document.querySelector('h3:nth-of-type(4) + .menu-list'),
+            'New': document.querySelector('h3:nth-of-type(5) + .menu-list'),
+            'Event': document.querySelector('#one-plus-one-pizzas + p + .menu-list'),
+        };
+
+        PIZZA_MENU.forEach(pizza => {
+            const cardHtml = createPizzaCard(pizza);
+            
+            if (EVENT_PIZZA_IDS.includes(pizza.id) && menuListContainers['Event']) {
+                // 1+1 이벤트 섹션에 추가
+                menuListContainers['Event'].insertAdjacentHTML('beforeend', cardHtml);
+            } else if (menuListContainers[pizza.category]) {
+                // 그 외 카테고리 섹션에 추가 (중복 방지를 위해 1+1 피자는 제외하고 추가)
+                menuListContainers[pizza.category].insertAdjacentHTML('beforeend', cardHtml);
+            }
+        });
+    };
+    
+    // DOMContentLoaded 시점에 실행
+    document.addEventListener('DOMContentLoaded', appendPizzaCards);
+    // (이후 cart.js 파일의 DOMContentLoaded 이벤트 리스너가 가격 계산을 처리합니다)
+</script>
 </html>
