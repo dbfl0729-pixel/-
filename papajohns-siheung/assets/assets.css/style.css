@@ -1,10 +1,19 @@
-/* G마켓 산스 폰트 적용을 위한 기본 설정 */
+:root {
+    --main-color: #556B2F; /* 올리브색 계열 */
+    --accent-color: #CC0000; /* 파파존스 레드 (이벤트 강조) */
+    --text-color: #333;
+    --white: #ffffff;
+    --bg-light: #f4f4f4;
+    --font-family: 'Gmarket Sans', sans-serif;
+    --danger-color: #d9534f;
+}
+
 body {
-    font-family: 'Gmarket Sans', sans-serif;
+    font-family: var(--font-family);
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4; /* 연한 배경색 */
-    color: #333;
+    background-color: var(--bg-light);
+    color: var(--text-color);
     line-height: 1.6;
 }
 
@@ -20,461 +29,198 @@ body {
 /* 1. 헤더 (Header) 디자인 */
 /* ------------------- */
 .main-header {
-    background-color: #556B2F; /* 올리브색 배경 */
-    color: white;
+    background-color: var(--main-color);
+    color: var(--white);
     padding: 15px 0;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-
 .main-header .header-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
-
 .logo {
     font-size: 24px;
     font-weight: 700;
     margin: 0;
 }
-
-/* 네비게이션 메뉴 */
-.main-nav ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-}
-
-.main-nav li {
-    margin-left: 20px;
-}
-
-.main-nav a {
+.main-nav .event-link {
+    color: var(--white);
+    background-color: var(--accent-color);
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-weight: 700;
     text-decoration: none;
-    color: white;
-    font-weight: 500;
-    padding: 5px 10px;
     transition: background-color 0.3s;
 }
 
-.main-nav a:hover, .main-nav a.active {
-    background-color: #6B8E23; /* 호버 및 현재 페이지 강조 */
-    border-radius: 4px;
-}
-
-.cart-btn {
-    font-weight: 700 !important;
-}
-
 /* ------------------- */
-/* 2. 메인 콘텐츠 및 카드 디자인 */
+/* 2. 메인 컨텐츠 및 메뉴 목록 */
 /* ------------------- */
-.content-wrapper {
-    padding: 30px 15px;
-    min-height: 70vh; /* 최소 높이 설정 */
-}
-
-/* 환영 메시지 */
-.welcome-section {
+.main-title {
+    color: var(--text-color);
     text-align: center;
-    padding: 20px 0;
-    margin-bottom: 30px;
-    font-size: 18px;
-    font-weight: 500;
+    padding: 30px 0 10px;
+    border-bottom: 2px solid #ddd;
 }
-
-/* 정보 카드 레이아웃 (2단 그리드) */
-.grid-layout {
-    display: grid;
-    grid-template-columns: 1fr 1fr; /* 2개의 동일한 칼럼 */
-    gap: 30px;
-    margin-bottom: 30px;
-}
-
-.info-card {
-    background-color: white;
-    padding: 20px;
+.event-status {
+    text-align: center;
+    padding: 15px;
+    margin: 20px auto;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    background-color: #fce8a7;
+    color: #a06e00;
+    font-weight: bold;
+    max-width: 90%;
 }
-
-.info-card h3 {
-    color: #556B2F;
-    border-bottom: 2px solid #EEE;
-    padding-bottom: 10px;
-    margin-top: 0;
-}
-
-.highlight-text {
-    font-size: 20px;
-    font-weight: 700;
-    color: #CC0000; /* 빨간색 강조 */
-    margin: 10px 0;
-}
-
-.small-info {
-    font-size: 14px;
-    color: #666;
-}
-
-.btn-primary {
-    display: inline-block;
-    background-color: #CC0000;
-    color: white !important;
-    text-decoration: none;
-    padding: 10px 15px;
-    border-radius: 4px;
-    margin-top: 15px;
-    font-weight: 700;
-    transition: background-color 0.3s;
-}
-
-.btn-primary:hover {
-    background-color: #990000;
-}
-
-.order-guide ul {
-    list-style: none;
-    padding: 0;
-}
-
-.order-guide li {
-    margin-bottom: 10px;
-}
-
-.tel-link {
-    color: #CC0000;
-    font-weight: 700;
-    text-decoration: none;
-}
-
-/* ------------------- */
-/* 3. 푸터 (Footer) 디자인 */
-/* ------------------- */
-footer {
-    background-color: #444;
-    color: #BBB;
-    padding: 20px 0;
-    text-align: center;
-    font-size: 14px;
-    margin-top: 20px;
-}
-
-.footer-container p {
-    margin: 5px 0;
-}
-
-/* ------------------- */
-/* 4. 피자 메뉴 페이지 */
-/* ------------------- */
-
-h2 {
-    color: #556B2F;
-    border-bottom: 3px solid #6B8E23;
-    padding-bottom: 10px;
-    margin-bottom: 30px;
-}
-
 .category-title {
     font-size: 24px;
-    color: #333;
+    color: var(--text-color);
     margin-top: 40px;
     margin-bottom: 20px;
     padding-left: 10px;
-    border-left: 5px solid #CC0000; /* 카테고리 강조선 */
+    border-left: 5px solid var(--accent-color); /* 카테고리 강조선 */
 }
-
 .menu-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* 반응형 300px 이상 */
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); /* 반응형 */
+    gap: 30px;
+    padding-bottom: 50px;
 }
-
 .menu-item {
-    background-color: white;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: var(--white);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
 }
-
-.item-title {
-    font-size: 20px;
-    color: #CC0000; /* 피자 이름 강조 */
-    margin-top: 0;
-}
-
-.item-description {
-    font-size: 14px;
-    color: #666;
-    flex-grow: 1; /* 설명 영역 확장 */
-}
-
-.item-price {
-    font-weight: 700;
-    color: #333;
-    margin: 10px 0;
-}
-
-.btn-add {
-    background-color: #556B2F;
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    font-weight: 700;
-}
-
-.btn-add:hover {
-    background-color: #6B8E23;
-}
-
-.mt-30 {
-    margin-top: 30px;
-}
-/* ------------------- */
-/* 5. 피자 메뉴 페이지 (추가 스타일) */
-/* ------------------- */
-
-.menu-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
-    gap: 30px;
-    margin-bottom: 30px;
-}
-
-.menu-item {
-    background-color: white;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    overflow: hidden; /* 이미지 모서리 처리 */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-    transition: box-shadow 0.3s;
-}
-
 .menu-item:hover {
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
-.item-image {
-    width: 100%;
-    height: 200px; /* 이미지 높이 통일 */
-    object-fit: cover; /* 이미지가 잘리더라도 영역을 채우도록 설정 */
-}
-
-.item-details {
-    padding: 15px;
-}
-
-.item-title {
-    font-size: 22px;
-    color: #CC0000;
-    margin-top: 0;
-}
-
-.item-description {
-    font-size: 14px;
-    color: #666;
-    height: 40px; /* 설명 높이 통일 */
-    overflow: hidden;
-}
-
-.item-price {
-    font-weight: 700;
-    color: #333;
-    margin: 10px 0;
-}
-
-.event-tag {
-    font-weight: 700;
-    color: #556B2F; /* 올리브색 강조 */
-    border: 1px solid #556B2F;
-    display: inline-block;
-    padding: 3px 8px;
-    border-radius: 4px;
-    font-size: 14px;
+.menu-header {
+    display: flex;
+    align-items: center;
     margin-bottom: 10px;
 }
-
-.event-tag.no-event {
-    color: #666;
-    border-color: #EEE;
+.menu-header h3 {
+    margin: 0;
+    font-size: 1.4em;
+    color: var(--main-color);
 }
-
-.btn-detail {
-    width: 100%;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 12px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    border-radius: 0 0 10px 10px; /* 아래쪽만 둥글게 */
-}
-
-.btn-detail:hover {
-    background-color: #0056b3;
-}
-
-/* ------------------- */
-/* 6. 상세 옵션 팝업 (Modal) 디자인 */
-/* ------------------- */
-
-.modal {
-    display: none; /* 기본적으로 숨김 */
-    position: fixed; 
-    z-index: 1000; /* 최상단에 표시 */
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.7); /* 반투명 배경 */
-}
-
-.modal-content {
-    background-color: #fefefe;
-    margin: 5% auto; /* 화면 중앙에 위치 */
-    padding: 30px;
-    border-radius: 10px;
-    width: 90%;
-    max-width: 600px;
-    position: relative;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-}
-
-.close-btn {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.close-btn:hover,
-.close-btn:focus {
-    color: #333;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.option-section {
-    border-bottom: 1px solid #eee;
-    padding: 15px 0;
-}
-
-.option-section h4 {
-    color: #556B2F;
-    margin-top: 0;
-    margin-bottom: 10px;
-}
-
-#size-select, #crust-select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-}
-
-.warning-text {
-    color: #CC0000;
-    font-size: 14px;
-    font-weight: 500;
-    margin-left: 10px;
-}
-
-.final-price {
-    font-size: 24px;
-    font-weight: 700;
-    text-align: right;
-    margin-top: 20px;
-    color: #CC0000;
-}
-
-#add-to-cart-btn {
-    width: 100%;
-    margin-top: 20px;
-}
-    /* (기존 CSS 생략...) */
-        .current-price {
-            text-align: right;
-            font-size: 1.3em;
-            font-weight: bold;
-            color: var(--danger-color);
-            margin-top: 10px;
-            margin-bottom: 10px;
-            padding-top: 5px;
-            border-top: 1px solid #eee;
-            /* Flexbox를 사용하여 총 금액과 세부 내역을 정렬 */
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-        }
-        .current-price small {
-            font-size: 0.7em;
-            color: #666;
-            font-weight: normal;
-            margin-left: 5px;
-        }
-
-        /* 🆕 추가된 가격 세부 내역 스타일 */
-        .price-breakdown {
-            width: 100%;
-            font-size: 0.85em;
-            color: #555;
-            font-weight: normal;
-            margin-top: 10px;
-            padding-top: 8px;
-            border-top: 1px dotted #ccc;
-            text-align: right; /* 오른쪽 정렬 */
-            line-height: 1.6;
-        }
-        .price-breakdown p {
-            margin: 0;
-        }
-        /* 🚨 에러 메시지 스타일 */
-        .price-breakdown .error-message {
-            color: var(--danger-color);
-            font-weight: bold;
-            margin-top: 5px;
-        }
-    /* (기존 CSS 생략...) */ 
-    /* style.css.txt 에 추가 */
-
 .event-badge {
-    background-color: #CC0000;
+    background-color: var(--accent-color);
     color: white;
-    padding: 2px 6px;
-    border-radius: 4px;
+    padding: 3px 8px;
+    border-radius: 5px;
     font-size: 12px;
     font-weight: 700;
-    margin-left: 5px;
-    vertical-align: middle;
+    margin-left: 10px;
+}
+.menu-desc {
+    font-size: 0.9em;
+    color: #666;
+    margin-bottom: 15px;
+}
+.menu-toppings {
+    font-size: 0.85em;
+    color: #888;
+    border-top: 1px dotted #eee;
+    padding-top: 10px;
+    margin-bottom: 20px;
 }
 
-.event-friday {
-    /* 파파프라이데이 전용 색상 */
-    background-color: #FFCC00; 
-    color: #CC0000; 
-    border: 1px solid #CC0000;
+/* ------------------- */
+/* 3. 가격 및 옵션 선택 */
+/* ------------------- */
+.options-group {
+    margin-bottom: 15px;
 }
-
-/* 금요일 이벤트 피자 카드 시각적 강조 */
-.menu-item.event-pizza {
-    border: 2px solid #FFCC00;
-    box-shadow: 0 4px 8px rgba(255, 204, 0, 0.3);
-}
-
-/* 금요일 L 사이즈 고정 선택자 디자인 */
-.size-select:disabled {
-    background-color: #f0f0f0;
-    color: #CC0000;
+.options-group label {
+    display: block;
     font-weight: bold;
+    margin-bottom: 5px;
+    color: var(--text-color);
+}
+.size-select, .crust-select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 1em;
+    cursor: pointer;
+}
+.crust-desc {
+    font-size: 0.8em;
+    color: #888;
+    margin-top: 5px;
+}
+.disabled-option {
+    color: #bbb;
+    font-style: italic;
+}
+
+/* ------------------- */
+/* 4. 최종 가격 계산 영역 */
+/* ------------------- */
+.price-area {
+    margin-top: auto; /* 메뉴 하단에 붙도록 설정 */
+    padding-top: 15px;
+    border-top: 2px solid var(--bg-light);
+}
+.current-price {
+    text-align: right;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: var(--accent-color);
+    margin-bottom: 10px;
+}
+.current-price small {
+    font-size: 0.6em;
+    color: #888;
+    font-weight: normal;
+    margin-left: 5px;
+}
+.price-breakdown {
+    width: 100%;
+    font-size: 0.85em;
+    color: #555;
+    font-weight: normal;
+    padding-top: 8px;
+    border-top: 1px dotted #ccc;
+    text-align: right;
+    line-height: 1.6;
+}
+.price-breakdown p {
+    margin: 0;
+}
+.price-breakdown .error-message {
+    color: var(--danger-color);
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+/* 장바구니 버튼 */
+.add-to-cart-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--main-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1em;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.add-to-cart-btn:hover {
+    background-color: #3b4e2f;
+}
+.add-to-cart-btn:disabled {
+    background-color: #ccc;
     cursor: not-allowed;
 }
