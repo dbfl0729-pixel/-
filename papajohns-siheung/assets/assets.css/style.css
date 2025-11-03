@@ -445,3 +445,36 @@ h2 {
             margin-top: 5px;
         }
     /* (기존 CSS 생략...) */ 
+    /* style.css.txt 에 추가 */
+
+.event-badge {
+    background-color: #CC0000;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-left: 5px;
+    vertical-align: middle;
+}
+
+.event-friday {
+    /* 파파프라이데이 전용 색상 */
+    background-color: #FFCC00; 
+    color: #CC0000; 
+    border: 1px solid #CC0000;
+}
+
+/* 금요일 이벤트 피자 카드 시각적 강조 */
+.menu-item.event-pizza {
+    border: 2px solid #FFCC00;
+    box-shadow: 0 4px 8px rgba(255, 204, 0, 0.3);
+}
+
+/* 금요일 L 사이즈 고정 선택자 디자인 */
+.size-select:disabled {
+    background-color: #f0f0f0;
+    color: #CC0000;
+    font-weight: bold;
+    cursor: not-allowed;
+}
