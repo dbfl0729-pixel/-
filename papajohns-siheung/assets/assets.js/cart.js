@@ -370,3 +370,213 @@ document.addEventListener('DOMContentLoaded', () => {
         updatePrice(pizzaId);
     });
 });
+// assets/js/cart.js
+
+// 1+1 이벤트가 적용되는 피자 ID 목록 (7종)
+const EVENT_PIZZA_IDS = ['P05', 'P06', 'P08', 'P09', 'P10', 'P15', 'P16'];
+
+// 전역 변수로 1+1 선택 피자 목록을 관리
+let onePlusOneCart = [];
+
+// 현재 요일이 금요일인지 확인하는 함수 (클라이언트 시간 기준)
+const isFriday = () => {
+    // 0 = 일요일, 5 = 금요일
+    return new Date().getDay() === 5;
+};
+
+// ... (CRUST_OPTIONS, PIZZA_MENU, formatPrice, getPizzaData, getCrustData는 이전 내용 유지) ...
+
+// 1+1 계산 로직 함수
+const calculateOnePlusOnePrice = (pizza1, pizza2) => {
+    // 1. 기본 피자 가격 (크러스트 추가금 제외)
+    const price1 = pizza1.basePrice;
+    const price2 = pizza2.basePrice;
+
+    // 2. 비싼 피자 가격을 기준으로 결제 (하나의 피자 가격만 지불)
+    const paidPrice = Math.max(price1, price2);
+
+    // 3. 크러스트 추가금은 각각 부과
+    const totalCrustExtra = pizza1.crustExtraPrice + pizza2.crustExtraPrice;
+    
+    // 4. 최종 1+1 가격: 비싼 피자 가격 + 두 피자의 크러스트 추가금 합계
+    const finalPrice = paidPrice + totalCrustExtra;
+    
+    return finalPrice;
+}
+
+
+// 가격 업데이트 함수 (1+1 시 L 사이즈 고정 및 가격 표시 처리)
+const updatePrice = (pizzaId) => {
+    const card = document.querySelector(`.menu-item[data-id="${pizzaId}"]`);
+    if (!card) return;
+
+    const pizzaData = getPizzaData(pizzaId);
+    if (!pizzaData) return;
+    
+    const sizeSelect = card.querySelector('.size-select');
+    const crustSelect = card.querySelector('.crust-select');
+    const totalPriceElement = document.getElementById(`total-price-${pizzaId}`);
+    
+    const isEventPizza = EVENT_PIZZA_IDS.includes(pizzaId);
+    const isTodayFriday = isFriday();
+
+    // 1. 사이즈 및 기본 가격 결정
+    let selectedSize = sizeSelect ? sizeSelect.value : 'L';
+    
+    // 금요일 & 이벤트 피자일 경우 L 사이즈 강제
+    if (isEventPizza && isTodayFriday) {
+        selectedSize = 'L'; // L 사이즈 고정
+    }
+    
+    const basePrice = pizzaData.prices[selectedSize];
+
+    // 2. 크러스트 추가금 결정
+    let crustExtraPrice = 0;
+    if (crustSelect) {
+        const selectedCrustValue = crustSelect.value;
+        const crustData = getCrustData(selectedCrustValue);
+        
+        if (crustData) {
+            // L 사이즈를 기준으로 추가금 결정 (L이 priceL 사용)
+            crustExtraPrice = crustData.priceL !== undefined ? crustData.priceL : 0;
+        }
+    }
+
+    // 3. 최종 가격 계산 및 표시 (단품 가격. 1+1 할인은 장바구니 버튼 클릭 시 처리)
+    const finalPrice = basePrice + crustExtraPrice;
+
+    if (totalPriceElement) {
+        totalPriceElement.textContent = formatPrice(finalPrice);
+    }
+};
+
+// --- 초기화 및 이벤트 리스너 설정 (수정됨) ---
+document.addEventListener('DOMContentLoaded', () => {
+    const menuCards = document.querySelectorAll('.menu-item');
+    const isTodayFriday = isFriday();
+    
+    // 1+1 장바구니 상태 표시 업데이트 함수
+    const updateOnePlusOneStatus = () => {
+        const statusElement = document.getElementById('one-plus-one-status');
+        if (!statusElement) return;
+
+        if (!isTodayFriday) {
+            statusElement.textContent = '오늘은 파파프라이데이(1+1) 행사가 아닙니다.';
+            statusElement.style.color = '#333';
+            return;
+        }
+        
+        if (onePlusOneCart.length === 0) {
+            statusElement.innerHTML = '🍕 **1+1 피자를 2개 선택해 주세요!** (포장 전용)';
+            statusElement.style.color = '#CC0000';
+        } else if (onePlusOneCart.length === 1) {
+            statusElement.innerHTML = `✅ 첫 번째 피자 선택 완료! 두 번째 피자를 선택해 주세요. <strong>(${onePlusOneCart[0].name})</strong>`;
+            statusElement.style.color = '#5cb85c';
+        }
+    };
+    
+    // DOM에 1+1 상태 표시 영역 추가 (사용자가 쉽게 볼 수 있도록 화면 하단에 고정)
+    const statusDiv = document.createElement('div');
+    statusDiv.id = 'one-plus-one-status';
+    statusDiv.style.cssText = 'position: fixed; bottom: 10px; right: 10px; padding: 10px; background: #fff; border: 2px solid #CC0000; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.2); z-index: 1000; font-weight: bold; transition: all 0.3s;';
+    document.body.appendChild(statusDiv);
+    updateOnePlusOneStatus();
+    
+
+    menuCards.forEach(card => {
+        const pizzaId = card.getAttribute('data-id');
+        const sizeSelect = card.querySelector('.size-select');
+        const crustSelect = card.querySelector('.crust-select');
+        const addButton = card.querySelector('.add-to-cart-btn');
+        const pizzaData = getPizzaData(pizzaId);
+
+        // 사이즈/크러스트 변경 시 가격 업데이트
+        if (sizeSelect) {
+            sizeSelect.addEventListener('change', () => {
+                updatePrice(pizzaId);
+            });
+        }
+        if (crustSelect) {
+            crustSelect.addEventListener('change', () => {
+                updatePrice(pizzaId);
+            });
+        }
+
+        if (addButton) {
+            addButton.addEventListener('click', () => {
+                const isEventPizza = EVENT_PIZZA_IDS.includes(pizzaId);
+
+                // 일반 주문 (금요일이 아니거나, 1+1 비대상 피자인 경우)
+                if (!isTodayFriday || !isEventPizza) {
+                    const selectedSize = sizeSelect ? sizeSelect.value : 'L';
+                    const selectedCrust = crustSelect ? crustSelect.options[crustSelect.selectedIndex].textContent : '오리지널';
+                    const finalPrice = document.getElementById(`total-price-${pizzaId}`).textContent.replace(/,/g, '');
+                    const pizzaName = card.getAttribute('data-name');
+                    
+                    alert(`
+                        🧾 일반 주문 추가됨 (배달비 3,000원 별도):
+                        - 메뉴: ${pizzaName}
+                        - 사이즈: ${selectedSize}
+                        - 크러스트: ${selectedCrust.split('(')[0].trim()}
+                        - 최종 가격: ${finalPrice}원
+                        
+                        (⚠️ 최종 계산서 페이지로 데이터를 전송해야 합니다)
+                    `);
+                    return;
+                }
+                
+                // --- 금요일 1+1 주문 로직 ---
+                if (onePlusOneCart.length >= 2) {
+                    alert('⚠️ 1+1 행사는 피자 2개까지만 가능합니다. 초기화 후 다시 선택해 주세요.');
+                    onePlusOneCart = [];
+                    updateOnePlusOneStatus();
+                    return;
+                }
+
+                // 현재 선택된 피자 정보를 객체로 수집
+                const currentSelectedPizza = {
+                    id: pizzaId,
+                    name: pizzaData.name,
+                    basePrice: pizzaData.prices['L'], // L 사이즈 고정
+                    crustName: crustSelect ? crustSelect.options[crustSelect.selectedIndex].textContent.split('(')[0].trim() : '오리지널',
+                    // L 사이즈 기준 추가금만 사용합니다.
+                    crustExtraPrice: getCrustData(crustSelect.value).priceL || 0, 
+                };
+                
+                onePlusOneCart.push(currentSelectedPizza);
+                
+                if (onePlusOneCart.length === 1) {
+                    // 첫 번째 피자 선택 완료
+                    alert(`✅ 파파프라이데이 1+1 - 첫 번째 피자 (${pizzaData.name}) 선택 완료! 이제 두 번째 피자를 선택해 주세요.`);
+                    updateOnePlusOneStatus();
+                } else if (onePlusOneCart.length === 2) {
+                    // 두 번째 피자 선택 완료, 최종 계산
+                    const [p1, p2] = onePlusOneCart;
+                    const finalPrice = calculateOnePlusOnePrice(p1, p2);
+                    
+                    alert(`
+                        🎉 파파프라이데이 1+1 주문 완료 (포장 전용, 배달 불가)
+
+                        🍕 첫 번째 피자: ${p1.name} (L / ${p1.crustName} +${formatPrice(p1.crustExtraPrice)}원)
+                        🍕 두 번째 피자: ${p2.name} (L / ${p2.crustName} +${formatPrice(p2.crustExtraPrice)}원)
+                        
+                        💰 계산 기준:
+                        - 비싼 피자 가격: ${formatPrice(Math.max(p1.basePrice, p2.basePrice))}원
+                        - 크러스트 추가금 합계: ${formatPrice(p1.crustExtraPrice + p2.crustExtraPrice)}원
+                        
+                        💵 최종 1+1 가격: ${formatPrice(finalPrice)}원 (배달비 3,000원 면제)
+                        
+                        (⚠️ 이 데이터를 최종 계산서로 전송합니다)
+                    `);
+                    
+                    // 주문 완료 후 카트 초기화
+                    onePlusOneCart = [];
+                    updateOnePlusOneStatus();
+                }
+            });
+        }
+
+        // 초기 가격 설정
+        updatePrice(pizzaId);
+    });
+});
