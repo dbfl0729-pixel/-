@@ -251,7 +251,13 @@ const handleOnePlusOneAdd = (pizzaId, card) => {
         crustExtraPrice: crustExtraPrice,
     };
 
-    // 3. 카트에 추가 및 처리
+    // 3. 중복 확인
+    if (onePlusOneCart.some(p => p.id === itemData.id)) {
+        alert('⚠️ 이미 선택된 피자입니다. 다른 피자를 선택해 주세요.');
+        return;
+    }
+
+    // 4. 카트에 추가 및 처리
     onePlusOneCart.push(itemData);
 
     const button = card.querySelector('.add-to-bill-btn');
