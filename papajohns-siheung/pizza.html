@@ -1,285 +1,204 @@
-// assets/js/cart.js
-
-// --- 1. 메뉴 데이터 정의 ---
-
-// 1+1 이벤트가 적용되는 피자 ID 목록 (7종)
-const EVENT_PIZZA_IDS = ['P05', 'P06', 'P08', 'P09', 'P10', 'P15', 'P16'];
-
-// 크러스트 정보 (가격은 L/R 기준인 priceL, F 기준인 priceF, P 기준인 priceP 순서)
-const CRUST_OPTIONS = [
-    { value: 'original', name: '오리지널 크러스트', desc: '쫄깃하고 고소한 기본에 충실한 맛', priceL: 0, priceF: 0, priceP: 0 },
-    { value: 'thin', name: '씬 (Thin)', desc: '바삭한 식감, 풍부한 토핑을 더욱 맛보고 싶다면!', priceL: 0, priceF: 0, priceP: 0 },
-    { value: 'cheeseroll', name: '치즈롤', desc: '짭조름한 체다치즈가 뿌려진 크러스트 속 스트링 치즈의 유혹', priceL: 4000, priceF: 5000, priceP: 6000 },
-    { value: 'goldring', name: '골드링', desc: '달콤한 고구마 무스와 스트링 치즈의 환상적인 만남', priceL: 4000, priceF: 5000, priceP: 6000 },
-    { value: 'spicygarliccheeseroll', name: '스파이시 갈릭 치즈롤', desc: '매콤한 갈릭 소스를 더한 치즈롤', priceL: 5000, priceF: 6000, priceP: 7000 },
-];
-
-// 25가지 피자 메뉴 정보 (ID, 이름, 설명, 가격: R/L/F/P 순서)
-const PIZZA_MENU = [
-    // (이전 답변의 25가지 피자 메뉴 데이터 그대로 유지)
-    { id: 'P01', name: '슈퍼 파파스', desc: '페퍼로니, 햄, 올리브, 버섯, 양파, 피망 등 8가지 토핑이 풍성한 피자', prices: { R: 23900, L: 30900, F: 36900, P: 41900 }, category: 'Premium' },
-    { id: 'P02', name: '존스 페이버릿', desc: '파파존스만의 6가지 특별 토핑이 환상적인 조화!', prices: { R: 25900, L: 32900, F: 38900, P: 43900 }, category: 'Premium' },
-    { id: 'P03', name: '아이리쉬 포테이토', desc: '갈릭 랜치 소스와 감자가 만나 고소하고 담백한 맛', prices: { R: 23900, L: 30900, F: 36900, P: 41900 }, category: 'Premium' },
-    { id: 'P04', name: '더블 치즈버거', desc: '고기 토핑과 4가지 치즈의 조화, 치즈버거의 풍미를 피자 한 판에!', prices: { R: 25900, L: 32900, F: 38900, P: 43900 }, category: 'Premium' },
-    { id: 'P05', name: '스파이시 치킨 랜치', desc: '매콤한 치킨과 랜치 소스의 환상 조합! (1+1 가능)', prices: { R: 22900, L: 29900, F: 35900, P: 40900 }, category: 'Signature' },
-    { id: 'P06', name: '페퍼로니', desc: '짭짤한 페퍼로니와 치즈의 클래식한 조합! (1+1 가능)', prices: { R: 20900, L: 27900, F: 33900, P: 38900 }, category: 'Signature' },
-    { id: 'P07', name: '하와이안', desc: '햄과 파인애플이 만나 달콤 상큼한 맛', prices: { R: 20900, L: 27900, F: 33900, P: 38900 }, category: 'Signature' },
-    { id: 'P08', name: '올미트', desc: '고기 매니아를 위한 소시지, 햄, 베이컨 토핑의 향연! (1+1 가능)', prices: { R: 23900, L: 30900, F: 36900, P: 41900 }, category: 'Signature' },
-    { id: 'P09', name: '마가리타', desc: '신선한 토마토와 바질, 모짜렐라 치즈의 깔끔함! (1+1 가능)', prices: { R: 18900, L: 25900, F: 31900, P: 36900 }, category: 'Signature' },
-    { id: 'P10', name: '치킨 바베큐', desc: '바베큐 소스에 버무린 치킨과 양파의 달콤 짭짤한 맛! (1+1 가능)', prices: { R: 22900, L: 29900, F: 35900, P: 40900 }, category: 'Signature' },
-    { id: 'P11', name: '가든 스페셜', desc: '다양한 야채와 치즈의 건강한 맛', prices: { R: 20900, L: 27900, F: 33900, P: 38900 }, category: 'Signature' },
-    { id: 'P12', name: '치즈', desc: '모짜렐라 치즈 본연의 맛을 즐기는 피자', prices: { R: 18900, L: 25900, F: 31900, P: 36900 }, category: 'Classic' },
-    { id: 'P13', name: '베이컨 토마토', desc: '짭짤한 베이컨과 신선한 토마토의 만남', prices: { R: 22900, L: 29900, F: 35900, P: 40900 }, category: 'Classic' },
-    { id: 'P14', name: '핫앤스파이시 멕시칸', desc: '매콤한 맛을 즐기는 분들을 위한 피자', prices: { R: 23900, L: 30900, F: 36900, P: 41900 }, category: 'Classic' },
-    { id: 'P15', name: '수퍼 파파스 씬', desc: '슈퍼 파파스를 씬 크러스트로 즐기세요! (1+1 가능)', prices: { R: 23900, L: 30900, F: 36900, P: 41900 }, category: 'Classic' },
-    { id: 'P16', name: '페퍼로니 씬', desc: '페퍼로니를 씬 크러스트로 즐기세요! (1+1 가능)', prices: { R: 20900, L: 27900, F: 33900, P: 38900 }, category: 'Classic' },
-    { id: 'P17', name: '올미트 치즈롤', desc: '올미트에 치즈롤 크러스트 추가!', prices: { R: 27900, L: 34900, F: 40900, P: 45900 }, category: 'Classic' },
-    { id: 'P18', name: '아이리쉬 포테이토 골드링', desc: '아이리쉬 포테이토에 골드링 크러스트 추가!', prices: { R: 27900, L: 34900, F: 40900, P: 45900 }, category: 'Classic' },
-    { id: 'P19', name: '더블 트리플 박스 (피자 2판)', desc: '클래식 피자 2판을 한 번에!', prices: { R: 35900, L: 47900, F: 58900, P: 68900 }, category: 'New' },
-    { id: 'P20', name: '미트볼 스파게티 피자', desc: '미트볼과 스파게티의 환상적인 콜라보', prices: { R: 25900, L: 32900, F: 38900, P: 43900 }, category: 'New' },
-    { id: 'P21', name: '식스 치즈', desc: '6가지 다양한 치즈의 풍부한 맛', prices: { R: 23900, L: 30900, F: 36900, P: 41900 }, category: 'New' },
-    { id: 'P22', name: '베지테리언', desc: '채소 토핑만으로 만든 담백한 피자', prices: { R: 20900, L: 27900, F: 33900, P: 38900 }, category: 'New' },
-    { id: 'P23', name: '페퍼로니 골드링', desc: '페퍼로니에 골드링 크러스트 추가', prices: { R: 24900, L: 31900, F: 37900, P: 42900 }, category: 'New' },
-    { id: 'P24', name: '트리플 치즈롤', desc: '크러스트에 3가지 치즈를 가득 채운 피자', prices: { R: 25900, L: 32900, F: 38900, P: 43900 }, category: 'New' },
-    { id: 'P25', name: '슈퍼 파파스 골드링', desc: '슈퍼 파파스에 골드링 크러스트 추가', prices: { R: 27900, L: 34900, F: 40900, P: 45900 }, category: 'New' },
-];
-
-
-// --- 2. 헬퍼 함수 ---
-
-// 가격 포맷 함수
-const formatPrice = (price) => {
-    // 숫자가 아니거나 음수이면 0으로 처리
-    if (typeof price !== 'number' || isNaN(price) || price < 0) return '0';
-    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-};
-
-// 피자 ID로 메뉴 정보 찾기
-const getPizzaData = (pizzaId) => {
-    return PIZZA_MENU.find(p => p.id === pizzaId);
-};
-
-// 크러스트 value로 크러스트 정보 찾기
-const getCrustData = (crustValue) => {
-    return CRUST_OPTIONS.find(c => c.value === crustValue);
-};
-
-// 현재 요일이 금요일인지 확인하는 함수 (0=일, 5=금)
-const isFriday = () => {
-    return new Date().getDay() === 5;
-};
-
-// 1+1 계산 로직 함수
-const calculateOnePlusOnePrice = (pizza1, pizza2) => {
-    // 1. 기본 피자 가격
-    const price1 = pizza1.basePrice;
-    const price2 = pizza2.basePrice;
-    // 2. 비싼 피자 가격을 기준으로 결제
-    const paidPrice = Math.max(price1, price2);
-    // 3. 크러스트 추가금은 각각 부과
-    const totalCrustExtra = pizza1.crustExtraPrice + pizza2.crustExtraPrice;
-    // 4. 최종 1+1 가격
-    return paidPrice + totalCrustExtra;
-};
-
-
-// --- 3. 핵심 계산 함수 (가격 업데이트) ---
-
-let onePlusOneCart = []; // 전역 변수로 1+1 선택 피자 목록을 관리
-
-const updatePrice = (pizzaId) => {
-    const card = document.querySelector(`.menu-item[data-id="${pizzaId}"]`);
-    if (!card) return;
-
-    const pizzaData = getPizzaData(pizzaId);
-    if (!pizzaData) return;
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍕 파파존스 피자 메뉴</title>
+    <link rel="stylesheet" href="assets/css/style.css"> 
     
-    const sizeSelect = card.querySelector('.size-select');
-    const crustSelect = card.querySelector('.crust-select');
-    const totalPriceElement = document.getElementById(`total-price-${pizzaId}`);
+    <style>
+        .content-wrapper { padding: 40px 20px; max-width: 1200px; margin: 0 auto; }
+        .menu-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .menu-item { background-color: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column; }
+        .pizza-image { width: 100%; height: 200px; object-fit: cover; border-radius: 4px; margin-bottom: 10px; }
+        .menu-item h4 { font-size: 1.4em; margin-bottom: 5px; color: #CC0000; }
+        .menu-item .description { font-size: 0.9em; color: #666; min-height: 40px; margin-bottom: 15px; }
+        .options-group { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .options-group select { padding: 8px; border: 1px solid #ccc; border-radius: 4px; flex-grow: 1; margin-left: 10px; }
+        .price-section { margin-top: 15px; padding-top: 10px; border-top: 1px dashed #eee; display: flex; justify-content: space-between; align-items: center; }
+        .total-price { font-size: 1.5em; color: #333; font-weight: bold; }
+        .add-to-cart-btn { background-color: #CC0000; color: white; border: none; padding: 10px; border-radius: 4px; cursor: pointer; margin-top: 10px; font-weight: bold; transition: background-color 0.3s; }
+        .add-to-cart-btn:hover { background-color: #A00000; }
+        .event-badge { background-color: #CC0000; color: white; padding: 2px 6px; border-radius: 4px; font-size: 12px; font-weight: 700; margin-left: 5px; vertical-align: middle; }
+        .event-friday { background-color: #008000; }
+        .category-title { font-size: 24px; color: #333; margin-top: 40px; margin-bottom: 20px; padding-left: 10px; border-left: 5px solid #CC0000; }
+        .size-fixed-text { color: #CC0000; font-weight: bold; font-size: 14px; margin-left: 10px;}
+    </style>
+</head>
+<body>
+
+<header style="background-color: #CC0000; color: white; padding: 20px; text-align: center;">
+    <h1>🍕 파파존스 시흥은행점 온라인 메뉴판</h1>
+</header>
+<nav style="background-color: #f4f4f4; padding: 10px 0; text-align: center;">
+    <a href="index.html" style="margin: 0 15px; color: #333; text-decoration: none;">• 홈으로</a>
+    <a href="#one-plus-one-pizzas" style="margin: 0 15px; color: #333; text-decoration: none;">• 1+1 이벤트</a>
+    <a href="#best-pizzas" style="margin: 0 15px; color: #333; text-decoration: none;">• BEST 메뉴</a>
+</nav>
+
+<main class="content-wrapper">
+    <h2>🍕 피자 메뉴 전체</h2>
     
-    const isEventPizza = EVENT_PIZZA_IDS.includes(pizzaId);
-    const isTodayFriday = isFriday();
+    <h3 class="category-title" id="one-plus-one-pizzas">🔥 1+1 이벤트 피자 (7종)</h3>
+    <p style="color: #CC0000; font-weight: bold; margin-bottom: 20px;">* 매주 금요일, 방문 포장 시 1+1 (L 사이즈 고정)</p>
+    <div class="menu-list">
+        </div>
 
-    // 1. 사이즈 및 기본 가격 결정
-    let selectedSize = sizeSelect ? sizeSelect.value : 'L';
+    <h3 class="category-title" id="best-pizzas">⭐️ BEST & 스테디셀러</h3>
+    <div class="menu-list">
+        </div>
     
-    // 금요일 & 이벤트 피자일 경우 L 사이즈 강제 고정
-    if (isEventPizza && isTodayFriday) {
-        selectedSize = 'L';
-    }
+    <h3 class="category-title" id="new-premium-pizzas">✨ NEW & 프리미엄</h3>
+    <div class="menu-list">
+        </div>
     
-    const basePrice = pizzaData.prices[selectedSize] || 0; // 가격이 없으면 0원 처리
+    <h3 class="category-title" id="specialty-pizzas">🍕 스페셜티</h3>
+    <div class="menu-list">
+        </div>
+
+    <h3 class="category-title" id="thin-excl-pizzas">💡 크리스피 씬 크러스트 (TH 전용)</h3>
+    <div class="menu-list">
+        </div>
     
-    // 2. 크러스트 추가금 결정
-    let crustExtraPrice = 0;
-    if (crustSelect) {
-        const selectedCrustValue = crustSelect.value;
-        const crustData = getCrustData(selectedCrustValue);
-        
-        if (crustData) {
-            // 선택된 사이즈에 맞는 크러스트 추가금 키를 결정
-            const sizePriceKey = { 'R': 'priceL', 'L': 'priceL', 'F': 'priceF', 'P': 'priceP' }; 
-            const priceKey = sizePriceKey[selectedSize];
-            
-            // 크러스트 추가금 적용 (L/R 사이즈는 priceL을 사용)
-            crustExtraPrice = crustData[priceKey] !== undefined ? crustData[priceKey] : 0;
-            
-            // 씬 크러스트의 예외 처리: F 사이즈 무료 변경 외에는 0원
-            if (selectedCrustValue === 'thin' && selectedSize !== 'F') {
-                 crustExtraPrice = 0;
-            }
-        }
-    }
+    <h3 class="category-title" id="classic-pizzas">📜 클래식</h3>
+    <div class="menu-list">
+        </div>
 
-    // 3. 최종 가격 계산 및 표시 (단품 가격)
-    const finalPrice = basePrice + crustExtraPrice;
+    <h3 class="category-title" id="vegan-pizzas">🌱 그린잇 (비건)</h3>
+    <div class="menu-list">
+        </div>
+</main>
 
-    if (totalPriceElement) {
-        totalPriceElement.textContent = formatPrice(finalPrice);
-    }
-};
-
-
-// --- 4. 초기화 및 이벤트 리스너 설정 ---
-
-// 1+1 장바구니 상태 표시 업데이트 함수 (이전 답변 코드 유지)
-const updateOnePlusOneStatus = () => {
-    const statusElement = document.getElementById('one-plus-one-status');
-    const isTodayFriday = isFriday();
-    if (!statusElement) return;
-
-    if (!isTodayFriday) {
-        statusElement.textContent = '오늘은 파파프라이데이(1+1) 행사가 아닙니다.';
-        statusElement.style.color = '#333';
-        return;
-    }
-    
-    if (onePlusOneCart.length === 0) {
-        statusElement.innerHTML = '🍕 **1+1 피자를 2개 선택해 주세요!** (포장 전용)';
-        statusElement.style.color = '#CC0000';
-    } else if (onePlusOneCart.length === 1) {
-        statusElement.innerHTML = `✅ 첫 번째 피자 선택 완료! 두 번째 피자를 선택해 주세요. <strong>(${onePlusOneCart[0].name})</strong>`;
-        statusElement.style.color = '#5cb85c';
-    }
-};
-
-
-document.addEventListener('DOMContentLoaded', () => {
-    // 1+1 상태 표시 영역을 HTML에 추가 (메뉴가 로드된 후)
-    const statusDiv = document.createElement('div');
-    statusDiv.id = 'one-plus-one-status';
-    statusDiv.style.cssText = 'position: fixed; bottom: 10px; right: 10px; padding: 10px; background: #fff; border: 2px solid #CC0000; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.2); z-index: 1000; font-weight: bold; transition: all 0.3s;';
-    document.body.appendChild(statusDiv);
-    updateOnePlusOneStatus();
-    
-    
-    const menuCards = document.querySelectorAll('.menu-item');
-
-    menuCards.forEach(card => {
-        const pizzaId = card.getAttribute('data-id');
-        const sizeSelect = card.querySelector('.size-select');
-        const crustSelect = card.querySelector('.crust-select');
-        const addButton = card.querySelector('.add-to-cart-btn');
-        const pizzaData = getPizzaData(pizzaId);
-
-        // 사이즈/크러스트 변경 시 가격 업데이트 이벤트 리스너 등록
-        if (sizeSelect) {
-            sizeSelect.addEventListener('change', () => {
-                updatePrice(pizzaId);
-            });
-        }
-        if (crustSelect) {
-            crustSelect.addEventListener('change', () => {
-                updatePrice(pizzaId);
-            });
-        }
-
-        if (addButton) {
-            addButton.addEventListener('click', () => {
-                const isEventPizza = EVENT_PIZZA_IDS.includes(pizzaId);
-                const isTodayFriday = isFriday();
-
-                // --- 1+1 이벤트 처리 ---
-                if (isTodayFriday && isEventPizza) {
-                    // (이전 답변의 1+1 주문 로직 유지)
-                     if (onePlusOneCart.length >= 2) {
-                        alert('⚠️ 1+1 행사는 피자 2개까지만 가능합니다. 초기화 후 다시 선택해 주세요.');
-                        onePlusOneCart = [];
-                        updateOnePlusOneStatus();
-                        return;
-                    }
-
-                    const currentSelectedPizza = {
-                        id: pizzaId,
-                        name: pizzaData.name,
-                        basePrice: pizzaData.prices['L'],
-                        crustName: crustSelect ? crustSelect.options[crustSelect.selectedIndex].textContent.split('(')[0].trim() : '오리지널',
-                        crustExtraPrice: getCrustData(crustSelect.value).priceL || 0, 
-                    };
-                    
-                    onePlusOneCart.push(currentSelectedPizza);
-                    
-                    if (onePlusOneCart.length === 1) {
-                        alert(`✅ 파파프라이데이 1+1 - 첫 번째 피자 (${pizzaData.name}) 선택 완료! 이제 두 번째 피자를 선택해 주세요.`);
-                        updateOnePlusOneStatus();
-                    } else if (onePlusOneCart.length === 2) {
-                        const [p1, p2] = onePlusOneCart;
-                        const finalPrice = calculateOnePlusOnePrice(p1, p2);
-                        
-                        alert(`
-                            🎉 파파프라이데이 1+1 주문 완료 (포장 전용, 배달 불가)
-                            🍕 1: ${p1.name} (L / ${p1.crustName} +${formatPrice(p1.crustExtraPrice)}원)
-                            🍕 2: ${p2.name} (L / ${p2.crustName} +${formatPrice(p2.crustExtraPrice)}원)
-                            💵 최종 1+1 가격: ${formatPrice(finalPrice)}원 (배달비 3,000원 면제)
-                        `);
-                        
-                        onePlusOneCart = [];
-                        updateOnePlusOneStatus();
-                    }
-
-                } else {
-                    // --- 일반 주문 처리 ---
-                    const selectedSize = sizeSelect ? sizeSelect.value : 'L';
-                    const selectedCrust = crustSelect ? crustSelect.options[crustSelect.selectedIndex].textContent : '오리지널';
-                    const finalPrice = document.getElementById(`total-price-${pizzaId}`).textContent.replace(/,/g, '');
-                    const pizzaName = card.getAttribute('data-name');
-                    
-                    alert(`
-                        🧾 일반 주문 추가됨 (배달비 3,000원 별도):
-                        - 메뉴: ${pizzaName}
-                        - 사이즈: ${selectedSize}
-                        - 크러스트: ${selectedCrust.split('(')[0].trim()}
-                        - 최종 가격: ${finalPrice}원
-                    `);
-                }
-            });
-        }
-
-        // 초기 가격 설정: 피자 카드가 DOM에 추가된 후 바로 실행
-        updatePrice(pizzaId);
-    });
-});
 <script src="assets/js/cart.js"></script> 
 
 <script>
-    // createPizzaCard, appendPizzaCards 함수 정의...
-    // document.addEventListener('DOMContentLoaded', () => { ... appendPizzaCards() ... });
-</script>
-</body>
-    <script src="assets/js/cart.js"></script> 
+    // cart.js에서 정의한 PIZZA_MENU, CRUST_OPTIONS, EVENT_PIZZA_IDS, formatPrice, isFriday 함수를 사용합니다.
     
-    <script>
-        // cart.js에서 정의한 PIZZA_MENU, CRUST_OPTIONS, EVENT_PIZZA_IDS, formatPrice 함수를 사용
+    const createPizzaCard = (pizza) => {
+        const isEventPizza = EVENT_PIZZA_IDS.includes(pizza.id);
+        const isTodayFriday = typeof isFriday === 'function' ? isFriday() : false;
+        const isFridayEventActive = isEventPizza && isTodayFriday;
         
-        // HTML 요소를 생성하는 함수 (이전 답변에서 제공된 createPizzaCard 함수)
-        const createPizzaCard = (pizza) => { /* ... (이전 답변의 createPizzaCard 내용) ... */ };
+        // 메뉴별 선택 가능 크러스트 목록 필터링
+        const availableCrusts = pizza.crustOptions || CRUST_OPTIONS.map(c => c.value);
+
+        // 크러스트 옵션 HTML 생성
+        const crustOptionsHtml = CRUST_OPTIONS
+            .filter(crust => availableCrusts.includes(crust.value))
+            .map(crust => {
+                let priceText = '';
+                if (crust.priceL > 0 && crust.value !== 'original' && crust.value !== 'thin') {
+                    priceText = `(+${formatPrice(crust.priceL)}원)`;
+                } else if (crust.value === 'thin') {
+                    priceText = `(F 사이즈 무료 변경)`;
+                }
+                
+                // TH 전용 피자는 씬 크러스트로 고정
+                const isSelected = pizza.category === 'THIN_EXCL' && crust.value === 'thin';
+
+                return `<option value="${crust.value}" ${isSelected ? 'selected' : ''}>${crust.name.split('(')[0].trim()} ${priceText}</option>`;
+            }).join('');
         
-        // 피자 목록을 카테고리별로 분리하여 HTML에 추가하는 함수
-        const appendPizzaCards = () => { /* ... (이전 답변의 appendPizzaCards 내용) ... */ };
         
-        // DOMContentLoaded 시점에 appendPizzaCards 실행 (이벤트 리스너가 중복될 수 있으므로, cart.js의 DOMContentLoaded 전에 실행되도록 주의)
-        document.addEventListener('DOMContentLoaded', appendPizzaCards);
-    </script>
+        // 사이즈 옵션 HTML 생성
+        let sizeOptionsHtml;
+        const availableSizes = Object.keys(pizza.prices);
+        const prices = pizza.prices;
+
+        if (isFridayEventActive) {
+            sizeOptionsHtml = `<option value="L" selected>L (라지 / ${formatPrice(prices['L'])}원) - 1+1 고정</option>`;
+        } else {
+            sizeOptionsHtml = availableSizes.map(size => {
+                const isLSize = size === 'L' ? 'selected' : '';
+                return `<option value="${size}" ${isLSize}>${size} (${formatPrice(prices[size])}원)</option>`;
+            }).join('');
+        }
+
+        // 피자 이름 옆에 이벤트 배지 표시
+        const pizzaNameDisplay = isFridayEventActive 
+            ? `${pizza.name} <span class="event-badge event-friday">파파프라이데이 1+1</span>`
+            : `${pizza.name} ${isEventPizza ? '<span class="event-badge">1+1 가능</span>' : ''}`;
+
+        // 크러스트 선택 불가 메뉴 처리
+        const isCrustSelectDisabled = pizza.crustOptions && pizza.crustOptions.length <= 1;
+        const fixedCrustName = isCrustSelectDisabled ? CRUST_OPTIONS.find(c => c.value === availableCrusts[0]).name.split('(')[0].trim() : '';
+
+        return `
+            <div class="menu-item ${isEventPizza ? 'event-pizza' : ''}" data-id="${pizza.id}" data-name="${pizza.name}">
+                <img src="assets/images/pizza-${pizza.id}.jpg" alt="${pizza.name}" class="pizza-image" onerror="this.onerror=null;this.src=''">
+                <h4>${pizzaNameDisplay}</h4>
+                <p class="description">${pizza.desc}</p>
+                
+                <div class="options-group">
+                    <label for="size-select-${pizza.id}">사이즈:</label>
+                    <select id="size-select-${pizza.id}" class="size-select" ${isFridayEventActive || availableSizes.length <= 1 ? 'disabled' : ''}>
+                        ${sizeOptionsHtml}
+                    </select>
+                    ${availableSizes.length <= 1 ? `<span class="size-fixed-text">${availableSizes[0]} 사이즈 고정</span>` : ''}
+                </div>
+                
+                <div class="options-group" ${isCrustSelectDisabled ? 'style="display:none;"' : ''}>
+                    <label for="crust-select-${pizza.id}">크러스트:</label>
+                    <select id="crust-select-${pizza.id}" class="crust-select" ${isCrustSelectDisabled ? 'disabled' : ''}>
+                        ${crustOptionsHtml}
+                    </select>
+                </div>
+                ${isCrustSelectDisabled ? `<div class="options-group"><label>크러스트:</label><span class="size-fixed-text">${fixedCrustName} 고정</span></div>` : ''}
+
+
+                <div class="price-section">
+                    <strong>최종 가격: </strong>
+                    <span id="total-price-${pizza.id}" class="total-price">0</span>원
+                </div>
+
+                <button class="add-to-cart-btn">장바구니 담기</button>
+            </div>
+        `;
+    };
+    
+    // 피자 목록을 카테고리별로 분리하여 HTML에 추가하는 함수
+    const appendPizzaCards = () => {
+        // 카테고리 ID에 맞춰 HTML 컨테이너 선택자를 사용합니다.
+        const menuListContainers = {
+            'EVENT': document.querySelector('#one-plus-one-pizzas + p + .menu-list'),
+            'BEST': document.querySelector('#best-pizzas + .menu-list'),
+            'NEW_PREMIUM': document.querySelector('#new-premium-pizzas + .menu-list'),
+            'SPECIALTY': document.querySelector('#specialty-pizzas + .menu-list'),
+            'THIN_EXCL': document.querySelector('#thin-excl-pizzas + .menu-list'),
+            'CLASSIC': document.querySelector('#classic-pizzas + .menu-list'),
+            'VEGAN': document.querySelector('#vegan-pizzas + .menu-list'),
+        };
+
+        PIZZA_MENU.forEach(pizza => {
+            const cardHtml = createPizzaCard(pizza);
+            
+            // 1+1 피자는 'EVENT' 섹션에만 추가
+            if (EVENT_PIZZA_IDS.includes(pizza.id) && menuListContainers['EVENT']) {
+                menuListContainers['EVENT'].insertAdjacentHTML('beforeend', cardHtml);
+            } 
+            // 그 외 피자는 카테고리 섹션에 추가 (중복 방지)
+            else if (menuListContainers[pizza.category] && !EVENT_PIZZA_IDS.includes(pizza.id)) { 
+                menuListContainers[pizza.category].insertAdjacentHTML('beforeend', cardHtml);
+            }
+        });
+    };
+    
+    // appendPizzaCards 함수를 DOMContentLoaded 시점에 실행
+    document.addEventListener('DOMContentLoaded', () => {
+        // 금요일이면 이벤트 제목 및 설명 업데이트
+        const isTodayFriday = typeof isFriday === 'function' ? isFriday() : false;
+        const eventTitle = document.getElementById('one-plus-one-pizzas');
+        if (eventTitle && isTodayFriday) {
+            eventTitle.innerHTML = '🎉 **파파프라이데이 1+1 (L 사이즈 고정)**';
+            eventTitle.style.color = '#CC0000';
+            const eventDesc = document.querySelector('#one-plus-one-pizzas + p');
+            if (eventDesc) {
+                 eventDesc.innerHTML = '<strong>* 1+1은 포장 전용이며, L 사이즈로 고정됩니다. 크러스트 추가금은 각각 별도 부과됩니다.</strong>';
+            }
+        }
+        // 피자 메뉴 카드 생성 실행
+        appendPizzaCards();
+    });
+</script>
 </body>
 </html>
