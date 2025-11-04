@@ -4,16 +4,55 @@
 
 // --- 1. 가격 데이터 정의 (모든 함수가 필요로 하는 데이터) ---
 const PIZZA_PRICES = {
-    'pizza_classic': { R: 25900, L: 30900 }, 
-    'pizza_gourmet': { R: 29900, L: 35900 },
-    'pizza_hawaiian': { R: 24000, L: 29000 },
-    // ... 다른 피자 ID와 가격을 여기에 추가 ...
+    // 1. 프리미엄 (Premium)
+    'barbeque_shortrib_crunch': { R: 0, L: 34500, F: 41900, P: 0 }, // F는 36cm
+    'mellow_corn_cream': { R: 0, L: 27500, F: 33900, P: 41500 },
+    'starlight_basil': { R: 0, L: 33500, F: 39900, P: 48500 }, // 크러스트 선택 없음
+    'double_hot_spicy_mexican': { R: 0, L: 33500, F: 39900, P: 0 }, // P 사이즈 가격 없음
+
+    // 2. 베스트 (BEST) - 1+1 행사 메뉴 포함
+    'super_papas': { R: 19900, L: 28500, F: 33900, P: 42500 }, // 1+1 행사
+    'johns_favorite': { R: 0, L: 29500, F: 34900, P: 45500 }, // R 사이즈 가격 없음, 1+1 행사
+    'all_meat': { R: 19900, L: 29500, F: 34900, P: 45500 },
+    'spicy_chicken_ranch': { R: 19900, L: 29500, F: 34900, P: 43500 }, // 1+1 행사
+    'irish_potato': { R: 18900, L: 27500, F: 32900, P: 40500 }, // 1+1 행사
+    'chicken_barbeque': { R: 18900, L: 27500, F: 32900, P: 40500 }, // 1+1 행사
+    
+    // 3. 스페셜티 & 씬 (SPECIALTY&THIN)
+    'crispy_cheese_pepperoni': { R: 0, L: 0, F: 31900, P: 0 }, // TH 전용 (F 사이즈만)
+    'crispy_cheese_triple': { R: 0, L: 0, F: 33900, P: 0 }, // TH 전용 (F 사이즈만)
+    'ham_mushroom_six_cheese': { R: 0, L: 28500, F: 33900, P: 42500 }, // R 사이즈 가격 없음
+    'wisconsin_cheese_potato': { R: 0, L: 29500, F: 35900, P: 45500 }, // R 사이즈 가격 없음
+    'double_cheeseburger': { R: 0, L: 29500, F: 34900, P: 43500 }, // R 사이즈 가격 없음, 1+1 행사
+    'premium_bulgogi': { R: 0, L: 29500, F: 34900, P: 43500 }, // R 사이즈 가격 없음, 1+1 행사
+    'six_cheese': { R: 0, L: 26500, F: 31900, P: 39500 }, // R 사이즈 가격 없음
+    'spicy_italian': { R: 0, L: 27500, F: 33900, P: 40500 }, // R 사이즈 가격 없음
+    'shrimp_alfredo': { R: 0, L: 0, F: 34900, P: 0 }, // TH 전용 (F 사이즈만)
+
+    // 4. 클래식 (CLASSIC)
+    'margherita': { R: 16900, L: 23500, F: 28900, P: 36500 },
+    'pepperoni': { R: 17900, L: 25500, F: 30900, P: 38500 },
+    'hawaiian': { R: 17900, L: 26500, F: 32900, P: 39500 },
+    'garden_special': { R: 17900, L: 26500, F: 31900, P: 39500 },
+
+    // 5. 그린잇 (VEGAN) - R(31cm)을 L로 가정
+    'green_it_margherita': { R: 0, L: 26500, F: 0, P: 0 }, // 크러스트 변경 불가
+    'green_it_garden_special': { R: 0, L: 29500, F: 0, P: 0 } // 크러스트 변경 불가
 };
 
 const CRUST_PRICES = {
-    'original': 0,
-    'gold': 3000,
-    '치즈롤': 4000
+    // 0원인 크러스트
+    'original': { R: 0, L: 0, F: 0, P: 0 },
+    // 씬은 F 사이즈만 가능하며 무료 변경이므로 0원
+    '씬': { R: 0, L: 0, F: 0, P: 0 }, 
+    
+    // 치즈롤, 골드링, 스파이시 갈릭 치즈롤
+    '치즈롤': { R: 0, L: 4000, F: 5000, P: 6000 },
+    '골드링': { R: 0, L: 4000, F: 5000, P: 6000 },
+    '스파이시갈릭치즈롤': { R: 0, L: 4000, F: 5000, P: 6000 },
+    
+    // 크루아상 크러스트 (모든 사이즈 6,000원 추가, R 불가)
+    '크루아상': { R: 0, L: 6000, F: 6000, P: 6000 }
 };
 
 // --- 2. 유틸리티 함수 (다른 함수들이 호출하므로 먼저 정의) ---
@@ -98,7 +137,6 @@ window.updatePrice = function(pizzaId) {
     }
 };
 
-
 // --- 5. 장바구니 추가 함수 ---
 window.addToCart = function(pizzaId) {
     const card = document.getElementById(pizzaId);
@@ -113,7 +151,7 @@ window.addToCart = function(pizzaId) {
     const finalPriceText = document.getElementById(`total-price-${pizzaId}`).textContent;
     
     alert(`${pizzaName} ${finalPriceText}을(를) 장바구니에 추가했습니다. 장바구니로 이동합니다.`);
-    window.location.href = 'cart.html';
+    window.location.href = 'cart.html'; // 
 };
 
 
