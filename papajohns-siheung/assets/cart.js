@@ -1,21 +1,33 @@
 // --- 1. 상수 및 유틸리티 함수 ---
-const CART_KEY = 'papaJohnsCart';
+// ⚠️ 수정: menu.js에서 사용하는 키와 통일
+const CART_KEY = 'papaJohnsCart'; 
 const ORDER_TYPE_KEY = 'order_type';
 const DISCOUNT_TYPE_KEY = 'selected_discount_type';
 const DISCOUNT_VALUE_KEY = 'selected_discount_value';
 const PHONE_NUMBER = '0313136995'; // 전화번호
 
-// 금요일 1+1 이벤트 대상 메뉴 (시뮬레이션 데이터)
-const BOGO_MENU_IDS = ['pizza_classic', 'pizza_gourmet', 'pizza_special'];
+// ⚠️ 수정: menu.js의 주석을 참고하여 실제 1+1 대상 메뉴 ID 반영
+const BOGO_MENU_IDS = [
+    'super_papas', 
+    'johns_favorite', 
+    'spicy_chicken_ranch', 
+    'irish_potato', 
+    'chicken_barbeque',
+    'double_cheeseburger',
+    'premium_bulgogi'
+];
+
 function formatPrice(amount) {
-    return `₩${amount.toLocaleString('ko-KR')}`;
+    // Math.round를 사용하여 정수로만 표시
+    if (typeof amount !== 'number' || isNaN(amount)) return '₩0';
+    return `₩${Math.round(amount).toLocaleString('ko-KR')}`;
 }
 
 // 현재 요일 확인 (0:일 ~ 6:토)
 function isFriday() {
     const today = new Date();
     // 5가 금요일 (Friday)
-    return today.getDay() === 5;
+    return today.getDay() === 5; 
     // 테스트를 위해 강제 금요일로 설정하려면: // return true;
 }
 
@@ -37,17 +49,8 @@ function showAlert(message, bgColorClass) {
 function getCart() {
     try {
         const cartString = localStorage.getItem(CART_KEY);
-        if (!cartString) {
-            const initialCart = [
-                { id: 'pizza_classic', name: '클래식 피자', price: 20000, quantity: 1, crust: '치즈 크러스트', crustPrice: 4000 },
-                { id: 'pizza_gourmet', name: '고메 피자', price: 28000, quantity: 2, crust: '오리지널', crustPrice: 0 },
-                { id: 'side_cola', name: '콜라 1.25L', price: 3000, quantity: 1, crust: null, crustPrice: 0 },
-                { id: 'pizza_special', name: '스페셜 피자', price: 25000, quantity: 1, crust: '골드 엣지', crustPrice: 5000 },
-            ];
-            saveCart(initialCart);
-            return initialCart;
-        }
-        return JSON.parse(cartString);
+        // ⚠️ 수정: 초기 시뮬레이션 데이터를 제거하고, 없으면 빈 배열 반환
+        return cartString ? JSON.parse(cartString) : []; 
     } catch (e) {
         console.error("장바구니 로드 오류:", e);
         return [];
@@ -66,8 +69,9 @@ function getOrderType() {
     return localStorage.getItem(ORDER_TYPE_KEY) || 'delivery';
 }
 
-function saveOrderType(type) {
+window.saveOrderType = function(type) {
     localStorage.setItem(ORDER_TYPE_KEY, type);
+    calculateTotal(); // 주문 타입 변경 시 전체 금액 재계산
 }
 
 function saveSelectedDiscount(type, value) {
@@ -84,7 +88,8 @@ function getSelectedDiscount() {
 
 // --- 3. 할인 입력 로직 ---
 window.showDiscountTab = function(tabId) {
-    if (isFriday() && calculateBOGODiscount(getCart()).discount > 0) {
+    const cart = getCart();
+    if (isFriday() && calculateBOGODiscount(cart).discount > 0) {
          showAlert('1+1 이벤트 적용 중에는 타 할인을 선택할 수 없습니다.', 'bg-red-500');
          return;
     }
@@ -97,17 +102,47 @@ window.showDiscountTab = function(tabId) {
 
     document.getElementById(`tab-${tabId}`).classList.remove('hidden');
     document.querySelector(`.tab-button[onclick*='${tabId}']`).classList.add('active');
-    saveSelectedDiscount('none', '0');
+    
+    // 탭 변경 시 기존 쿠폰/카드 할인은 초기화 (통신사는 선택 값이 유지될 수 있음)
+    if (tabId !== 'telecom') { 
+        saveSelectedDiscount('none', '0');
+    }
+    
     calculateTotal();
 }
+
+// ⚠️ 추가: 통신사 할인 선택 함수
+window.applyTelecomDiscount = function() {
+    const telecomSelect = document.getElementById('telecom-select');
+    const selectedValue = telecomSelect.value;
+    
+    const cart = getCart();
+    if (isFriday() && calculateBOGODiscount(cart).discount > 0) {
+         showAlert('1+1 이벤트 적용 중에는 통신사 할인을 사용할 수 없습니다.', 'bg-red-500');
+         telecomSelect.value = 'none';
+         saveSelectedDiscount('none', '0');
+         calculateTotal();
+         return;
+    }
+    
+    if (selectedValue === 'none') {
+        saveSelectedDiscount('none', '0');
+    } else {
+        const [type, rate] = selectedValue.split(':'); // 예: skt:0.30
+        saveSelectedDiscount('telecom', rate);
+    }
+    calculateTotal();
+}
+
 
 window.applyCouponCode = function() {
     const code = document.getElementById('coupon-code').value.trim();
     const messageElement = document.getElementById('coupon-message');
     messageElement.textContent = '';
     let discountRate = 0;
+    const cart = getCart();
 
-    if (isFriday() && calculateBOGODiscount(getCart()).discount > 0) {
+    if (isFriday() && calculateBOGODiscount(cart).discount > 0) {
          messageElement.textContent = '1+1 이벤트 적용 중에는 쿠폰을 사용할 수 없습니다.';
          messageElement.classList.remove('text-green-500');
          messageElement.classList.add('text-red-500');
@@ -148,8 +183,9 @@ window.applyCardDiscount = function() {
     const messageElement = document.getElementById('card-message');
     messageElement.textContent = '';
     let discountRate = 0;
+    const cart = getCart();
 
-    if (isFriday() && calculateBOGODiscount(getCart()).discount > 0) {
+    if (isFriday() && calculateBOGODiscount(cart).discount > 0) {
          messageElement.textContent = '1+1 이벤트 적용 중에는 카드 할인을 사용할 수 없습니다.';
          messageElement.classList.remove('text-green-500');
          messageElement.classList.add('text-red-500');
@@ -193,18 +229,18 @@ function calculateBOGODiscount(cart) {
     const bogoItems = [];
 
     // 1. 1+1 대상 피자만 추출 및 평탄화 (크러스트 금액 제외한 본품 가격 기준)
-    cart.forEach(item => {
-        if (BOGO_MENU_IDS.includes(item.id) && item.quantity > 0) {
+    cart.forEach((item, index) => {
+        // ⚠️ 수정: item.id 대신 item.pizzaId를 사용
+        if (BOGO_MENU_IDS.includes(item.pizzaId) && item.quantity > 0) {
             for (let i = 0; i < item.quantity; i++) {
                 // 고유 인덱스를 포함하여 나중에 어떤 피자가 무료인지 식별
                 bogoItems.push({
-                    cartIndex: cart.findIndex(c => c.id === item.id && c.quantity === item.quantity),
-                    itemIndex: cart.indexOf(item),
-                    unitIndex: i,
-                    id: item.id,
-                    price: item.price, // 피자 본품 가격
-                    crustPrice: item.crustPrice,
-                    isFree: false // 기본값
+                    cartIndex: index, // 장바구니 배열 내의 인덱스
+                    unitIndex: i, // 해당 아이템 내의 단위 인덱스
+                    pizzaId: item.pizzaId,
+                    price: item.price, // 피자 본품 가격 (단가)
+                    crustPrice: item.crustPrice, // 크러스트 추가 가격 (단가)
+                    isFree: false 
                 });
             }
         }
@@ -223,7 +259,7 @@ function calculateBOGODiscount(cart) {
     for (let i = 0; i < numFreePizzas; i++) {
         // 할인 대상은 항상 현재 묶음에서 가격이 싼 피자 (정렬된 배열의 뒤쪽)
         const freePizzaIndex = numPizzas - 1 - i;
-        totalBOGODiscount += bogoItems[freePizzaIndex].price;
+        totalBOGODiscount += bogoItems[freePizzaIndex].price; // 싼 피자의 본품 가격만큼 할인
         bogoItems[freePizzaIndex].isFree = true; // 🎯 무료 피자에 플래그 설정
     }
 
@@ -269,11 +305,13 @@ window.calculateTotal = function() {
 
     // 1. 상품 금액 (Subtotal) 및 크러스트 금액 분리 계산
     cart.forEach(item => {
-        const itemTotal = item.price * item.quantity + (item.crustPrice * item.quantity);
+        // ⚠️ item.price는 단가입니다.
+        const itemTotal = (item.price * item.quantity) + (item.crustPrice * item.quantity); 
         subtotal += itemTotal;
         
         // 통신사/쿠폰 할인은 피자 본품 금액에서만 적용 (크러스트 제외)
-        if (item.id.startsWith('pizza')) {
+        // ⚠️ item.pizzaId를 사용하여 피자인지 판단 (menu.js 저장 방식)
+        if (item.pizzaId) { 
            pizzaOnlySubtotal += item.price * item.quantity;
         }
     });
@@ -284,7 +322,6 @@ window.calculateTotal = function() {
     
     // 2. **금요일 1+1 이벤트** 적용 확인 및 할인액 설정
     if (bogoApplied) {
-        // 1+1 할인액은 피자 본품 가격 중 싼 가격의 합계
         discountAmount = bogoResult.discount;
         discountDetail = bogoResult.detail;
     }
@@ -362,45 +399,53 @@ function renderCart() {
         
         // 장바구니 아이템별 렌더링
         cart.forEach((item, index) => {
-            let itemPrice = item.price;
+            // item.price는 피자 본품의 단가, item.crustPrice는 크러스트의 단가
+            let itemPrice = item.price; 
             let itemCrustPrice = item.crustPrice;
-            let totalItemCost = (itemPrice * item.quantity) + (itemCrustPrice * item.quantity);
+            let originalItemTotal = (itemPrice * item.quantity) + (itemCrustPrice * item.quantity); // 할인 미적용 총액
+            let totalItemCost = originalItemTotal; // UI에 표시할 최종 금액
             let discountTag = '';
             
             // 🎯 1+1 할인 태그 및 가격 계산 (UI 표시용)
-            if (isBOGOApplied && BOGO_MENU_IDS.includes(item.id)) {
+            // ⚠️ 수정: item.id 대신 item.pizzaId 사용
+            if (isBOGOApplied && BOGO_MENU_IDS.includes(item.pizzaId)) {
                 
                 // 해당 장바구니 항목 내에서 무료 피자 개수 계산
                 let freeCountInItem = 0;
                 if (bogoResult.appliedItems) {
                     freeCountInItem = bogoResult.appliedItems.filter(p => 
-                        // itemIndex를 사용하여 해당 장바구니 항목의 피자인지 식별
-                        p.itemIndex === index && p.isFree
+                        // cartIndex를 사용하여 해당 장바구니 항목의 피자인지 식별
+                        p.cartIndex === index && p.isFree
                     ).length;
                 }
                 
                 // 할인 가격 계산
                 const paidCount = item.quantity - freeCountInItem;
-                const paidPrice = (itemPrice * paidCount) + (itemCrustPrice * item.quantity); // 크러스트는 모두 결제
+                // 크러스트 가격은 무료 피자 개수와 무관하게 모든 수량에 대해 결제
+                const paidPrice = (itemPrice * paidCount) + (itemCrustPrice * item.quantity); 
                 
                 if (freeCountInItem > 0) {
                     discountTag = `<span class="text-[var(--bogo-color)] font-bold text-xs ml-2">[1+1 무료 ${freeCountInItem}개]</span>`;
                     totalItemCost = paidPrice; // UI에 보여줄 최종 가격
                 }
             }
+            
+            // 옵션 표시
+            // ⚠️ 수정: item.crust 대신 item.crustName 사용
+            const optionText = (item.size || item.crustName) ?
+                `<span class="text-sm font-medium text-gray-500 block mt-1">${item.size} 사이즈` + 
+                (item.crustName ? `, ${item.crustName} (+${formatPrice(item.crustPrice)})` : '') + `</span>`
+                : '';
+
 
             const itemElement = document.createElement('div');
             itemElement.className = 'flex items-center border-b last:border-b-0 py-3';
 
-            // 옵션 표시 (크러스트)
-            const optionText = item.crust ?
-                `<span class="text-sm font-medium text-gray-500 block mt-1">크러스트: ${item.crust} (+${formatPrice(item.crustPrice)})</span>` : '';
-            
             itemElement.innerHTML = `
                 <div class="flex-1 min-w-0">
                     <p class="font-bold text-gray-900 flex items-center">${item.name} ${discountTag}</p>
                     ${optionText}
-                    <p class="text-sm text-gray-500">${formatPrice(item.price)} x ${item.quantity}</p>
+                    <p class="text-sm text-gray-500">${formatPrice(itemPrice + itemCrustPrice)} (단가) x ${item.quantity}</p>
                 </div>
                 
                 <div class="flex items-center space-x-2 mr-4">
@@ -410,7 +455,8 @@ function renderCart() {
                 </div>
 
                 <span class="font-bold text-lg w-24 text-right">
-                    ${isBOGOApplied && BOGO_MENU_IDS.includes(item.id) && item.quantity > 0 && (item.quantity > (item.quantity - freeCountInItem)) ? `<del class="text-gray-400 text-sm block">${formatPrice((item.price * item.quantity) + (item.crustPrice * item.quantity))}</del>` : ''}
+                    ${isBOGOApplied && BOGO_MENU_IDS.includes(item.pizzaId) && freeCountInItem > 0 ? 
+                        `<del class="text-gray-400 text-sm block">${formatPrice(originalItemTotal)}</del>` : ''}
                     ${formatPrice(totalItemCost)}
                 </span>
       
@@ -461,16 +507,24 @@ document.addEventListener('DOMContentLoaded', function() {
     const orderTypeSelect = document.getElementById('order-type');
     if (orderTypeSelect) {
         orderTypeSelect.value = getOrderType();
+        // 이벤트 리스너 추가 (saveOrderType은 window에 등록되어 있어야 함)
+        orderTypeSelect.addEventListener('change', (e) => saveOrderType(e.target.value)); 
     }
 
     const selectedDiscount = getSelectedDiscount();
     const telecomSelect = document.getElementById('telecom-select');
     if (telecomSelect && selectedDiscount.type === 'telecom') {
-        telecomSelect.value = selectedDiscount.value;
+        // 통신사 탭 활성화
+        showDiscountTab('telecom');
+        // 선택된 값 설정 (예: 'skt:0.30')
+        telecomSelect.value = `telecom:${selectedDiscount.value}`; 
+        
+    } else {
+        // 기본 탭 활성화 (예: 통신사 탭이 기본이라고 가정)
+        showDiscountTab('telecom'); 
     }
     
     renderCart();
-    showDiscountTab('telecom');
 });
 
 window.updateQuantity = function(index, change) {
@@ -523,4 +577,17 @@ function hideConfirmModal() {
     modal.classList.add('hidden');
 }
 
-// ⚠️ window.confirmRemove 함수는 위 단계 1에서 이미 추가되어 있어야 합니다.
+// ⚠️ confirm-delete-btn에 이벤트 리스너 추가 (HTML에서 직접 호출되지 않는 경우)
+document.addEventListener('DOMContentLoaded', function() {
+    const confirmBtn = document.getElementById('confirm-delete-btn');
+    if (confirmBtn) {
+        confirmBtn.addEventListener('click', () => {
+            const index = parseInt(confirmBtn.getAttribute('data-index'));
+            window.confirmRemove(index);
+        });
+    }
+    const cancelBtn = document.getElementById('cancel-delete-btn');
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', hideConfirmModal);
+    }
+});
