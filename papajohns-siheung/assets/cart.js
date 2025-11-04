@@ -1,5 +1,5 @@
 // --- 1. 상수 및 유틸리티 함수 ---
-const CART_KEY = 'papa_menu_cart';
+const CART_KEY = 'papaJohnsCart';
 const ORDER_TYPE_KEY = 'order_type';
 const DISCOUNT_TYPE_KEY = 'selected_discount_type';
 const DISCOUNT_VALUE_KEY = 'selected_discount_value';
