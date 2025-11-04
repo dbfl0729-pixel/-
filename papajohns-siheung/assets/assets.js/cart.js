@@ -334,6 +334,11 @@ const handleOnePlusOneAdd = (pizzaId, card) => {
         alert('⚠️ 이미 선택된 피자입니다. 다른 피자를 선택해 주세요.');
         return;
     }
+    
+    if (onePlusOneCart.length === 2) {
+        alert('⚠️ 이미 1+1 피자 2개를 모두 선택했습니다. 주문을 완료하거나 잠시 후 다시 시도해주세요.');
+        return;
+    }
 
     // 4. 카트에 추가 및 상태 업데이트
     onePlusOneCart.push(itemData);
@@ -381,14 +386,6 @@ const initializeMenu = () => {
     
     // 1. 25가지 피자 카드 HTML을 생성합니다.
     Object.entries(PIZZA_MENU).forEach(([pizzaId, pizzaData]) => {
-        // 카테고리 제목을 중간에 넣기 위한 임시 로직
-        // 이 부분을 더 정교하게 만들려면 PIZZA_MENU를 카테고리별로 분리해야 합니다.
-        // if (pizzaId === 'P01') htmlContent += '<h3 class="category-title">1. 프리미엄</h3>';
-        // if (pizzaId === 'P05') htmlContent += '<h3 class="category-title" id="one-plus-one-pizzas">2. 베스트 & 1+1</h3>';
-        // if (pizzaId === 'P11') htmlContent += '<h3 class="category-title">3. SPECIALTY & THIN</h3>';
-        // if (pizzaId === 'P20') htmlContent += '<h3 class="category-title">4. CLASSIC</h3>';
-        // if (pizzaId === 'P24') htmlContent += '<h3 class="category-title">5. 비건</h3>';
-
         htmlContent += createPizzaCardHTML(pizzaId, pizzaData);
     });
     
