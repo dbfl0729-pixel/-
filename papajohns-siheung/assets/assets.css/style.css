@@ -1,229 +1,3 @@
-:root {
-    --main-color: #556B2F; /* 올리브색 계열 */
-    --accent-color: #CC0000; /* 파파존스 레드 (이벤트 강조) */
-    --text-color: #333;
-    --white: #ffffff;
-    --bg-light: #f4f4f4;
-    --font-family: 'Gmarket Sans', sans-serif;
-    --danger-color: #d9534f;
-}
-
-body {
-    font-family: var(--font-family);
-    margin: 0;
-    padding: 0;
-    background-color: var(--bg-light);
-    color: var(--text-color);
-    line-height: 1.6;
-}
-
-/* 기본 레이아웃 컨테이너 */
-.header-container, .footer-container, .content-wrapper {
-    width: 90%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 15px;
-}
-
-/* ------------------- */
-/* 1. 헤더 (Header) 디자인 */
-/* ------------------- */
-.main-header {
-    background-color: var(--main-color);
-    color: var(--white);
-    padding: 15px 0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-.main-header .header-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-.logo {
-    font-size: 24px;
-    font-weight: 700;
-    margin: 0;
-}
-.main-nav .event-link {
-    color: var(--white);
-    background-color: var(--accent-color);
-    padding: 8px 15px;
-    border-radius: 5px;
-    font-weight: 700;
-    text-decoration: none;
-    transition: background-color 0.3s;
-}
-
-/* ------------------- */
-/* 2. 메인 컨텐츠 및 메뉴 목록 */
-/* ------------------- */
-.main-title {
-    color: var(--text-color);
-    text-align: center;
-    padding: 30px 0 10px;
-    border-bottom: 2px solid #ddd;
-}
-.event-status {
-    text-align: center;
-    padding: 15px;
-    margin: 20px auto;
-    border-radius: 8px;
-    background-color: #fce8a7;
-    color: #a06e00;
-    font-weight: bold;
-    max-width: 90%;
-}
-.category-title {
-    font-size: 24px;
-    color: var(--text-color);
-    margin-top: 40px;
-    margin-bottom: 20px;
-    padding-left: 10px;
-    border-left: 5px solid var(--accent-color); /* 카테고리 강조선 */
-}
-.menu-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); /* 반응형 */
-    gap: 30px;
-    padding-bottom: 50px;
-}
-.menu-item {
-    background-color: var(--white);
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s;
-    display: flex;
-    flex-direction: column;
-}
-.menu-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-}
-
-.menu-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-}
-.menu-header h3 {
-    margin: 0;
-    font-size: 1.4em;
-    color: var(--main-color);
-}
-.event-badge {
-    background-color: var(--accent-color);
-    color: white;
-    padding: 3px 8px;
-    border-radius: 5px;
-    font-size: 12px;
-    font-weight: 700;
-    margin-left: 10px;
-}
-.menu-desc {
-    font-size: 0.9em;
-    color: #666;
-    margin-bottom: 15px;
-}
-.menu-toppings {
-    font-size: 0.85em;
-    color: #888;
-    border-top: 1px dotted #eee;
-    padding-top: 10px;
-    margin-bottom: 20px;
-}
-
-/* ------------------- */
-/* 3. 가격 및 옵션 선택 */
-/* ------------------- */
-.options-group {
-    margin-bottom: 15px;
-}
-.options-group label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
-    color: var(--text-color);
-}
-.size-select, .crust-select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    box-sizing: border-box;
-    font-size: 1em;
-    cursor: pointer;
-}
-.crust-desc {
-    font-size: 0.8em;
-    color: #888;
-    margin-top: 5px;
-}
-.disabled-option {
-    color: #bbb;
-    font-style: italic;
-}
-
-/* ------------------- */
-/* 4. 최종 가격 계산 영역 */
-/* ------------------- */
-.price-area {
-    margin-top: auto; /* 메뉴 하단에 붙도록 설정 */
-    padding-top: 15px;
-    border-top: 2px solid var(--bg-light);
-}
-.current-price {
-    text-align: right;
-    font-size: 1.5em;
-    font-weight: bold;
-    color: var(--accent-color);
-    margin-bottom: 10px;
-}
-.current-price small {
-    font-size: 0.6em;
-    color: #888;
-    font-weight: normal;
-    margin-left: 5px;
-}
-.price-breakdown {
-    width: 100%;
-    font-size: 0.85em;
-    color: #555;
-    font-weight: normal;
-    padding-top: 8px;
-    border-top: 1px dotted #ccc;
-    text-align: right;
-    line-height: 1.6;
-}
-.price-breakdown p {
-    margin: 0;
-}
-.price-breakdown .error-message {
-    color: var(--danger-color);
-    font-weight: bold;
-    margin-top: 5px;
-}
-
-/* 장바구니 버튼 */
-.add-to-cart-btn {
-    width: 100%;
-    padding: 12px;
-    background-color: var(--main-color);
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 1.1em;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-.add-to-cart-btn:hover {
-    background-color: #3b4e2f;
-}
-.add-to-cart-btn:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-}
 /* G마켓 산스 폰트 적용을 위한 기본 설정 (기존 내용) */
 :root {
     --main-color: #556B2F; /* 올리브색 계열 */
@@ -235,8 +9,6 @@ body {
     --danger-color: #d9534f;
     --info-color: #46b8da; /* 정보성 메시지 색상 추가 */
 }
-
-/* (기존 헤더/네비게이션/푸터 스타일은 생략) */
 
 /* ------------------- */
 /* 4. 피자 메뉴 페이지 스타일 */
@@ -253,17 +25,6 @@ h2 {
     border-bottom: 3px solid #6B8E23;
     padding-bottom: 10px;
     margin-bottom: 30px;
-    font-weight: 700;
-}
-
-/* 카테고리 제목 스타일 */
-.category-title {
-    font-size: 24px;
-    color: var(--text-color);
-    margin-top: 40px;
-    margin-bottom: 20px;
-    padding-left: 10px;
-    border-left: 5px solid var(--accent-color); 
     font-weight: 700;
 }
 
@@ -293,7 +54,7 @@ h2 {
     margin-top: 0;
     color: var(--main-color);
     font-size: 1.3em;
-    min-height: 40px; /* 제목 영역 확보 */
+    min-height: 40px; 
 }
 
 .pizza-card img {
@@ -307,7 +68,7 @@ h2 {
     font-size: 0.9em;
     color: #555;
     margin-bottom: 15px;
-    min-height: 40px; /* 설명 영역 확보 */
+    min-height: 40px; 
 }
 
 /* 옵션 선택 영역 */
@@ -402,7 +163,7 @@ h2 {
 }
 
 
-/* 크러스트 요약 정보 (기존에 제공된 HTML의 crust-summary 부분 스타일) */
+/* 크러스트 요약 정보 (pizza.html의 crust-summary 부분 스타일) */
 .crust-summary {
     width: 90%;
     max-width: 1200px;
