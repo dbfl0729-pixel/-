@@ -211,7 +211,81 @@
     </div>
     
     <script>
-        // 크러스트 기본 추가 금액 데이터
+
+// --- 새로운 장바구니 관련 함수: 로컬 스토리지에 저장 ---
+
+// 로컬 스토리지에 항목을 추가하는 함수
+function addToCart(pizzaId) {
+    const pizza = getPizzaData(pizzaId);
+    if (!pizza) {
+        alert("상품 정보를 찾을 수 없습니다.");
+        return;
+    }
+
+    const sizeSelect = document.getElementById(`size-${pizzaId}`);
+    const crustSelect = document.getElementById(`crust-${pizzaId}`);
+    const quantity = 1; 
+    
+    const selectedSize = sizeSelect.value;
+    const selectedCrustId = crustSelect.value;
+    const selectedCrustName = CRUST_NAME_MAP[selectedCrustId];
+    const itemPrice = calculateTotalPrice(pizzaId, selectedSize, selectedCrustId);
+    
+    const item = {
+        id: `${pizzaId}-${selectedSize}-${selectedCrustId}`, // 고유한 장바구니 항목 ID
+        pizzaId: pizzaId,
+        name: pizza.name,
+        size: selectedSize,
+        crustId: selectedCrustId,
+        crustName: selectedCrustName,
+        price: itemPrice, 
+        quantity: quantity,
+        total: itemPrice * quantity
+    };
+
+    // 1. 로컬 스토리지에서 현재 장바구니 데이터 가져오기
+    let cart = JSON.parse(localStorage.getItem('papaJohnsCart')) || [];
+
+    // 2. 장바구니에 동일한 옵션의 상품이 이미 있는지 확인 (수량 업데이트를 위해)
+    const existingItemIndex = cart.findIndex(
+        i => i.pizzaId === item.pizzaId && i.size === item.size && i.crustId === item.crustId
+    );
+
+    if (existingItemIndex > -1) {
+        // 동일한 옵션이 이미 있으면 수량만 증가
+        cart[existingItemIndex].quantity += quantity;
+        cart[existingItemIndex].total = cart[existingItemIndex].price * cart[existingItemIndex].quantity;
+    } else {
+        // 새로운 항목으로 추가
+        cart.push(item);
+    }
+
+    // 3. 로컬 스토리지에 업데이트된 장바구니 저장
+    localStorage.setItem('papaJohnsCart', JSON.stringify(cart));
+    
+    // 4. 사용자에게 알림
+    alert(`[${item.name} (${item.size}, ${item.crustName})] ${quantity}개를 계산서에 담았습니다. 총 금액: ${formatPrice(item.total)}원`);
+}
+
+// "계산서에 담기" 버튼에 이벤트 리스너를 설정하는 함수
+function setupAddToCartListeners() {
+    // 모든 "계산서에 담기" 버튼을 찾습니다.
+    const buttons = document.querySelectorAll('.add-to-bill-btn');
+    
+    buttons.forEach(button => {
+        button.addEventListener('click', (event) => {
+            const pizzaId = event.currentTarget.getAttribute('data-pizza-id');
+            addToCart(parseInt(pizzaId));
+        });
+    });
+}
+
+// DOM 로드 시 초기화 함수에 리스너 설정 추가
+document.addEventListener('DOMContentLoaded', () => {
+    initializePizzaCards(); // 기존 카드 생성 함수 호출
+    setupAddToCartListeners(); // 새로 추가된 리스너 설정 함수 호출
+});
+// 크러스트 기본 추가 금액 데이터
         const CRUST_PRICES = {
             'original': 0,
             'thin': 0,
@@ -590,7 +664,16 @@
             });
         }
 
-        document.addEventListener('DOMContentLoaded', initializePizzaCards);
-    </script>
+   // --- 최종 DOMContentLoaded 이벤트 리스너 (하나로 통합) ---
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. 피자 카드 생성
+    initializePizzaCards(); 
+    
+    // 2. "계산서에 담기" 버튼에 리스너 설정
+    setupAddToCartListeners(); 
+});
+
+// </script> 태그 종료 지점
+
 </body>
 </html>
