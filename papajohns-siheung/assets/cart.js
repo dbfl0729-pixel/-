@@ -502,3 +502,25 @@ window.confirmRemove = function(index) {
     showAlert('메뉴가 장바구니에서 삭제되었습니다.', 'bg-red-500');
     hideConfirmModal(); // 모달 닫기 함수 호출
 }
+// ----------------------------------------------------
+// [추가] 커스텀 모달 제어 함수
+// ----------------------------------------------------
+function showConfirmModal(index) {
+    const modal = document.getElementById('confirm-modal');
+    const confirmBtn = document.getElementById('confirm-delete-btn');
+    
+    // 삭제할 아이템의 index를 버튼의 data-index 속성에 저장
+    confirmBtn.setAttribute('data-index', index); 
+    
+    // 모달을 보이게 설정
+    modal.classList.remove('hidden');
+}
+
+function hideConfirmModal() {
+    const modal = document.getElementById('confirm-modal');
+    
+    // 모달을 숨기게 설정
+    modal.classList.add('hidden');
+}
+
+// ⚠️ window.confirmRemove 함수는 위 단계 1에서 이미 추가되어 있어야 합니다.
