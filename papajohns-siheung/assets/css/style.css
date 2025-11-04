@@ -3,15 +3,17 @@
 /* ---------------------------------------------------- */
 :root {
     /* 새 올리브 테마 변수 (cart.html이 사용하는 Tailwind 기반 변수) */
-    --primary-color: #059669; /* Emerald 600 - 메인 올리브/그린 */
-    --button-color: #065f46; /* Emerald 800 - 버튼 색상 */
-    --highlight-color: #f59e0b; /* Amber 500 - 강조 */
-    --bogo-color: #ef4444; /* Red 500 - 1+1 이벤트 색상 */
+    --primary-color: #059669; 
+    --button-color: #065f46; 
+    --highlight-color: #f59e0b; 
+    --bogo-color: #ef4444; 
     
     /* 🎯 기존 menu.html 변수를 새 변수로 연결하여 충돌 방지 */
     --main-color: var(--button-color); /* 기존 main-color를 새 button-color로 연결 */
     --accent-color: var(--bogo-color); /* 기존 accent-color를 새 bogo-color로 연결 */
-    
+    /* ... 나머지 변수 ... */
+}
+
     --text-color: #333;
     --white: #ffffff;
     --bg-light: #f4f4f4;
