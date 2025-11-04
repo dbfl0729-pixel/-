@@ -1,5 +1,6 @@
+<style>
 /* ---------------------------------------------------- */
-/* 1. G마켓 산스 폰트 및 올리브 테마 커스텀 변수 정의 */
+/* 1. G마켓 산스 폰트 및 올리브 테마 커스텀 변수 정의 (수정 완료) */
 /* ---------------------------------------------------- */
 :root {
     /* 새 올리브 테마 변수 (cart.html이 사용하는 Tailwind 기반 변수) */
@@ -9,11 +10,10 @@
     --bogo-color: #ef4444; 
     
     /* 🎯 기존 menu.html 변수를 새 변수로 연결하여 충돌 방지 */
-    --main-color: var(--button-color); /* 기존 main-color를 새 button-color로 연결 */
-    --accent-color: var(--bogo-color); /* 기존 accent-color를 새 bogo-color로 연결 */
-    /* ... 나머지 변수 ... */
-}
-
+    --main-color: var(--button-color); 
+    --accent-color: var(--bogo-color); 
+    
+    /* 공통 변수 (GMarket Sans 및 배경색 등) */
     --text-color: #333;
     --white: #ffffff;
     --bg-light: #f4f4f4;
@@ -31,7 +31,7 @@ body {
 /* 2. 장바구니 (cart.html) 및 공통 스타일 */
 /* ---------------------------------------------------- */
 .header-bg {
-    background-color: white; /* 헤더 배경색 */
+    background-color: var(--white); /* 헤더 배경색 */
 }
 
 /* 탭 버튼 활성화 시 색상 적용 */
@@ -52,8 +52,9 @@ body {
 }
 
 h2 {
-    color: var(--main-color);
-    border-bottom: 3px solid #6B8E23;
+    /* #6B8E23 (Olive Drab) 색상 대신 main-color와 유사한 #059669를 사용해 통일성을 높입니다. */
+    color: var(--main-color); 
+    border-bottom: 3px solid var(--primary-color); 
     padding-bottom: 10px;
     margin-bottom: 30px;
     font-weight: 700;
@@ -64,7 +65,7 @@ h2 {
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 25px;
 }
-/* ... (나머지 menu.html 관련 스타일) ... */
+
 .pizza-card {
     background-color: var(--white);
     padding: 20px;
@@ -75,4 +76,6 @@ h2 {
     flex-direction: column;
     transition: transform 0.2s;
 }
-/* ... (나머지 menu.html 관련 스타일) ... */
+
+/* 추가적인 menu.html 관련 스타일도 이어서 붙여넣으시면 됩니다. */
+</style>
