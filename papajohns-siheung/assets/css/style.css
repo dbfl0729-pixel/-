@@ -1,17 +1,34 @@
 /* ---------------------------------------------------- */
-/* 올리브 테마 커스텀 변수 및 기본 스타일 */
+/* 1. G마켓 산스 폰트 및 올리브 테마 커스텀 변수 정의 */
 /* ---------------------------------------------------- */
 :root {
+    /* 새 올리브 테마 변수 (cart.html이 사용) */
     --primary-color: #059669; /* Emerald 600 - 메인 올리브/그린 */
     --button-color: #065f46; /* Emerald 800 - 버튼 색상 */
     --highlight-color: #f59e0b; /* Amber 500 - 강조 */
     --bogo-color: #ef4444; /* Red 500 - 1+1 이벤트 색상 */
+    
+    /* 기존 변수를 새 변수로 통일하여 menu.html과 충돌 방지 */
+    --main-color: var(--button-color); /* 기존 main-color를 새 button-color로 변경 */
+    --accent-color: var(--bogo-color); /* 기존 accent-color를 새 bogo-color로 변경 */
+    
+    --text-color: #333;
+    --white: #ffffff;
+    --bg-light: #f4f4f4;
+    --font-family: 'Gmarket Sans', 'Noto Sans KR', sans-serif;
+    --danger-color: #d9534f;
+    --info-color: #46b8da;
 }
 
 body { 
-    font-family: 'Noto Sans KR', 'Inter', sans-serif; 
-    background-color: #f7f9f7;
+    font-family: var(--font-family); 
+    background-color: #f7f9f7; /* 장바구니 배경색 */
 }
+
+/* ---------------------------------------------------- */
+/* 2. 장바구니 (cart.html) 및 공통 스타일 */
+/* ---------------------------------------------------- */
+
 .header-bg {
     background-color: white; /* 헤더 배경색 */
 }
@@ -25,18 +42,80 @@ body {
 
 
 /* ---------------------------------------------------- */
-/* menu.html/side.html에서 사용할 스타일 (예시) */
+/* 3. 피자 메뉴 페이지 (menu.html) 스타일 - 기존 코드 통합 및 변수 수정 */
 /* ---------------------------------------------------- */
+.pizza-menu-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 15px;
+}
+
+h2 {
+    color: var(--main-color);
+    border-bottom: 3px solid #6B8E23;
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+    font-weight: 700;
+}
+
+.pizza-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+}
+
 .pizza-card {
-    background-color: white;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background-color: var(--white);
+    padding: 20px;
     border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s;
 }
-.add-to-cart-btn {
-    background-color: var(--button-color);
-    color: white;
+.pizza-card:hover {
+    transform: translateY(-5px);
 }
-.add-to-cart-btn:hover {
-    background-color: var(--primary-color);
+
+.pizza-card-header h3 {
+    margin-top: 0;
+    color: var(--main-color);
+    font-size: 1.3em;
+    min-height: 40px; 
 }
+
+/* ... (나머지 menu.html 관련 스타일) ... */
+
+/* 최종 가격 계산 영역 */
+.price-area {
+    margin-top: auto; 
+    padding-top: 15px;
+    border-top: 2px solid var(--bg-light);
+    text-align: right;
+}
+.current-price {
+    font-size: 1.6em;
+    font-weight: bold;
+    color: var(--accent-color);
+    margin-bottom: 10px;
+}
+
+/* 계산서 버튼 */
+.add-to-bill-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--main-color);
+    color: var(--white);
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.add-to-bill-btn:hover:enabled {
+    background-color: var(--primary-color); /* 호버 색상 수정 */
+}
+/* ... (나머지 버튼 및 크러스트 스타일) ... */
