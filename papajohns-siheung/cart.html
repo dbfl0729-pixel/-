@@ -422,7 +422,12 @@
                 container.appendChild(itemElement);
             });
         }
-
+// 🎯 메뉴 페이지로 돌아가기
+window.goToMenu = function() {
+    // 장바구니 페이지로 오기 전의 메뉴 선택 페이지(menu.html)로 이동
+    // 실제 파일명에 맞춰 'menu.html'을 'index.html' 등으로 변경할 수 있습니다.
+    window.location.href = 'menu.html'; 
+}
         calculateTotal(); 
     }
 
