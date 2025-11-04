@@ -16,7 +16,7 @@ function isFriday() {
     const today = new Date();
     // 5가 금요일 (Friday)
     return today.getDay() === 5;
-    // 테스트를 위해 강제 금요일로 설정하려면: return true;
+    // 테스트를 위해 강제 금요일로 설정하려면: // return true;
 }
 
 function showAlert(message, bgColorClass) {
@@ -487,11 +487,18 @@ window.updateQuantity = function(index, change) {
 }
 
 window.removeItem = function(index) {
-    if (confirm("정말로 이 메뉴를 장바구니에서 삭제하시겠습니까?")) { 
-        const cart = getCart();
-        cart.splice(index, 1);
-        saveCart(cart);
-        renderCart();
-        showAlert('메뉴가 장바구니에서 삭제되었습니다.', 'bg-gray-500');
-    }
+    // 🎯 커스텀 확인 모달을 호출하도록 변경
+    showConfirmModal(index);
+}
+
+// ----------------------------------------------------
+// [추가] 팝업에서 "확인" 버튼 클릭 시 실행될 최종 삭제 함수
+// ----------------------------------------------------
+window.confirmRemove = function(index) {
+    const cart = getCart();
+    cart.splice(index, 1);
+    saveCart(cart);
+    renderCart();
+    showAlert('메뉴가 장바구니에서 삭제되었습니다.', 'bg-red-500');
+    hideConfirmModal(); // 모달 닫기 함수 호출
 }
