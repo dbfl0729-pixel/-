@@ -1,4 +1,19 @@
-!DOCTYPE
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍕 파파존스 피자 메뉴</title>
+
+    <link rel="stylesheet" href="./assets/css/style.css"> 
+    
+    </head>
+<body>
+    <script src="./assets/menu.js"></script>
+
+</body>
+</html>
+
     <header>
         <h1>시흥은행점 파파존스 메뉴판</h1>
     </header>
@@ -333,7 +348,7 @@
                     </div>
                 </div>
                 <div class="pizza-options">
-                    <div class="option-group"><label for="size-11">사이즈 선택:</label><select id="size-11" class="size-select"><option value="31900" data-size-code="F">패밀리(F) - 31,900원</option></select></div>
+                    <div class="option-group"><label for="size-11">사이즈 선택:</label><select id="size-11" class="size-select"><option value="F">패밀리(F) - 31,900원</option></select></div>
                     <div class="thin-note">* THIN(씬) 크러스트 전용 메뉴이며, 사이즈 및 크러스트 변경 불가.</div>
                     <div class="current-price">총 금액: <span id="total-price-11">31,900</span>원</div>
                     <button class="add-to-bill-btn" data-pizza-id="11">🧾 계산서에 담기</button>
@@ -355,7 +370,7 @@
                     </div>
                 </div>
                 <div class="pizza-options">
-                    <div class="option-group"><label for="size-12">사이즈 선택:</label><select id="size-12" class="size-select"><option value="33900" data-size-code="F">패밀리(F) - 33,900원</option></select></div>
+                    <div class="option-group"><label for="size-12">사이즈 선택:</label><select id="size-12" class="size-select"><option value="F">패밀리(F) - 33,900원</option></select></div>
                     <div class="thin-note">* THIN(씬) 크러스트 전용 메뉴이며, 사이즈 및 크러스트 변경 불가.</div>
                     <div class="current-price">총 금액: <span id="total-price-12">33,900</span>원</div>
                     <button class="add-to-bill-btn" data-pizza-id="12">🧾 계산서에 담기</button>
@@ -551,7 +566,7 @@
                     </div>
                 </div>
                 <div class="pizza-options">
-                    <div class="option-group"><label for="size-19">사이즈 선택:</label><select id="size-19" class="size-select"><option value="34900" data-size-code="F">패밀리(F) - 34,900원</option></select></div>
+                    <div class="option-group"><label for="size-19">사이즈 선택:</label><select id="size-19" class="size-select"><option value="F">패밀리(F) - 34,900원</option></select></div>
                     <div class="thin-note">* THIN(씬) 크러스트 전용 메뉴이며, 사이즈 및 크러스트 변경 불가.</div>
                     <div class="current-price">총 금액: <span id="total-price-19">34,900</span>원</div>
                     <button class="add-to-bill-btn" data-pizza-id="19">🧾 계산서에 담기</button>
@@ -689,7 +704,7 @@
                     </div>
                 </div>
                 <div class="pizza-options">
-                    <div class="option-group"><label for="size-24">사이즈 선택:</label><select id="size-24" class="size-select"><option value="26500" data-size-code="L">라지(L) - 26,500원</option></select></div>
+                    <div class="option-group"><label for="size-24">사이즈 선택:</label><select id="size-24" class="size-select"><option value="L">라지(L) - 26,500원</option></select></div>
                     <div class="crust-note-small">* 비건 전용 피자로 사이즈/크러스트 변경 불가합니다.</div>
                     <div class="current-price">총 금액: <span id="total-price-24">26,500</span>원</div>
                     <button class="add-to-bill-btn" data-pizza-id="24">🧾 계산서에 담기</button>
@@ -711,7 +726,7 @@
                     </div>
                 </div>
                 <div class="pizza-options">
-                    <div class="option-group"><label for="size-25">사이즈 선택:</label><select id="size-25" class="size-select"><option value="29500" data-size-code="L">라지(L) - 29,500원</option></select></div>
+                    <div class="option-group"><label for="size-25">사이즈 선택:</label><select id="size-25" class="size-select"><option value="L">라지(L) - 29,500원</option></select></div>
                     <div class="crust-note-small">* 비건 전용 피자로 사이즈/크러스트 변경 불가합니다.</div>
                     <div class="current-price">총 금액: <span id="total-price-25">29,500</span>원</div>
                     <button class="add-to-bill-btn" data-pizza-id="25">🧾 계산서에 담기</button>
@@ -727,182 +742,7 @@
         <p>전화번호: <a href="tel:0313136995">031-313-6995</a></p>
     </footer>
 
-    <script>
-        // 크러스트 사이즈별 추가금액 정보
-        const CRUST_ADD_PRICES = {
-            'L': { 'cheeseroll': 4000, 'goldring': 4000, 'spicygarlic': 4000, 'croissant': 6000 },
-            'F': { 'cheeseroll': 5000, 'goldring': 5000, 'spicygarlic': 5000, 'croissant': 6000 },
-            'P': { 'cheeseroll': 6000, 'goldring': 6000, 'spicygarlic': 6000, 'croissant': 6000 },
-            // R 사이즈에 대한 크러스트 추가금은 0원이며, 씬(thin) 크러스트는 L/F 사이즈에서 추가금 0원으로 처리됩니다.
-        };
-
-        // 사이즈 코드별 이름 정보
-        const SIZE_DETAILS = {
-            'R': { name: '레귤러' },
-            'L': { name: '라지' },
-            'F': { name: '패밀리' },
-            'P': { name: '파티' }
-        };
-
-        // 금액을 쉼표 형식으로 변환하는 함수
-        function formatPrice(price) {
-            return price.toLocaleString('ko-KR');
-        }
-
-        // 선택된 옵션에 따라 총 가격을 업데이트하는 함수
-        function updatePrice(pizzaId) {
-            const card = document.getElementById(`pizza-${pizzaId}`);
-            const sizeSelect = document.getElementById(`size-${pizzaId}`);
-            const crustSelect = document.getElementById(`crust-${pizzaId}`);
-            const totalPriceSpan = document.getElementById(`total-price-${pizzaId}`);
-            const crustAddText = document.getElementById(`crust-add-text-${pizzaId}`);
-            
-            if (!sizeSelect || !totalPriceSpan) return;
-
-            // sizeSelect.value는 선택된 피자의 기본 '가격'을 포함합니다.
-            const selectedOptionValue = sizeSelect.value;
-
-            // 선택된 옵션이 없거나(사이즈를 선택하세요), 가격이 0일 경우 계산 중지
-            if (selectedOptionValue === '0' || selectedOptionValue === '사이즈를 선택하세요') {
-                totalPriceSpan.textContent = '0';
-                if (crustAddText) crustAddText.textContent = '';
-                return;
-            }
-
-            const selectedSizeCode = sizeSelect.options[sizeSelect.selectedIndex].getAttribute('data-size-code');
-            
-            const basePrice = parseInt(selectedOptionValue) || 0; 
-            const selectedCrust = crustSelect ? crustSelect.value : 'original'; 
-            
-            let crustAddPrice = 0;
-            let crustLimitMessage = '';
-            let isCrustValid = true;
-            
-            if (crustAddText) crustAddText.textContent = ''; 
-
-            // 2. 크러스트 추가금 계산 로직
-            if (crustSelect && selectedSizeCode) { 
-                // 씬(THIN) 크러스트 처리 (P 사이즈 불가)
-                if (selectedCrust === 'thin') {
-                    if (selectedSizeCode === 'P') {
-                        isCrustValid = false;
-                        crustLimitMessage = '* 씬(THIN) 크러스트는 파티(P) 사이즈에 적용 불가하며, 오리지널로 계산됩니다.';
-                        crustAddPrice = 0; 
-                    } else {
-                        crustAddPrice = 0;
-                        crustAddText.textContent = `(씬 크러스트는 ${selectedSizeCode} 사이즈 무료 변경입니다.)`;
-                    }
-                } 
-                // 롤/링 크러스트 처리 (R 사이즈 불가)
-                else if (['cheeseroll', 'goldring', 'spicygarlic', 'croissant'].includes(selectedCrust)) {
-                    if (selectedSizeCode === 'R') {
-                        isCrustValid = false;
-                        crustLimitMessage = '* 레귤러(R) 사이즈는 크러스트 변경이 불가하며, 오리지널로 계산됩니다.';
-                        crustAddPrice = 0;
-                    } else {
-                        // CRUST_ADD_PRICES에서 해당 사이즈와 크러스트의 추가금액을 가져옵니다.
-                        crustAddPrice = CRUST_ADD_PRICES[selectedSizeCode] ? CRUST_ADD_PRICES[selectedSizeCode][selectedCrust] || 0 : 0;
-                    }
-                } else { // 'original'
-                    crustAddPrice = 0;
-                }
-
-                // 크러스트 유효성 메시지 표시
-                if (!isCrustValid && crustLimitMessage) {
-                    crustAddText.textContent = crustLimitMessage;
-                } else if (crustAddPrice > 0 && crustAddText) {
-                    crustAddText.textContent = `(크러스트 추가금: +${formatPrice(crustAddPrice)}원)`;
-                }
-
-            } 
-
-            // 3. 최종 금액 계산 및 표시
-            const totalPrice = basePrice + crustAddPrice;
-            totalPriceSpan.textContent = formatPrice(totalPrice);
-        }
-
-        // 초기 로드 및 이벤트 리스너 설정
-        document.addEventListener('DOMContentLoaded', () => {
-            const pizzaCards = document.querySelectorAll('.pizza-card');
-
-            pizzaCards.forEach(card => {
-                const pizzaId = card.id.split('-')[1];
-                const sizeSelect = document.getElementById(`size-${pizzaId}`);
-                const crustSelect = document.getElementById(`crust-${pizzaId}`);
-                const addButton = card.querySelector('.add-to-bill-btn');
-                
-                const availableSizes = JSON.parse(card.getAttribute('data-available-sizes'));
-                const prices = JSON.parse(card.getAttribute('data-prices'));
-                
-                // 🎯 1. 사이즈 옵션 생성 및 가격/사이즈 코드 설정
-                if (sizeSelect && availableSizes && prices) {
-                    // 이미 HTML에 고정 옵션이 있는 메뉴(THIN/VEGAN 전용)는 스킵
-                    if (sizeSelect.options.length <= 1) { 
-                        sizeSelect.innerHTML = ''; 
-                        
-                        const defaultOption = document.createElement('option');
-                        defaultOption.value = '0'; 
-                        defaultOption.textContent = '사이즈를 선택하세요';
-                        defaultOption.disabled = true;
-                        defaultOption.selected = true;
-                        defaultOption.setAttribute('data-size-code', '');
-                        sizeSelect.appendChild(defaultOption);
-
-                        // 유효한 사이즈 옵션 추가
-                        availableSizes.forEach(sizeCode => {
-                            const price = prices[sizeCode];
-                            const formattedPrice = formatPrice(price);
-                            const option = document.createElement('option');
-                            
-                            // **수정 포인트:** value에 순수 가격만 저장하고, textContent에 원하는 형식으로 표시
-                            option.value = price; 
-                            option.textContent = `${SIZE_DETAILS[sizeCode].name}(${sizeCode}) - ${formattedPrice}원`;
-                            option.setAttribute('data-size-code', sizeCode); 
-                            
-                            sizeSelect.appendChild(option);
-                        });
-                    }
-                }
-
-                // 이벤트 리스너 등록
-                if (sizeSelect) {
-                    sizeSelect.addEventListener('change', () => { updatePrice(pizzaId); }); 
-                }
-                if (crustSelect) {
-                    crustSelect.addEventListener('change', () => { updatePrice(pizzaId); });
-                }
-
-                if (addButton) {
-                    addButton.addEventListener('click', () => {
-                        const sizeOption = sizeSelect ? sizeSelect.options[sizeSelect.selectedIndex] : null;
-                        const selectedSizeText = sizeOption ? sizeOption.textContent : card.querySelector('.option-group select:first-child option').textContent; 
-                        const selectedCrustOption = crustSelect ? crustSelect.options[crustSelect.selectedIndex] : { textContent: '오리지널', value: 'original' };
-                        const finalPrice = document.getElementById(`total-price-${pizzaId}`).textContent.replace(/,/g, '');
-                        const pizzaName = card.getAttribute('data-name');
-                        
-                        // 사이즈를 선택하지 않은 경우 경고
-                        if (sizeOption && sizeOption.value === '0') {
-                            alert('🍕 사이즈를 먼저 선택해주세요!');
-                            return;
-                        }
-
-                        alert(`
-                            🧾 계산서에 추가됨:
-                            - 메뉴: ${pizzaName}
-                            - 사이즈: ${selectedSizeText}
-                            - 크러스트: ${selectedCrustOption.textContent.split('(')[0].trim()}
-                            - 최종 가격: ${finalPrice}원
-                        `);
-                    });
-                }
-
-                // 🎯 2. 초기 가격 설정 (고정 사이즈 메뉴만 초기화)
-                if (!sizeSelect || sizeSelect.options.length <= 2) { 
-                    updatePrice(pizzaId);
-                }
-            });
-        });
-    </script>
+    <script src="./assets/menu.js"></script> 
 
 </body>
 </html>
