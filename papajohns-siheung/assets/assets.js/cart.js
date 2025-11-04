@@ -1,4 +1,4 @@
-// assets/js/cart.js
+// assets/js/cart.js (파일 경로에 따라 이 주석은 무시하세요)
 
 // -----------------------------------------------------
 // 1. 데이터 정의 (25가지 피자 메뉴 및 크러스트 가격)
@@ -104,30 +104,35 @@ const updateOnePlusOneStatus = () => {
         const currentPizzaId = btn.getAttribute('data-pizza-id');
         const isSelected = onePlusOneCart.some(p => p.id === currentPizzaId);
         
+        // 1. 이미 2개가 선택 완료된 경우
         if (onePlusOneCart.length === 2) {
-            // 2개 모두 선택 완료 시, 모든 버튼 비활성화
             btn.textContent = '✅ 1+1 주문 완료!';
             btn.disabled = true;
-        } else if (isSelected) {
-            // 현재 피자가 선택되었을 경우
+        } 
+        // 2. 현재 피자가 선택되었을 경우 (1개만 선택된 상태일 때)
+        else if (isSelected) {
             const selectedItem = onePlusOneCart.find(p => p.id === currentPizzaId);
             btn.textContent = `✅ 선택됨 (${onePlusOneCart.indexOf(selectedItem) + 1}번째)`;
             btn.disabled = true;
-        } else {
-            // 아직 선택되지 않았거나 1개만 선택된 경우
+        } 
+        // 3. 아직 선택되지 않았거나 1개만 선택된 경우 (선택 가능 상태)
+        else {
             btn.textContent = '🎉 1+1 담기';
             btn.disabled = false;
         }
     });
 
-    // 1+1 주문 완료 후 10초 뒤 버튼 상태 초기화 (옵션 재선택 가능하도록)
+    // 1+1 주문 완료 후 (2개 선택 후) 10초 뒤 버튼 상태 초기화 (옵션 재선택 가능하도록)
     if (onePlusOneCart.length === 2) {
+        // 실제로는 이 시점에 계산서로 데이터를 넘겨야 하지만, 여기서는 임시로 초기화
         setTimeout(() => {
             onePlusOneCart = [];
             allOnePlusOneButtons.forEach(btn => {
                 btn.textContent = '🎉 1+1 담기';
                 btn.disabled = false;
             });
+            // 초기화 후, 화면에 보이는 가격도 다시 업데이트가 필요할 수 있으나,
+            // 1+1은 L사이즈 고정이라 옵션이 바뀔 일은 거의 없음.
         }, 10000); // 10초 후 자동 초기화
     }
 };
@@ -230,8 +235,10 @@ const populateCrustOptions = (pizzaId, crustType) => {
     } else if (crustType === 'no_thin') {
         availableCrusts = CRUST_OPTIONS.filter(c => c.value !== 'thin');
     } else if (crustType === 'spicygarliccheeseroll_only') {
+        // 오리지널과 지정 크러스트만 허용
         availableCrusts = CRUST_OPTIONS.filter(c => c.value === 'original' || c.value === 'spicygarliccheeseroll');
     } else if (crustType === 'thin_only') {
+        // 오리지널과 씬 크러스트만 허용
         availableCrusts = CRUST_OPTIONS.filter(c => c.value === 'original' || c.value === 'thin');
     }
 
@@ -258,6 +265,74 @@ const populateCrustOptions = (pizzaId, crustType) => {
     // 기본값은 항상 오리지널
     select.value = 'original'; 
     select.disabled = false;
+};
+
+
+/** 1+1 장바구니에 아이템 추가 및 처리 */
+const handleOnePlusOneAdd = (pizzaId, card) => {
+    const pizzaData = PIZZA_MENU[pizzaId];
+    const sizeSelect = document.getElementById(`size-${pizzaId}`);
+    const crustSelect = document.getElementById(`crust-${pizzaId}`);
+    
+    // 1. L 사이즈 강제 확인 (1+1은 L 사이즈만 해당)
+    if (sizeSelect.value !== 'L') {
+        alert('⚠️ 1+1 이벤트는 L 사이즈 피자만 주문 가능합니다. 사이즈를 L로 변경해 주세요.');
+        return;
+    }
+    
+    // 2. 데이터 추출
+    const selectedCrustValue = crustSelect.value;
+    const crustOption = CRUST_OPTIONS.find(c => c.value === selectedCrustValue);
+    const crustExtraPrice = getCrustExtraPrice(pizzaId, 'L', selectedCrustValue);
+
+    const itemData = {
+        id: pizzaId,
+        name: pizzaData.name,
+        size: 'L',
+        basePrice: pizzaData.prices.L,
+        crustValue: selectedCrustValue,
+        crustName: crustOption ? crustOption.name.split('(')[0].trim() : '오리지널',
+        crustExtraPrice: crustExtraPrice,
+    };
+
+    // 3. 중복 및 카트 상태 확인
+    if (onePlusOneCart.some(p => p.id === itemData.id)) {
+        alert('⚠️ 이미 선택된 피자입니다. 다른 피자를 선택해 주세요.');
+        return;
+    }
+    
+    if (onePlusOneCart.length >= 2) {
+        alert('⚠️ 이미 1+1 피자 2개를 모두 선택했습니다. 주문을 완료하거나 잠시 후 다시 시도해주세요.');
+        return;
+    }
+
+    // 4. 카트에 추가 및 상태 업데이트
+    onePlusOneCart.push(itemData);
+    updateOnePlusOneStatus(); // 버튼 상태 업데이트
+
+    if (onePlusOneCart.length === 1) {
+        alert(`✅ 파파프라이데이 1+1 - 첫 번째 피자 (${itemData.name}) 선택 완료! 이제 두 번째 피자를 선택해 주세요.`);
+        
+    } else if (onePlusOneCart.length === 2) {
+        // 최종 계산
+        const [p1, p2] = onePlusOneCart;
+        const finalPrice = calculateOnePlusOnePrice(p1, p2);
+        const maxBasePrice = Math.max(p1.basePrice, p2.basePrice);
+        const totalCrustExtraPrice = p1.crustExtraPrice + p2.crustExtraPrice;
+        
+        alert(`
+            🎉 파파프라이데이 1+1 주문 완료 (포장 전용, 배달 불가)
+
+            🍕 첫 번째 피자: ${p1.name} (L / ${p1.crustName} +${formatPrice(p1.crustExtraPrice)}원)
+            🍕 두 번째 피자: ${p2.name} (L / ${p2.crustName} +${formatPrice(p2.crustExtraPrice)}원)
+            
+            💰 계산 기준:
+            - 비싼 피자 가격: ${formatPrice(maxBasePrice)}원
+            - 크러스트 추가금 합계: ${formatPrice(totalCrustExtraPrice)}원
+            
+            💵 최종 1+1 가격: ${formatPrice(finalPrice)}원 
+        `);
+    }
 };
 
 
@@ -295,85 +370,14 @@ const createPizzaCardHTML = (pizzaId, data) => {
 
             <div class="price-area">
                 <div class="current-price">총 금액: <span id="total-price-${pizzaId}">${initialPrice}</span>원</div>
-                <button class="add-to-bill-btn ${isEvent ? 'one-plus-one-btn' : ''}" data-pizza-id="${pizzaId}">${isEvent ? '🎉 1+1 담기' : '🧾 계산서에 담기'}</button>
+                <button class="add-to-bill-btn" data-pizza-id="${pizzaId}">${isEvent ? '🎉 1+1 담기' : '🧾 계산서에 담기'}</button>
             </div>
         </div>
     `;
 };
 
 
-/** 1+1 장바구니에 아이템 추가 및 처리 */
-const handleOnePlusOneAdd = (pizzaId, card) => {
-    const pizzaData = PIZZA_MENU[pizzaId];
-    const sizeSelect = document.getElementById(`size-${pizzaId}`);
-    const crustSelect = document.getElementById(`crust-${pizzaId}`);
-    
-    // 1. L 사이즈 강제 확인 (1+1은 L 사이즈만 해당)
-    if (sizeSelect.value !== 'L') {
-        alert('⚠️ 1+1 이벤트는 L 사이즈 피자만 주문 가능합니다. 사이즈를 L로 변경해 주세요.');
-        return;
-    }
-    
-    // 2. 데이터 추출
-    const selectedCrustValue = crustSelect.value;
-    const crustOption = CRUST_OPTIONS.find(c => c.value === selectedCrustValue);
-    const crustExtraPrice = getCrustExtraPrice(pizzaId, 'L', selectedCrustValue);
-
-    const itemData = {
-        id: pizzaId,
-        name: pizzaData.name,
-        size: 'L',
-        basePrice: pizzaData.prices.L,
-        crustValue: selectedCrustValue,
-        crustName: crustOption ? crustOption.name.split('(')[0].trim() : '오리지널',
-        crustExtraPrice: crustExtraPrice,
-    };
-
-    // 3. 중복 확인
-    if (onePlusOneCart.some(p => p.id === itemData.id)) {
-        alert('⚠️ 이미 선택된 피자입니다. 다른 피자를 선택해 주세요.');
-        return;
-    }
-    
-    if (onePlusOneCart.length === 2) {
-        alert('⚠️ 이미 1+1 피자 2개를 모두 선택했습니다. 주문을 완료하거나 잠시 후 다시 시도해주세요.');
-        return;
-    }
-
-    // 4. 카트에 추가 및 상태 업데이트
-    onePlusOneCart.push(itemData);
-    updateOnePlusOneStatus(); // 버튼 상태 업데이트
-
-    if (onePlusOneCart.length === 1) {
-        alert(`✅ 파파프라이데이 1+1 - 첫 번째 피자 (${itemData.name}) 선택 완료! 이제 두 번째 피자를 선택해 주세요.`);
-        
-    } else if (onePlusOneCart.length === 2) {
-        // 최종 계산
-        const [p1, p2] = onePlusOneCart;
-        const finalPrice = calculateOnePlusOnePrice(p1, p2);
-        const maxBasePrice = Math.max(p1.basePrice, p2.basePrice);
-        const totalCrustExtraPrice = p1.crustExtraPrice + p2.crustExtraPrice;
-        
-        alert(`
-            🎉 파파프라이데이 1+1 주문 완료 (포장 전용, 배달 불가)
-
-            🍕 첫 번째 피자: ${p1.name} (L / ${p1.crustName} +${formatPrice(p1.crustExtraPrice)}원)
-            🍕 두 번째 피자: ${p2.name} (L / ${p2.crustName} +${formatPrice(p2.crustExtraPrice)}원)
-            
-            💰 계산 기준:
-            - 비싼 피자 가격: ${formatPrice(maxBasePrice)}원
-            - 크러스트 추가금 합계: ${formatPrice(totalCrustExtraPrice)}원
-            
-            💵 최종 1+1 가격: ${formatPrice(finalPrice)}원 
-        `);
-    }
-};
-
-
-// -----------------------------------------------------
-// 3. 메뉴 초기화 함수 
-// -----------------------------------------------------
-
+/** 3. 메뉴 초기화 함수 */
 const initializeMenu = () => {
     const container = document.getElementById('pizza-list-container');
     
@@ -419,6 +423,7 @@ const initializeMenu = () => {
         if (addButton) {
             if (EVENT_PIZZA_IDS.includes(pizzaId)) {
                 // 1+1 이벤트 버튼 로직 연결
+                addButton.classList.add('one-plus-one-btn'); // CSS/로직 구분을 위해 클래스 추가
                 addButton.addEventListener('click', (e) => {
                     e.preventDefault();
                     handleOnePlusOneAdd(pizzaId, card);
