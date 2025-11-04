@@ -2,8 +2,40 @@
 const PIZZA_PRICES = {
     'pizza_classic': { R: 25900, L: 30900 },
     'pizza_gourmet': { R: 29900, L: 35900 },
-    // ... 다른 피자 ID와 가격을 여기에 추가 ...
-};
+    // ... 다른 피자 ID와 가격을 여기에 추가 ...// 
+    // --- 🎯 메뉴 옵션 동적 생성 함수 ---
+function createSizeOptions(pizzaId) {
+    const card = document.getElementById(pizzaId);
+    if (!card) return;
+
+    const prices = PIZZA_PRICES[pizzaId];
+    if (!prices) return; // 가격 정보가 없으면 종료
+
+    const sizeSelect = card.querySelector('.size-select');
+    if (!sizeSelect) return;
+
+    // 기존 옵션 제거
+    sizeSelect.innerHTML = '';
+
+    // "사이즈를 선택하세요" 옵션 추가 (기본값)
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '0';
+    defaultOption.textContent = '사이즈를 선택하세요';
+    sizeSelect.appendChild(defaultOption);
+
+    // 실제 사이즈 옵션 추가
+    Object.keys(prices).forEach(sizeCode => {
+        const option = document.createElement('option');
+        const price = prices[sizeCode];
+        
+        option.value = sizeCode;
+        // 🎯 사이즈 + 가격 텍스트 생성
+        option.textContent = `${sizeCode} (${formatPrice(price)})`; 
+        option.setAttribute('data-price', price); // 나중에 필요할 수도 있는 가격 정보 저장
+
+        sizeSelect.appendChild(option);
+    });
+}
 
 const CRUST_PRICES = {
     'original': 0,
@@ -87,7 +119,10 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.pizza-card').forEach(card => {
         const pizzaId = card.id;
         
-        // 이벤트 리스너 재등록
+        // 🎯 [수정된 부분] 사이즈 옵션 동적 생성 함수 호출
+        createSizeOptions(pizzaId); 
+        
+        // 이벤트 리스너 재등록 (기존 로직)
         card.querySelectorAll('select, input[type="number"]').forEach(element => {
             element.addEventListener('change', () => updatePrice(pizzaId));
             element.addEventListener('input', () => updatePrice(pizzaId));
