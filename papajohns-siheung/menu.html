@@ -214,6 +214,10 @@
 </body>
 </html>
 
+// =================================================================
+// 🍕 피자 메뉴 페이지 (menu.html) 로직 파일 - assets/menu.js
+// =================================================================
+
 // --- 1. 상수 및 데이터 정의 ---
 
 // 장바구니 로컬 스토리지 키 (cart.js와 통일)
@@ -249,7 +253,7 @@ const PIZZA_PRICES = {
     'green_it_garden_special': { R: 29500, L: 0, F: 0, P: 0 }
 };
 
-// 크러스트 기본 추가 금액 데이터 (유저 HTML 데이터 기반)
+// 크러스트 기본 추가 금액 데이터
 const CRUST_PRICES = {
     'original': 0,
     'thin': 0,
@@ -259,7 +263,7 @@ const CRUST_PRICES = {
     'croissant': 6000
 };
 
-// 크러스트 옵션 이름 매핑 (유저 HTML 데이터 기반)
+// 크러스트 옵션 이름 매핑
 const CRUST_NAME_MAP = {
     'original': '오리지널',
     'thin': '씬 (THIN)',
@@ -298,7 +302,7 @@ const PIZZA_NAME_MAP = {
     'green_it_garden_special': '그린잇 식물성 가든스페셜'
 };
 
-// 금요일 1+1 이벤트 대상 메뉴 ID (cart.js와 통일)
+// 금요일 1+1 이벤트 대상 메뉴 ID
 const BOGO_MENU_IDS = [
     'super_papas', 
     'johns_favorite', 
@@ -309,7 +313,7 @@ const BOGO_MENU_IDS = [
     'premium_bulgogi'
 ];
 
-// --- 1.5. 피자 상세 데이터 정의 (유저 제공 데이터 기반, ID만 string으로 통일) ---
+// --- 1.5. 피자 상세 데이터 정의 ---
 const PIZZA_DATA = [
     {
         id: 'barbeque_shortrib_crunch', name: "바베큐 숏립 크런치", category: "프리미엄 피자", note: "NEW",
@@ -457,8 +461,8 @@ const PIZZA_DATA = [
     },
     {
         id: 'green_it_garden_special', name: "그린잇 식물성 가든스페셜", category: "비건 피자", note: "VEGAN, * 크러스트 선택 불가",
-        description: "전통있는 SHEESE사의 비건치즈와 신선한 채소가 어우러진 처음 맛보는 웰빙 채식 피자",
         crustOptions: ["original"], // 크러스트 변경 불가
+        description: "전통있는 SHEESE사의 비건치즈와 신선한 채소가 어우러진 처음 맛보는 웰빙 채식 피자",
         image: "images/pizzas/pizza_vegan_garden.jpg"
     }
 ];
@@ -482,12 +486,14 @@ function getPizzaById(pizzaId) {
 /** 피자의 유효한 사이즈 옵션을 <select> 태그에 채웁니다. */
 function createSizeOptions(pizzaId) {
     const prices = PIZZA_PRICES[pizzaId];
+    // ID 기반으로 요소를 찾을 때 document.getElementById를 사용하는 것이 더 안전하고 명확합니다.
     const sizeSelect = document.getElementById(`size-${pizzaId}`);
     
-    // 기본 "선택하세요" 옵션 외 모두 제거
-    if (sizeSelect.options.length > 1) {
-        sizeSelect.innerHTML = `<option value="0">사이즈를 선택하세요</option>`;
-    }
+    // 유효한 옵션이 없으면 종료
+    if (!sizeSelect) return;
+
+    // 기존 옵션 제거 후 기본 "선택하세요" 옵션 추가
+    sizeSelect.innerHTML = `<option value="0">사이즈를 선택하세요</option>`;
     
     // R, L, F, P 순서로 옵션 생성
     ['R', 'L', 'F', 'P'].forEach(size => {
@@ -508,6 +514,7 @@ function updatePrice(pizzaId) {
     const card = document.getElementById(pizzaId);
     if (!card) return;
 
+    // card.querySelector를 사용하여 해당 카드 내의 요소만 찾습니다.
     const sizeSelect = card.querySelector('.size-select');
     const crustSelect = card.querySelector('.crust-select');
     const quantityInput = card.querySelector('.quantity-input');
@@ -519,7 +526,8 @@ function updatePrice(pizzaId) {
     // 1. 값 추출
     const selectedSize = sizeSelect.value;
     const selectedCrust = crustSelect.value;
-    const quantity = parseInt(quantityInput.value) || 1;
+    // 수량은 1 미만일 수 없도록 보장
+    const quantity = Math.max(1, parseInt(quantityInput.value) || 1); 
 
     // 2. 가격 계산
     let basePrice = 0;
@@ -553,8 +561,10 @@ function updatePrice(pizzaId) {
     if (crustAddTextDisplay && pizza) {
         if (crustPrice > 0 && selectedCrust !== 'original' && selectedCrust !== 'thin') {
             crustAddTextDisplay.textContent = `(추가: ${formatPrice(crustPrice)})`;
-            crustAddTextDisplay.style.color = 'var(--primary-color)';
+            // CSS 변수를 사용하여 색상 지정
+            crustAddTextDisplay.style.color = 'var(--primary-color)'; 
         } else if (selectedCrust === 'original' && pizza.crustOptions.length === 1) {
+             // 크러스트 선택 불가 메뉴 처리 (예: 스타라이트 바질, 비건 피자)
             crustAddTextDisplay.textContent = `* 크러스트 변경 불가`;
             crustAddTextDisplay.style.color = 'var(--danger-color)';
         } else {
@@ -583,12 +593,15 @@ window.addToCart = function(pizzaId) {
         alert('사이즈를 선택해야 장바구니에 담을 수 있습니다.');
         return;
     }
+    
+    // 수량이 0 이하면 1로 설정
+    const finalQuantity = Math.max(1, quantity);
 
     // 최종 가격 계산
     const basePrice = PIZZA_PRICES[pizzaId][selectedSize];
     const crustPrice = CRUST_PRICES[selectedCrust] || 0;
     const itemPricePerUnit = basePrice + crustPrice;
-    const itemTotal = itemPricePerUnit * quantity;
+    const itemTotal = itemPricePerUnit * finalQuantity;
 
     // 장바구니 아이템 객체 생성
     const item = {
@@ -598,7 +611,7 @@ window.addToCart = function(pizzaId) {
         crustId: selectedCrust,
         crustName: CRUST_NAME_MAP[selectedCrust] || selectedCrust,
         price: itemPricePerUnit, // 단위 가격
-        quantity: quantity,
+        quantity: finalQuantity,
         total: itemTotal
     };
 
@@ -611,7 +624,7 @@ window.addToCart = function(pizzaId) {
     );
 
     if (existingItemIndex > -1) {
-        cart[existingItemIndex].quantity += quantity;
+        cart[existingItemIndex].quantity += finalQuantity;
         cart[existingItemIndex].total = cart[existingItemIndex].price * cart[existingItemIndex].quantity;
     } else {
         cart.push(item);
@@ -621,19 +634,17 @@ window.addToCart = function(pizzaId) {
     localStorage.setItem(CART_KEY, JSON.stringify(cart));
     
     // 4. 사용자에게 알림 및 페이지 이동
-    alert(`[${item.name} (${item.size}, ${item.crustName})] ${quantity}개를 장바구니에 추가했습니다.`);
+    alert(`[${item.name} (${item.size}, ${item.crustName})] ${finalQuantity}개를 장바구니에 추가했습니다.`);
     window.location.href = 'cart.html'; 
 };
 
 
 // --- 6. 피자 카드 랜더링 함수 (HTML 동적 생성) ---
 
-/**
- * 피자 데이터 객체를 기반으로 HTML 카드 요소를 생성합니다.
- */
+/** 피자 데이터 객체를 기반으로 HTML 카드 요소를 생성합니다. */
 function createPizzaCard(pizza) {
     const card = document.createElement('div');
-    card.className = 'pizza-card shadow-lg hover:shadow-xl transition duration-300';
+    card.className = 'pizza-card';
     card.id = pizza.id; 
     card.setAttribute('data-name', pizza.name);
     card.setAttribute('data-category', pizza.category);
@@ -641,6 +652,8 @@ function createPizzaCard(pizza) {
     // 크러스트 옵션 생성
     const crustOptionsHtml = pizza.crustOptions.map(crustId => {
         const crustName = CRUST_NAME_MAP[crustId] || crustId;
+        // 씬 크러스트는 L, F, P가 없는 피자에만 기본값으로 선택되도록 합니다.
+        // 현재는 첫 번째 옵션이 기본값입니다.
         return `<option value="${crustId}">${crustName}</option>`;
     }).join('');
 
@@ -694,9 +707,7 @@ function createPizzaCard(pizza) {
     return card;
 }
 
-/**
- * PIZZA_DATA를 기반으로 전체 메뉴판을 초기화하고 랜더링합니다.
- */
+/** PIZZA_DATA를 기반으로 전체 메뉴판을 초기화하고 랜더링합니다. */
 function initializePizzaCards() {
     // menu.html에 있는 각 카테고리별 ul(div) 태그의 ID를 지정
     const lists = {
@@ -731,16 +742,17 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.pizza-card').forEach(card => {
         const pizzaId = card.id;
         
-        // 2-1. 사이즈 옵션 동적 생성 (빈 select 채우기)
+        // 2-1. 사이즈 옵션 동적 생성
         createSizeOptions(pizzaId); 
         
-        // 2-2. 이벤트 리스너 재등록: 사이즈, 크러스트, 수량 변경 시 가격 업데이트
+        // 2-2. 이벤트 리스너 등록
         card.querySelectorAll('.size-select, .crust-select, .quantity-input').forEach(element => {
+            // change와 input 이벤트를 모두 사용하여 드롭다운 변경 및 수동 입력 모두 처리
             element.addEventListener('change', () => updatePrice(pizzaId));
             element.addEventListener('input', () => updatePrice(pizzaId));
         });
 
-        // 2-3. 초기 가격 설정
+        // 2-3. 초기 가격 설정 (사이즈 선택 전이므로 '사이즈를 선택하세요'로 표시)
         updatePrice(pizzaId);
     });
 });
