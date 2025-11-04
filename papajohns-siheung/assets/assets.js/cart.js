@@ -1,4 +1,4 @@
-// assets/js/cart.js (파일 경로에 따라 이 주석은 무시하세요)
+// assets/js/cart.js
 
 // -----------------------------------------------------
 // 1. 데이터 정의 (25가지 피자 메뉴 및 크러스트 가격)
@@ -108,33 +108,31 @@ const updateOnePlusOneStatus = () => {
         if (onePlusOneCart.length === 2) {
             btn.textContent = '✅ 1+1 주문 완료!';
             btn.disabled = true;
+            if (isSelected) {
+                 btn.style.backgroundColor = '#4a6c4c'; // 선택된건 티나게
+                 btn.style.color = 'white';
+            } else {
+                 btn.style.backgroundColor = '#ccc';
+                 btn.style.color = '#666';
+            }
+
         } 
         // 2. 현재 피자가 선택되었을 경우 (1개만 선택된 상태일 때)
         else if (isSelected) {
             const selectedItem = onePlusOneCart.find(p => p.id === currentPizzaId);
             btn.textContent = `✅ 선택됨 (${onePlusOneCart.indexOf(selectedItem) + 1}번째)`;
             btn.disabled = true;
+             btn.style.backgroundColor = '#669966'; // 선택된건 티나게
+             btn.style.color = 'white';
         } 
         // 3. 아직 선택되지 않았거나 1개만 선택된 경우 (선택 가능 상태)
         else {
             btn.textContent = '🎉 1+1 담기';
             btn.disabled = false;
+            btn.style.backgroundColor = '#CC0000';
+            btn.style.color = 'white';
         }
     });
-
-    // 1+1 주문 완료 후 (2개 선택 후) 10초 뒤 버튼 상태 초기화 (옵션 재선택 가능하도록)
-    if (onePlusOneCart.length === 2) {
-        // 실제로는 이 시점에 계산서로 데이터를 넘겨야 하지만, 여기서는 임시로 초기화
-        setTimeout(() => {
-            onePlusOneCart = [];
-            allOnePlusOneButtons.forEach(btn => {
-                btn.textContent = '🎉 1+1 담기';
-                btn.disabled = false;
-            });
-            // 초기화 후, 화면에 보이는 가격도 다시 업데이트가 필요할 수 있으나,
-            // 1+1은 L사이즈 고정이라 옵션이 바뀔 일은 거의 없음.
-        }, 10000); // 10초 후 자동 초기화
-    }
 };
 
 
@@ -332,6 +330,12 @@ const handleOnePlusOneAdd = (pizzaId, card) => {
             
             💵 최종 1+1 가격: ${formatPrice(finalPrice)}원 
         `);
+        
+        // 10초 후 버튼 상태 및 카트 초기화
+        setTimeout(() => {
+            onePlusOneCart = [];
+            updateOnePlusOneStatus();
+        }, 10000); 
     }
 };
 
@@ -342,13 +346,14 @@ const handleOnePlusOneAdd = (pizzaId, card) => {
 const createPizzaCardHTML = (pizzaId, data) => {
     const isEvent = EVENT_PIZZA_IDS.includes(pizzaId);
     const eventBadge = isEvent ? '<span class="event-badge">1+1</span>' : '';
-    const initialPrice = formatPrice(Object.values(data.prices)[0] || 0); // 첫 번째 사이즈 가격
+    // 첫 번째로 존재하는 사이즈의 가격을 초기 가격으로 설정합니다.
+    const initialPrice = formatPrice(Object.values(data.prices)[0] || 0); 
     const pizzaDesc = data.desc || '파파존스의 프리미엄 토핑과 신선한 도우로 만든 맛있는 피자입니다.';
 
     return `
         <div class="pizza-card menu-item" data-id="${pizzaId}" data-name="${data.name}">
             <div class="pizza-card-header">
-                <h3>${pizzaId}. ${data.name} ${eventBadge}</h3>
+                <h3>${pizzaId.substring(1)}. ${data.name} ${eventBadge}</h3>
             </div>
             <img src="images/${pizzaId}.jpg" alt="${data.name} 이미지">
             
@@ -428,6 +433,7 @@ const initializeMenu = () => {
                     e.preventDefault();
                     handleOnePlusOneAdd(pizzaId, card);
                 });
+                updateOnePlusOneStatus(); // 초기 상태 설정
             } else {
                 // 일반 주문 버튼 로직 연결
                 addButton.addEventListener('click', (e) => {
