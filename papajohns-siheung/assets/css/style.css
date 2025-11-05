@@ -1,0 +1,42 @@
+/* ---------------------------------------------------- */
+/* 올리브 테마 커스텀 변수 및 기본 스타일 */
+/* ---------------------------------------------------- */
+:root {
+    --primary-color: #059669; /* Emerald 600 - 메인 올리브/그린 */
+    --button-color: #065f46; /* Emerald 800 - 버튼 색상 */
+    --highlight-color: #f59e0b; /* Amber 500 - 강조 */
+    --bogo-color: #ef4444; /* Red 500 - 1+1 이벤트 색상 */
+}
+
+body { 
+    font-family: 'Noto Sans KR', 'Inter', sans-serif; 
+    background-color: #f7f9f7;
+}
+.header-bg {
+    background-color: white; /* 헤더 배경색 */
+}
+
+/* 탭 버튼 활성화 시 색상 적용 */
+.tab-button.active {
+    border-bottom: 2px solid var(--button-color);
+    color: var(--button-color);
+    font-weight: bold;
+}
+
+
+/* ---------------------------------------------------- */
+/* menu.html/side.html에서 사용할 스타일 (예시) */
+/* ---------------------------------------------------- */
+.pizza-card {
+    background-color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+.add-to-cart-btn {
+    background-color: var(--button-color);
+    color: white;
+}
+.add-to-cart-btn:hover {
+    background-color: var(--primary-color);
+}
