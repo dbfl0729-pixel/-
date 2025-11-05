@@ -34,8 +34,9 @@ const PIZZA_PRICES = {
 
 // **새로 추가된 피자 이름 매핑 객체**
 const PIZZA_NAME_MAP = {
-    pizza_bbq_shortrib.jpg: '바베큐 숏립 크런치',
-    pizza_mellow_corn_cream.jpg: '멜로우 콘크림',
+    // PIZZA_PRICES의 키와 일치시킴
+    'barbeque_shortrib_crunch': '바베큐 숏립 크런치',
+    'mellow_corn_cream': '멜로우 콘크림',
     'starlight_basil': '스타라이트 바질',
     'double_hot_spicy_mexican': '더블 핫 앤 스파이시 멕시칸',
     'super_papas': '수퍼 파파스',
