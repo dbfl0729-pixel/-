@@ -428,10 +428,16 @@
             </div>
         </div>
 
-
-        <div class="menu-section crust-notice">
-            <h2>⚠️ 크러스트 변경 및 추가금 안내</h2>
-            <p><strong>(R 사이즈는 크러스트 변경이 불가합니다.)</strong></p>
+<div class="menu-section crust-info-section">
+    <h2>❗ 피자 주문 시 참고 사항</h2>
+    
+    <div class="accordion-item">
+        <div class="accordion-header" onclick="toggleAccordion('crust-guide')">
+            <span>크러스트 변경 및 추가 금액 안내</span>
+            <span class="icon" id="crust-guide-icon">+</span>
+        </div>
+        <div class="accordion-content" id="crust-guide-content">
+            <p style="color: var(--primary-red); font-weight: bold;">(R 사이즈는 크러스트 변경이 불가합니다.)</p>
             <table>
                 <thead>
                     <tr>
@@ -450,40 +456,40 @@
                     </tr>
                     <tr>
                         <td>크루아상 크러스트</td>
-                        <td colspan="3">사이즈 상관없이 <strong>+6,000원</strong></td>
+                        <td colspan="3">사이즈 상관없이 **+6,000원**</td>
                     </tr>
                     <tr>
                         <td>씬(Thin) 크러스트</td>
                         <td>-</td>
-                        <td>무료 변경</td>
-                        <td>-</td>
+                        <td colspan="2">무료 변경</td>
                     </tr>
                 </tbody>
             </table>
-
-            <div class="event-rule">
-                🔥 <strong>[금요일 1+1 행사] 크러스트 추가금 안내 (L 사이즈 기준)</strong>
+        </div>
+    </div>
+    
+    <div class="accordion-item">
+        <div class="accordion-header" onclick="toggleAccordion('event-guide')">
+            <span>금요일 1+1 행사 및 추가 금액 상세 안내</span>
+            <span class="icon" id="event-guide-icon">+</span>
+        </div>
+        <div class="accordion-content" id="event-guide-content">
+            <div class="event-info-box">
+                <h4>🔥 매주 금요일 1+1 행사</h4>
                 <ul>
-                    <li>**골드링 / 치즈롤 / 스파이시 갈릭 치즈롤** 변경 시: 1판당 **4,000원** 추가 (2판 총 **8,000원**)</li>
-                    <li>**크루아상** 변경 시: 1판당 **6,000원** 추가 (2판 총 **12,000원**)</li>
-                    <li>*1+1 행사는 오리지널 크러스트 또는 위의 크러스트만 선택 가능하며, 씬(Thin) 크러스트는 행사 제외입니다.*</li>
+                    <li>**적용**: 라지 사이즈 이상 피자 1판 주문 시, 같은 사이즈 피자 1판 추가 무료 (자동 적용)</li>
+                    <li>**결제 기준**: 2판 중 **가격이 비싼 피자 1판**으로 결제 금액 책정</li>
+                    <li>**크러스트 추가금 (L기준)**: 골드링/갈릭 치즈롤 (+4,000원), 크루아상 (+6,000원)</li>
+                    <li>**제외**: 씬(Thin) 크러스트는 행사 제외됩니다.</li>
                 </ul>
             </div>
             
-            <div class="thin-goldring">
-                ✨ **씬(Thin) 크러스트 골드링 추가** (F 사이즈에만 적용)
-                <ul>
-                    <li>씬 전용 피자 3종(**크리스피 치즈 페퍼로니, 크리스피 치즈 트리플, 슈림프 알프레도**)을 제외한 F 사이즈 피자에 **5,000원** 추가 시 골드링 크러스트로 변경 가능합니다.</li>
-                </ul>
+            <div class="event-info-box">
+                <h4>✨ 씬(Thin) 크러스트 골드링 추가 (F 사이즈만)</h4>
+                <p>특정 씬 피자 3종을 제외한 F 사이즈 피자에 **5,000원** 추가 시 골드링 크러스트로 변경 가능합니다.</p>
             </div>
         </div>
     </div>
+</div>
 
-    <footer>
-        <p><strong>파파존스피자 시흥은행점</strong> | 전화번호: <a href="tel:0313136995">031-313-6995</a></p>
-    </footer>
-
-    <script src="menu.js"></script> 
-
-</body>
-</html>
+<script src="menu.js"></script>
