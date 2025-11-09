@@ -45,7 +45,7 @@ const CRUST_PRICES = {
     'gold_ring': 5000
 };
 
-  // 금요일 1+1 이벤트 대상 메뉴 ID (L사이즈민 가능)
+  // 금요일 1+1 이벤트 대상 메뉴 ID (L사이즈만 가능)
 const BOGO_MENU_IDS = [
     'super_papas', 'irish_potato', 'johns_favorite', 'spicy_chicken_ranch', 
     'margherita', 'pepperoni', 'hawaiian', 'six_cheese', 'garden_special', 
