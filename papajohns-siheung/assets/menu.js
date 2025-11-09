@@ -1,9 +1,9 @@
-// menu.js (최종 - 할인 및 계산 로직 포함)
+// menu.js (최종 - 할인, 계산 로직, 아코디언 기능 포함)
 
 let cart = JSON.parse(localStorage.getItem('papaJohnsCart')) || [];
 let currentCoupon = null; // 적용된 할인 코드 (퍼센트 할인)
 
-// --- 기본 장바구니 기능 (이전과 동일) ---
+// --- 기본 장바구니 기능 ---
 
 function parsePrice(priceText) {
     if (!priceText) return 0;
@@ -307,5 +307,32 @@ function completeOrder() {
         renderCart();
     } else {
         alert("장바구니가 비어있습니다. 메뉴를 담아주세요!");
+    }
+}
+
+// --- 크러스트 안내 디자인 개선을 위한 아코디언 기능 (추가됨) ---
+/**
+ * 아코디언(접었다 펴는) 기능을 토글합니다.
+ * @param {string} id - 콘텐츠 영역의 ID (예: 'crust-guide', 'event-guide')
+ */
+function toggleAccordion(id) {
+    const content = document.getElementById(id + '-content');
+    const icon = document.getElementById(id + '-icon');
+    
+    if (content.style.display === "block") {
+        content.style.display = "none";
+        icon.textContent = "+";
+    } else {
+        // 다른 모든 아코디언 닫기
+        document.querySelectorAll('.accordion-content').forEach(item => {
+            if (item.id !== id + '-content') {
+                item.style.display = 'none';
+                document.getElementById(item.id.replace('-content', '-icon')).textContent = '+';
+            }
+        });
+        
+        // 현재 아코디언 열기
+        content.style.display = "block";
+        icon.textContent = "−";
     }
 }
