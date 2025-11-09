@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🍕 파파존스 피자 메뉴</title>
+    <title>🍕 파파존스 사이드 메뉴</title>
     <style>
         :root {
             --main-color: #4a6c4c;
@@ -49,6 +49,11 @@
             justify-content: center;
             flex-wrap: wrap;
         }
+        /* 사이드 메뉴 활성화 표시 */
+        nav ul li a[href="sides.html"] {
+            background-color: var(--accent-color);
+            color: var(--text-color);
+        }
         nav ul li a {
             display: block;
             color: var(--text-color);
@@ -57,231 +62,103 @@
             padding: 15px 20px;
             transition: background-color 0.2s, color 0.2s;
         }
-        nav ul li a[href="pizza.html"] {
-            background-color: var(--accent-color);
-            color: var(--text-color);
-        }
         nav ul li a:hover {
             background-color: var(--accent-color);
         }
 
-        /* 크러스트 요약 안내 스타일 */
-        .crust-summary {
-            background-color: var(--white);
-            padding: 20px;
-            margin: 20px auto;
-            max-width: 1200px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        }
-        .crust-summary h3 {
-            color: var(--main-color);
-            margin-top: 0;
-            margin-bottom: 10px;
-            font-size: 1.5em;
-            border-bottom: 2px solid var(--accent-color);
-            padding-bottom: 5px;
-        }
-        .crust-list-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-            list-style: none;
-            padding: 0;
-        }
-        .crust-list-grid li {
-            padding: 10px;
-            border-radius: 5px;
-            background-color: #f4f4f4;
-            font-size: 0.9em;
-        }
-        .crust-list-grid strong {
-            color: var(--text-color);
-            display: block;
-            margin-bottom: 3px;
-        }
-        .crust-note-price {
-            margin-top: 15px;
-            padding: 10px;
-            background-color: #fff0d4;
-            border-left: 5px solid var(--accent-color);
-            font-weight: bold;
-            color: var(--danger-color);
-            line-height: 1.5;
-        }
-        .crust-note-price span {
-            color: var(--text-color);
-        }
-
-        /* 피자 메뉴판 스타일 */
-        .pizza-menu-container {
+        /* 메뉴판 컨테이너 스타일 */
+        .content-wrapper {
             padding: 20px;
             max-width: 1200px;
             margin: 0 auto;
         }
-        .pizza-menu-container h2 {
-            text-align: center;
+        
+        .menu-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        .menu-section h2 {
             color: var(--main-color);
-            font-size: 2.2em;
-            margin-bottom: 30px;
-            border-bottom: 3px solid var(--accent-color);
+            font-size: 2em;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--accent-color);
             padding-bottom: 10px;
         }
-        .pizza-list {
+
+        /* Grid 레이아웃 (style.css에서 가져옴) */
+        .menu-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 30px;
         }
-        .pizza-card {
-            background-color: var(--white);
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            overflow: hidden;
-            transition: transform 0.3s;
+
+        /* ⭐️ 사이드 메뉴 아이템 (menu-item으로 통일) */
+        .menu-item {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
             display: flex;
             flex-direction: column;
         }
-        .pizza-card:hover {
-            transform: translateY(-5px);
-        }
-        .pizza-card-header {
-            padding: 15px;
-            background-color: var(--main-color);
-            color: var(--white);
-        }
-        .pizza-card-header h3 {
-            margin: 0;
-            font-size: 1.4em;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .pizza-card-header h3 span.badge {
-            background-color: var(--danger-color);
-            color: white;
-            padding: 4px 8px;
-            border-radius: 5px;
-            font-size: 0.7em;
-            font-weight: bold;
-        }
-        .pizza-card img {
+
+        .menu-item img {
             width: 100%;
-            height: 200px;
-            object-fit: cover;
-        }
-        .pizza-card-body {
-            padding: 15px;
-            flex-grow: 1;
-        }
-        .pizza-card-body p {
-            font-size: 0.9em;
-            color: #666;
+            height: auto;
+            border-radius: 6px;
             margin-bottom: 10px;
         }
-        /* 가격 노트 스타일 (수정됨) */
-        .pizza-price-notes {
-            margin-bottom: 15px;
-            border: 1px solid #eee;
-            border-radius: 5px;
-            padding: 10px;
-            background-color: #fcfcfc;
-        }
-        .price-item {
-            font-size: 0.9em;
-            margin-bottom: 3px;
-            color: var(--text-color);
-        }
-        .price-item strong {
-            color: var(--main-color);
-            margin-right: 5px;
-        }
-        /* 계산/옵션 선택 UX 개선 스타일 */
-        .pizza-options {
-            padding: 15px;
-            border-top: 1px dashed #ddd;
-            background-color: #f9f9f9;
-        }
-        .option-group {
-            margin-bottom: 10px;
-        }
-        .option-group label {
-            display: block;
+
+        .menu-item h3 {
+            font-size: 1.2em;
             font-weight: bold;
+            margin-top: 0;
             margin-bottom: 5px;
             color: var(--text-color);
         }
-        .option-group select {
-            width: 100%;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            box-sizing: border-box;
-            font-size: 1em;
-            background-color: var(--white);
-        }
-        .current-price {
-            text-align: right;
-            font-size: 1.3em;
-            font-weight: bold;
-            color: var(--danger-color);
-            margin-top: 10px;
-            margin-bottom: 10px;
-            padding-top: 5px;
-            border-top: 1px solid #eee;
-        }
-        .current-price small {
-            font-size: 0.7em;
+        .menu-item .description {
+            font-size: 0.9em;
             color: #666;
-            font-weight: normal;
-            margin-left: 5px;
+            margin-bottom: 10px;
+            flex-grow: 1;
         }
-        .add-to-bill-btn {
-            display: block;
-            width: 100%;
-            padding: 15px;
+        
+        /* ⭐️ 가격/버튼 박스 (price-box로 통일) */
+        .price-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+            margin-top: auto; /* 하단에 붙이기 */
+        }
+        
+        /* ⭐️ 가격 텍스트 (.price로 통일) */
+        .price-box .price {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: var(--danger-color); /* 강조색 */
+        }
+
+        .add-to-cart-btn {
             background-color: var(--main-color);
             color: var(--white);
             border: none;
-            border-radius: 5px;
-            font-size: 1.1em;
-            font-weight: bold;
+            padding: 8px 15px;
+            border-radius: 4px;
             cursor: pointer;
+            font-size: 0.9em;
+            font-weight: bold;
             transition: background-color 0.2s;
-            margin-top: 15px;
         }
-        .add-to-bill-btn:hover {
+        .add-to-cart-btn:hover {
             background-color: #3b523c;
         }
-        .crust-note-small {
-            font-size: 0.8em;
-            color: var(--danger-color);
-            text-align: center;
-            padding: 10px 0;
-            background-color: #fff0f0;
-            border-radius: 5px;
-            margin-top: 5px;
-        }
-        .vegan-badge {
-            background-color: #4CAF50 !important; /* 녹색 */
-        }
-        .thin-note {
-            font-size: 0.8em;
-            color: var(--info-color);
-            text-align: center;
-            padding: 10px 0;
-            background-color: #f0f8ff;
-            border-radius: 5px;
-            margin-top: 5px;
-        }
-        .sp-crust-only-note {
-            font-size: 0.8em;
-            color: var(--danger-color);
-            text-align: center;
-            padding: 10px 0;
-            background-color: #fff0f0;
-            border-radius: 5px;
-            margin-top: 5px;
-        }
+        
         /* (푸터 스타일은 이전과 동일) */
         footer {
             background-color: #333;
@@ -299,7 +176,7 @@
             text-decoration: none;
         }
     </style>
-</head>
+    <link rel="stylesheet" href="style.css"> </head>
 <body>
 
     <header>
@@ -317,63 +194,65 @@
         </ul>
     </nav>
     
+    <div class="content-wrapper"> <div class="menu-section">
+            <h2>🍪 디저트 & 브레드</h2>
             <div class="menu-grid">
                 
-                <div class="menu-card" data-menu-name="메가 초코칩 쿠키" data-menu-price="11,500원">
+                <div class="menu-item" data-menu-name="메가 초코칩 쿠키" data-menu-price="11,500원">
                     <img src="assets/images/sides/mega_choco_cookie.jpg" alt="메가 초코칩 쿠키 이미지">
                     <div class="menu-info">
                         <h3>메가 초코칩 쿠키</h3>
                         <p class="description">크고 진한 초콜릿 풍미의 메가 사이즈 쿠키.</p>
-                        <div class="price-tag">
-                            <span>11,500원</span>
+                        <div class="price-box">
+                            <span class="price">11,500원</span>
                             <button class="add-to-cart-btn">담기</button>
                         </div>
                     </div>
                 </div>
 
-                <div class="menu-card" data-menu-name="더블 초코칩 브라우니" data-menu-price="12,900원">
+                <div class="menu-item" data-menu-name="더블 초코칩 브라우니" data-menu-price="12,900원">
                     <img src="assets/images/sides/double_choco_brownie.jpg" alt="더블 초코칩 브라우니 이미지">
                     <div class="menu-info">
                         <h3>더블 초코칩 브라우니</h3>
                         <p class="description">진한 초콜릿 풍미가 가득한 달콤한 브라우니.</p>
-                        <div class="price-tag">
-                            <span>12,900원</span>
+                        <div class="price-box">
+                            <span class="price">12,900원</span>
                             <button class="add-to-cart-btn">담기</button>
                         </div>
                     </div>
                 </div>
 
-                <div class="menu-card" data-menu-name="치즈 스틱" data-menu-price="9,900원">
+                <div class="menu-item" data-menu-name="치즈 스틱" data-menu-price="9,900원">
                     <img src="assets/images/sides/cheesestick.jpg" alt="치즈 스틱 이미지">
                     <div class="menu-info">
                         <h3>치즈 스틱</h3>
                         <p class="description">최상급 모짜렐라 치즈로 만든 쫄깃하고 고소한 치즈 스틱.</p>
-                        <div class="price-tag">
-                            <span>9,900원</span>
+                        <div class="price-box">
+                            <span class="price">9,900원</span>
                             <button class="add-to-cart-btn">담기</button>
                         </div>
                     </div>
                 </div>
                 
-                <div class="menu-card" data-menu-name="베이컨 치즈 스틱" data-menu-price="10,900원">
+                <div class="menu-item" data-menu-name="베이컨 치즈 스틱" data-menu-price="10,900원">
                     <img src="assets/images/sides/side_bacon_cheese_stick.jpg" alt="베이컨 치즈 스틱 이미지">
                     <div class="menu-info">
                         <h3>베이컨 치즈 스틱</h3>
                         <p class="description">고소한 베이컨이 추가된 치즈 스틱의 업그레이드 버전.</p>
-                        <div class="price-tag">
-                            <span>10,900원</span>
+                        <div class="price-box">
+                            <span class="price">10,900원</span>
                             <button class="add-to-cart-btn">담기</button>
                         </div>
                     </div>
                 </div>
                 
-                <div class="menu-card" data-menu-name="브래드 스틱" data-menu-price="6,900원">
+                <div class="menu-item" data-menu-name="브래드 스틱" data-menu-price="6,900원">
                     <img src="assets/images/sides/side_bread_stick.jpg" alt="브래드 스틱 이미지">
                     <div class="menu-info">
                         <h3>브래드 스틱</h3>
                         <p class="description">갈릭 파마산 시즈닝을 입힌 바삭하고 고소한 브레드 스틱.</p>
-                        <div class="price-tag">
-                            <span>6,900원</span>
+                        <div class="price-box">
+                            <span class="price">6,900원</span>
                             <button class="add-to-cart-btn">담기</button>
                         </div>
                     </div>
@@ -385,85 +264,85 @@
             <h2>🍝 파스타 & 바이트</h2>
             <div class="menu-grid">
                 
-                <div class="menu-card" data-menu-name="파파스 파스타 (미트)" data-menu-price="8,900원">
+                <div class="menu-item" data-menu-name="파파스 파스타 (미트)" data-menu-price="8,900원">
                     <img src="assets/images/sides/papa_pasta_meat.jpg" alt="미트 파파스 파스타 이미지">
                     <div class="menu-info">
                         <h3>파파스 파스타 (미트)</h3>
                         <p class="description">풍성한 미트 소스와 파파존스 특제 치즈를 듬뿍 올린 오븐 파스타.</p>
-                        <div class="price-tag">
-                            <span>8,900원</span>
+                        <div class="price-box">
+                            <span class="price">8,900원</span>
                             <button class="add-to-cart-btn">담기</button>
                         </div>
                     </div>
                 </div>
 
-                <div class="menu-card" data-menu-name="파파스 파스타 (로제)" data-menu-price="8,900원">
+                <div class="menu-item" data-menu-name="파파스 파스타 (로제)" data-menu-price="8,900원">
                     <img src="assets/images/sides/papa_pasta_rose.jpg" alt="로제 파파스 파스타 이미지">
                     <div class="menu-info">
                         <h3>파파스 파스타 (로제)</h3>
                         <p class="description">토마토와 크림의 조화가 부드러운 오븐 로제 파스타.</p>
-                        <div class="price-tag">
-                            <span>8,900원</span>
+                        <div class="price-box">
+                            <span class="price">8,900원</span>
                             <button class="add-to-cart-btn">담기</button>
                         </div>
                     </div>
                 </div>
 
-                <div class="menu-card" data-menu-name="파파스 파스타 (화이트)" data-menu-price="8,900원">
+                <div class="menu-item" data-menu-name="파파스 파스타 (화이트)" data-menu-price="8,900원">
                     <img src="assets/images/sides/papa_pasta_white.jpg" alt="화이트 파파스 파스타 이미지">
                     <div class="menu-info">
                         <h3>파파스 파스타 (화이트)</h3>
                         <p class="description">진하고 부드러운 화이트 크림 소스가 매력적인 오븐 파스타.</p>
-                        <div class="price-tag">
-                            <span>8,900원</span>
+                        <div class="price-box">
+                            <span class="price">8,900원</span>
                             <button class="add-to-cart-btn">담기</button>
                         </div>
                     </div>
                 </div>
 
-                <div class="menu-card" data-menu-name="슈프림 파파 바이트" data-menu-price="8,900원">
+                <div class="menu-item" data-menu-name="슈프림 파파 바이트" data-menu-price="8,900원">
                     <img src="assets/images/sides/supreme_papa_bite.jpg" alt="슈프림 파파 바이트 이미지">
                     <div class="menu-info">
                         <h3>슈프림 파파 바이트</h3>
                         <p class="description">피자 토핑을 바이트 형태로 담은 미니 피자.</p>
-                        <div class="price-tag">
-                            <span>8,900원</span>
+                        <div class="price-box">
+                            <span class="price">8,900원</span>
                             <button class="add-to-cart-btn">담기</button>
                         </div>
                     </div>
                 </div>
                 
-                <div class="menu-card" data-menu-name="치킨 파마산 파파 바이트" data-menu-price="8,900원">
+                <div class="menu-item" data-menu-name="치킨 파마산 파파 바이트" data-menu-price="8,900원">
                     <img src="assets/images/sides/side_chicken_parmesan_bite.jpg" alt="치킨 파마산 파파 바이트 이미지">
                     <div class="menu-info">
                         <h3>치킨 파마산 파파 바이트</h3>
                         <p class="description">파마산 치즈와 치킨이 어우러진 바이트 피자.</p>
-                        <div class="price-tag">
-                            <span>8,900원</span>
+                        <div class="price-box">
+                            <span class="price">8,900원</span>
                             <button class="add-to-cart-btn">담기</button>
                         </div>
                     </div>
                 </div>
 
-                <div class="menu-card" data-menu-name="이탈리안 파파디아즈" data-menu-price="10,900원">
+                <div class="menu-item" data-menu-name="이탈리안 파파디아즈" data-menu-price="10,900원">
                     <img src="assets/images/sides/side_italian_papadias.jpg" alt="이탈리안 파파디아즈 이미지">
                     <div class="menu-info">
                         <h3>이탈리안 파파디아즈</h3>
                         <p class="description">접어 먹는 피자, 살라미와 페퍼로니가 가득.</p>
-                        <div class="price-tag">
-                            <span>10,900원</span>
+                        <div class="price-box">
+                            <span class="price">10,900원</span>
                             <button class="add-to-cart-btn">담기</button>
                         </div>
                     </div>
                 </div>
 
-                <div class="menu-card" data-menu-name="더블 치즈버거 파파디아즈" data-menu-price="10,900원">
+                <div class="menu-item" data-menu-name="더블 치즈버거 파파디아즈" data-menu-price="10,900원">
                     <img src="assets/images/sides/side_cheeseburger_papadias.jpg" alt="더블 치즈버거 파파디아즈 이미지">
                     <div class="menu-info">
                         <h3>더블 치즈버거 파파디아즈</h3>
                         <p class="description">더블 치즈버거 맛을 담은 핫 샌드위치.</p>
-                        <div class="price-tag">
-                            <span>10,900원</span>
+                        <div class="price-box">
+                            <span class="price">10,900원</span>
                             <button class="add-to-cart-btn">담기</button>
                         </div>
                     </div>
@@ -475,49 +354,49 @@
             <h2>🍗 치킨 & 샐러드</h2>
             <div class="menu-grid">
                 
-                <div class="menu-card" data-menu-name="치킨 스트립" data-menu-price="9,900원">
+                <div class="menu-item" data-menu-name="치킨 스트립" data-menu-price="9,900원">
                     <img src="assets/images/sides/chicken_strip.jpg" alt="치킨 스트립 이미지">
                     <div class="menu-info">
                         <h3>치킨 스트립</h3>
                         <p class="description">겉은 바삭, 속은 촉촉한 닭가슴살 순살 치킨.</p>
-                        <div class="price-tag">
-                            <span>9,900원</span>
+                        <div class="price-box">
+                            <span class="price">9,900원</span>
                             <button class="add-to-cart-btn">담기</button>
                         </div>
                     </div>
                 </div>
 
-                <div class="menu-card" data-menu-name="파파스 윙" data-menu-price="9,900원">
+                <div class="menu-item" data-menu-name="파파스 윙" data-menu-price="9,900원">
                     <img src="assets/images/sides/papa_wing.jpg" alt="파파스 윙 이미지">
                     <div class="menu-info">
                         <h3>파파스 윙</h3>
                         <p class="description">오븐에 구워 기름기를 뺀 담백하고 쫄깃한 닭봉/닭날개.</p>
-                        <div class="price-tag">
-                            <span>9,900원</span>
+                        <div class="price-box">
+                            <span class="price">9,900원</span>
                             <button class="add-to-cart-btn">담기</button>
                         </div>
                     </div>
                 </div>
 
-                <div class="menu-card" data-menu-name="파파 코울슬로" data-menu-price="2,400원">
+                <div class="menu-item" data-menu-name="파파 코울슬로" data-menu-price="2,400원">
                     <img src="assets/images/sides/papa_coleslaw.jpg" alt="파파 코울슬로 이미지">
                     <div class="menu-info">
                         <h3>파파 코울슬로</h3>
                         <p class="description">상큼하고 아삭한 양배추 샐러드.</p>
-                        <div class="price-tag">
-                            <span>2,400원</span>
+                        <div class="price-box">
+                            <span class="price">2,400원</span>
                             <button class="add-to-cart-btn">담기</button>
                         </div>
                     </div>
                 </div>
                 
-                <div class="menu-card" data-menu-name="파파 콘샐러드" data-menu-price="2,400원">
+                <div class="menu-item" data-menu-name="파파 콘샐러드" data-menu-price="2,400원">
                     <img src="assets/images/sides/papa_cornsalad.jpg" alt="파파 콘샐러드 이미지">
                     <div class="menu-info">
                         <h3>파파 콘샐러드</h3>
                         <p class="description">달콤한 옥수수 콘과 드레싱으로 만든 샐러드.</p>
-                        <div class="price-tag">
-                            <span>2,400원</span>
+                        <div class="price-box">
+                            <span class="price">2,400원</span>
                             <button class="add-to-cart-btn">담기</button>
                         </div>
                     </div>
