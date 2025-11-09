@@ -448,7 +448,7 @@ footer {
 
 .item-price {
     font-weight: 700;
-    color: var(--color-dark);
+    color: var(--color-accent);
     margin-left: 20px;
     white-space: nowrap; /* 줄바꿈 방지 */
 }
