@@ -3,156 +3,205 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>시흥은행점 파파존스 메뉴판</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+KR:wght@400;700;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <title>🍕 시흥은행점 파파존스 메뉴판</title>
     <style>
-        /* 올리브 테마 커스텀 변수 및 스타일 (장바구니 파일 참고) */
+        /* 트렌디한 감성을 위한 기본 스타일 */
         :root {
-            --primary-color: #059669; /* Emerald 600 - 메인 올리브/그린 */
-            --button-color: #065f46; /* Emerald 800 - 버튼 색상 */
-            --highlight-color: #f59e0b; /* Amber 500 - 강조 */
-            --bogo-color: #ef4444; /* Red 500 - 1+1 이벤트 색상 */
+            --main-color: #4a6c4c; /* 올리브색 계열 */
+            --accent-color: #ffcc00; /* 파파존스 옐로우 */
+            --text-color: #333;
+            --white: #ffffff;
+            --font-family: 'Malgun Gothic', 'Arial', sans-serif;
         }
-        body { 
-            font-family: 'Noto Sans KR', 'Inter', sans-serif;
-            background-color: #f7f9f7;
-            color: #333;
+
+        body {
+            font-family: var(--font-family);
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+            color: var(--text-color);
         }
-        .header-bg {
-            background-color: var(--primary-color);
+
+        /* 1. 상단 배너 (Header) */
+        header {
+            background-color: var(--main-color);
+            color: var(--white);
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        .nav-button {
-            transition: all 0.2s;
-            /* 1+1 이벤트 강조를 위한 금요일 색상 */
-            border: 1px solid var(--primary-color);
+        header h1 {
+            margin: 0;
+            font-size: 1.5em;
+            letter-spacing: 2px;
         }
-        /* 메인 콘텐츠 카드 */
-        .main-card {
-            border-left: 5px solid var(--primary-color);
+
+        /* 2. 네비게이션 버튼 (바로가기) */
+        nav {
+            background-color: var(--white);
+            border-bottom: 1px solid #eee;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
-        /* 1+1 카드 강조 */
-        .bogo-card {
-            border-left: 5px solid var(--bogo-color);
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap; /* 버튼이 많을 경우 줄 바꿈 */
         }
-        /* 주문 방식 버튼 */
-        .order-guide-link {
-            transition: background-color 0.2s, transform 0.1s;
+        nav ul li a {
+            display: block;
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: bold;
+            padding: 15px 20px;
+            transition: background-color 0.2s, color 0.2s;
         }
+        nav ul li a:hover, nav ul li a.active {
+            background-color: var(--accent-color);
+            color: var(--text-color);
+        }
+
+        /* 메인 콘텐츠 영역 */
+        .main-content {
+            padding: 40px 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .welcome-section {
+            background-color: var(--white);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .welcome-section h2 {
+            color: var(--main-color);
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+        .welcome-section p {
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+        
+        /* 1+1 이벤트 및 주문 안내 섹션 */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .info-box {
+            background-color: var(--white);
+            padding: 25px;
+            border-radius: 12px;
+            border: 2px solid var(--accent-color);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+        .info-box h3 {
+            color: var(--main-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .event-text strong {
+            color: #d9534f; /* 강렬한 빨간색 */
+            font-size: 1.2em;
+        }
+        .order-link {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: var(--text-color);
+            padding: 10px 20px;
+            margin-top: 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+        .order-link:hover {
+            background-color: #ffc200;
+        }
+
+        /* 3. 하단 정보 (Footer) */
+        footer {
+            background-color: #333;
+            color: #ccc;
+            padding: 20px 0;
+            text-align: center;
+            font-size: 0.9em;
+            margin-top: 40px;
+        }
+        footer p {
+            margin: 5px 0;
+        }
+        footer a {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+
     </style>
 </head>
-<body class="min-h-screen">
-    <div class="max-w-4xl mx-auto p-4 sm:p-8">
-        <header class="header-bg shadow-xl p-6 mb-8 rounded-xl">
-            <h1 class="text-3xl sm:text-4xl font-extrabold text-white text-center">
-                🍕 시흥은행점 파파존스 메뉴판
-            </h1>
-        </header>
+<body>
 
-        <nav class="mb-10">
-            <h2 class="text-xl font-bold text-gray-700 mb-4 flex items-center">
-                <i data-lucide="chevrons-right" class="w-5 h-5 mr-2 text-[var(--primary-color)]"></i> 
-                메뉴 바로가기
-            </h2>
-            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                <a href="#menu-pizza" class="nav-button bg-white text-[var(--primary-color)] hover:bg-[var(--primary-color)] hover:text-white p-3 rounded-lg text-center font-bold shadow-md flex items-center justify-center">
-                    <i data-lucide="pizza" class="w-5 h-5 mr-2"></i> 피자
-                </a>
-                <a href="#menu-side" class="nav-button bg-white text-[var(--primary-color)] hover:bg-[var(--primary-color)] hover:text-white p-3 rounded-lg text-center font-bold shadow-md flex items-center justify-center">
-                    <i data-lucide="drumstick" class="w-5 h-5 mr-2"></i> 사이드
-                </a>
-                <a href="#menu-drink" class="nav-button bg-white text-[var(--primary-color)] hover:bg-[var(--primary-color)] hover:text-white p-3 rounded-lg text-center font-bold shadow-md flex items-center justify-center">
-                    <i data-lucide="cup-soda" class="w-5 h-5 mr-2"></i> 음료 & 소스
-                </a>
-                <a href="#discount-info" class="nav-button bg-white text-[var(--primary-color)] hover:bg-[var(--primary-color)] hover:text-white p-3 rounded-lg text-center font-bold shadow-md flex items-center justify-center">
-                    <i data-lucide="tag" class="w-5 h-5 mr-2"></i> 제휴사 할인
-                </a>
-                <a href="cart_friday_bogo_v7.txt" class="nav-button bg-white text-[var(--primary-color)] hover:bg-[var(--primary-color)] hover:text-white p-3 rounded-lg text-center font-bold shadow-md flex items-center justify-center">
-                    <i data-lucide="shopping-cart" class="w-5 h-5 mr-2"></i> 장바구니
-                </a>
-                <a href="tel:0313136995" class="nav-button bg-white text-[var(--button-color)] hover:bg-gray-100 p-3 rounded-lg text-center font-bold shadow-md flex items-center justify-center col-span-2 sm:col-span-1 border-[var(--button-color)]">
-                    <i data-lucide="phone" class="w-5 h-5 mr-2"></i> 전화 주문
-                </a>
-            </div>
-        </nav>
-        
-        <main class="space-y-8">
-            
-            <div class="main-card p-6 bg-white rounded-xl shadow-lg">
-                <h2 class="text-2xl font-extrabold text-[var(--button-color)] mb-3">
-                    <i data-lucide="hand-metal" class="w-6 h-6 inline-block mr-2"></i>
-                    안녕하세요, 시흥은행점 파파존스입니다!
-                </h2>
-                <p class="text-gray-600 leading-relaxed">
-                    최고 품질의 피자와 신선한 재료로 고객님의 식탁을 책임지겠습니다. 
-                    다양한 할인 및 이벤트 정보를 확인하시고 즐거운 주문하세요!
-                </p>
-            </div>
-            
-            <div id="bogo-info" class="bogo-card p-6 bg-white rounded-xl shadow-lg">
-                <h2 class="text-2xl font-extrabold text-[var(--bogo-color)] mb-4 flex items-center">
-                    <i data-lucide="gift" class="w-6 h-6 inline-block mr-2"></i>
-                    🎉 매주 금요일, 피자 1+1 이벤트!
-                </h2>
-                <p class="text-gray-700 text-lg font-semibold mb-3">
-                    피자 1판을 사면 <span class="text-[var(--bogo-color)]">피자 1판이 무료!?</span> (단, 다른 할인과 중복 불가)
-                </p>
-                <ul class="list-disc list-inside text-gray-600 ml-4 space-y-1">
-                    <li>본 이벤트는 <span class="font-bold text-[var(--bogo-color)]">방문 포장 전용</span>입니다. (배달 불가능)</li>
-                    <li><span class="font-bold">다른 할인 (방문포장 30%, 제휴사 할인 등)과 중복 적용 불가</span>합니다.</li>
-                    <li>1+1 대상 피자 메뉴는 '피자' 페이지에서 따로 구분되어 표시됩니다.</li>
-                </ul>
-                <div class="mt-4 text-center">
-                    <a href="#menu-pizza" class="order-guide-link inline-flex items-center bg-[var(--bogo-color)] text-white font-bold px-6 py-3 rounded-full shadow-lg hover:bg-red-600 transform hover:scale-105">
-                        <i data-lucide="eye" class="w-5 h-5 mr-2"></i>
-                        1+1 대상 피자 메뉴 보러가기
-                    </a>
-                </div>
-            </div>
-
-            <div id="order-guide" class="main-card p-6 bg-white rounded-xl shadow-lg">
-                <h2 class="text-2xl font-extrabold text-[var(--button-color)] mb-4 flex items-center">
-                    <i data-lucide="info" class="w-6 h-6 inline-block mr-2"></i>
-                    주문 안내
-                </h2>
-                <ul class="space-y-3">
-                    <li class="p-3 bg-gray-50 rounded-lg flex justify-between items-center">
-                        <span class="font-bold text-gray-700">전화 주문</span>
-                        <a href="tel:0313136995" class="order-guide-link bg-[var(--button-color)] text-white font-semibold px-4 py-2 rounded-lg hover:bg-green-800">
-                            031-313-6995 <i data-lucide="phone-call" class="w-4 h-4 inline-block ml-1"></i>
-                        </a>
-                    </li>
-                    <li class="p-3 bg-gray-50 rounded-lg flex justify-between">
-                        <span class="font-bold text-gray-700">배달 주문</span>
-                        <span class="font-semibold text-red-600">기본 배달비 3,000원 발생</span>
-                    </li>
-                    <li class="p-3 bg-gray-50 rounded-lg flex justify-between">
-                        <span class="font-bold text-gray-700">방문 포장</span>
-                        <span class="font-semibold text-[var(--highlight-color)]">30% 할인 적용</span>
-                        <span class="text-sm text-gray-500 ml-2">(1+1 이벤트와 중복 불가)</span>
-                    </li>
-                </ul>
-            </div>
-            
-        </main>
-
-        <footer class="mt-12 pt-6 border-t border-gray-200 text-center text-sm text-gray-600">
-            <div class="mb-2">
-                <p class="font-bold text-gray-700">파파존스피자 시흥은행점</p>
-                <p>주소: 경기 시흥시 은행로 86 1층 106호 파파존스피자</p>
-            </div>
-            <div class="mb-2">
-                <p>영업시간: 매일 오전 11:00 - 오후 11:00</p>
-                <p>전화번호: <span class="font-semibold text-[var(--button-color)]">031-313-6995</span></p>
-            </div>
-            <p class="mt-4 text-xs text-gray-400">© 2025 Papa John's Pizza Siheung-eunhaeng. All Rights Reserved.</p>
-        </footer>
-    </div>
+    <header>
+        <h1>시흥은행점 파파존스 메뉴판</h1>
+    </header>
     
-    <script>
-        // Lucide 아이콘을 렌더링
-        lucide.createIcons();
-    </script>
+    <nav>
+        <ul>
+            <li><a href="index.html" class="active">🏠 첫 화면</a></li>
+            <li><a href="pizza.html">🍕 피자</a></li>
+            <li><a href="sides.html">🍗 사이드</a></li>
+            <li><a href="drinks_sauces.html">🥤 음료 & 소스</a></li>
+            <li><a href="discounts.html">💸 제휴 할인</a></li>
+            <li><a href="bill.html">🧾 계산서</a></li>
+        </ul>
+    </nav>
+    
+    <div class="main-content">
+        <div class="welcome-section">
+            <h2>안녕하세요! <span style="color: var(--accent-color);">시흥은행점 파파존스</span>입니다.</h2>
+            <p>최고 품질의 토핑과 신선한 도우로 만든 '더 좋은 재료, 더 맛있는 피자'를 경험해 보세요.</p>
+        </div>
+
+        <div class="info-grid">
+            <div class="info-box event-box">
+                <h3>📢 매주 특별 이벤트</h3>
+                <p class="event-text">
+                    <strong>매주 금요일, 피자 1+1</strong><br>(방문 포장 전용, 배달 불가능)<br><br>
+                    피자 1판을 사면 피자 1판이 무료! 🍕+🍕<br>
+                    <small style="color: #888;">(단, 다른 할인과 중복 불가)</small>
+                </p>
+                <a href="pizza.html#one-plus-one-pizzas" class="order-link">• 1+1 행사 피자 메뉴 보러가기</a>
+            </div>
+
+            <div class="info-box order-info-box">
+                <h3>📞 주문 안내</h3>
+                <p>
+                    <strong>전화 주문:</strong> 
+                    <a href="tel:0313136995" style="color: var(--main-color); font-weight: bold; text-decoration: none;">031-313-6995</a> 
+                </p>
+                <p>
+                    <strong>배달 주문:</strong> 기본 배달비 3,000원 발생
+                </p>
+                <p>
+                    <strong>방문 포장:</strong> 30% 할인 적용<br>
+                    <small style="color: #888;">(1+1 이벤트와 중복 불가)</small>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p><strong>파파존스피자 시흥은행점</strong></p>
+        <p>주소: 경기 시흥시 은행로 86 1층 106호</p>
+        <p>영업시간: 매일 오전 11:00 - 오후 11:00</p>
+        <p>전화번호: <a href="tel:0313136995">031-313-6995</a></p>
+    </footer>
+
 </body>
 </html>
