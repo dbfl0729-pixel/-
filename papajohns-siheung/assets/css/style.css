@@ -198,7 +198,6 @@ footer {
     font-size: 1em;
 }
 
-
 /* 모바일 조정 */
 @media (max-width: 768px) {
     .grid-layout, .menu-grid {
@@ -214,76 +213,159 @@ footer {
 
 /* 아코디언 헤더 (버튼) */
 .accordion-header {
-    background-color: var(--main-color);
-    color: var(--white);
-    padding: 15px 20px;
-    cursor: pointer;
-    border-radius: 8px;
-    margin-bottom: 5px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 1.2em;
-    font-weight: bold;
-    transition: background-color 0.2s;
+    /* (수정 필요) background-color: var(--main-color); */
+    background-color: var(--color-primary); 
+    /* (수정 필요) color: var(--white); */
+    color: white; 
+    /* ... 나머지 동일 ... */
 }
-
-.accordion-header:hover {
-    background-color: #3b523c;
-}
-
-/* 아코디언 아이콘 (펼치기/접기) */
-.accordion-header .icon {
-    font-size: 1.5em;
-    transition: transform 0.3s;
-}
-
-/* 내용 부분 */
-.accordion-content {
-    padding: 15px 20px;
-    background-color: #ffffff;
-    border: 1px solid #ddd;
-    border-top: none;
-    border-radius: 0 0 8px 8px;
-    display: none; /* 초기에는 숨김 */
-    overflow: hidden;
-    transition: max-height 0.4s ease-out;
-}
-
-/* 크러스트 테이블 스타일 (간소화) */
-.accordion-content table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-}
-.accordion-content th, .accordion-content td {
-    border: 1px solid #f1f1f1; /* 선을 매우 연하게 */
-    padding: 10px;
-    text-align: center;
-    font-size: 0.95em;
-}
+/* ... */
 .accordion-content thead th {
     background-color: #f9f9f9;
-    color: var(--text-color);
-    border-bottom: 2px solid var(--accent-color);
+    /* (수정 필요) color: var(--text-color); */
+    color: var(--color-dark);
+    /* (수정 필요) border-bottom: 2px solid var(--accent-color); */
+    border-bottom: 2px solid var(--color-accent);
 }
+/* ... */
 .accordion-content td:first-child {
     font-weight: bold;
-    color: var(--main-color);
+    /* (수정 필요) color: var(--main-color); */
+    color: var(--color-primary);
     text-align: left;
 }
 
 /* 이벤트/안내 문구 스타일 */
-.event-info-box {
-    background-color: #fffaf0; /* 연한 노랑/크림색 */
-    border: 1px solid #ffcc00;
-    padding: 15px;
-    border-radius: 6px;
-    margin-top: 15px;
-    line-height: 1.6;
-}
 .event-info-box h4 {
-    color: var(--primary-red);
+    /* (수정 필요) color: var(--primary-red); */
+    color: var(--color-accent);
     margin-top: 0;
     font-size: 1.1em;
+}
+
+/* ================== 계산서 페이지 (bill.html) 스타일 ================== */
+
+/* 주문 상세 내역 (장바구니) 리스트 */
+#cart-list {
+    margin-top: 20px;
+    border-top: 2px solid var(--color-primary);
+    padding-top: 15px;
+}
+
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.item-info {
+    flex-grow: 1;
+}
+
+.item-name {
+    font-weight: 700;
+    font-size: 1.1em;
+    color: var(--color-dark);
+}
+
+.item-options {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 3px;
+}
+
+.item-price {
+    font-weight: 700;
+    color: var(--color-dark);
+    margin-left: 20px;
+    white-space: nowrap; /* 줄바꿈 방지 */
+}
+
+/* 수량 조절 및 삭제 버튼 그룹 */
+.item-actions {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: 15px;
+}
+
+.item-actions button {
+    background: none;
+    border: 1px solid #ccc;
+    color: var(--color-dark);
+    cursor: pointer;
+    padding: 5px 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+.item-actions button:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+}
+
+.item-quantity {
+    display: inline-block;
+    min-width: 20px;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* 할인/결제 옵션 박스 */
+.option-box {
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f7f7f7;
+}
+
+.option-box h4 {
+    margin-bottom: 8px;
+    font-size: 1em;
+    font-weight: 600;
+}
+
+.option-box select, .option-box input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-family: var(--font-ko);
+}
+
+/* 최종 금액 요약 */
+.total-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 2px solid var(--color-accent); /* 빨간색으로 강조 */
+}
+
+#final-total-price {
+    font-size: 1.8em !important; 
+    color: var(--color-accent) !important;
+    font-weight: 700;
+}
+
+/* 주문하기 버튼 */
+.order-button {
+    width: 100%;
+    padding: 15px;
+    background-color: var(--color-accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background-color 0.2s;
+}
+
+.order-button:hover {
+    background-color: #a8261e;
 }
