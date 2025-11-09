@@ -6,41 +6,62 @@
     <title>💸 제휴 할인 | 시흥은행점 파파존스</title>
     <link rel="stylesheet" href="style.css">
     <style>
+        /* ==================================================== */
         /* discounts.html 전용 스타일 */
+        /* style.css에 정의된 변수명으로 통일했습니다. */
+        /* ==================================================== */
         .discount-category {
             margin-bottom: 40px;
         }
         .discount-category h3 {
-            color: var(--primary-red);
-            border-left: 5px solid var(--accent-color);
-            padding-left: 10px;
+            /* 💡 --primary-red 대신 --color-accent 사용 (style.css 기준) */
+            color: var(--color-accent); 
+            border-left: 5px solid var(--color-accent); 
+            padding-left: 15px; /* 공간 확보 */
             margin-bottom: 20px;
+            font-size: 1.5em;
         }
         .discount-item {
-            border: 1px solid #eee;
+            border: 1px solid #ddd; /* 약간 밝은 회색으로 변경 */
             border-radius: 8px;
             padding: 20px;
             margin-bottom: 15px;
-            background-color: #fcfcfc;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+            background-color: var(--color-light); /* 밝은 배경색 */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: box-shadow 0.2s;
+        }
+        .discount-item:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         .discount-item h4 {
-            color: var(--main-color);
+            /* 💡 --main-color 대신 --color-primary 사용 (style.css 기준) */
+            color: var(--color-primary); 
             font-size: 1.2em;
             margin-top: 0;
-            padding-bottom: 5px;
-            border-bottom: 1px dashed #ddd;
+            padding-bottom: 10px; /* 구분선 위 공간 확대 */
+            border-bottom: 1px dashed #ccc;
+            margin-bottom: 10px;
         }
         .discount-item ul {
             list-style: disc;
-            margin-top: 10px;
+            margin-top: 5px;
             margin-left: 20px;
             padding-left: 0;
             font-size: 0.95em;
-            line-height: 1.6;
+            line-height: 1.8; /* 가독성 향상 */
         }
         .discount-item strong {
-            color: var(--primary-red);
+            /* 💡 --primary-red 대신 --color-accent 사용 (style.css 기준) */
+            color: var(--color-accent); 
+        }
+        .alert-message {
+            margin-top: 30px; 
+            font-weight: bold; 
+            color: var(--color-accent); /* 빨간색으로 통일 */
+            padding: 15px;
+            border: 2px solid var(--color-accent);
+            border-radius: 5px;
+            background-color: #ffeaea; /* 연한 빨강 배경 */
         }
     </style>
 </head>
@@ -61,8 +82,7 @@
         </ul>
     </nav>
 
-    <div class="main-content">
-        <div class="menu-section">
+    <div class="content-wrapper"> <div class="menu-section">
             <h2>💰 제휴 할인 및 포인트 사용 안내</h2>
 
             <div class="discount-category">
@@ -138,7 +158,9 @@
                 </div>
             </div>
             
-            <p style="margin-top: 30px; font-weight: bold; color: var(--primary-red);">※ 모든 제휴 할인은 온라인, 콜센터, 매장에서 적용 가능하며, 대부분의 할인은 중복 적용이 불가합니다.</p>
+            <p class="alert-message">
+                ※ 모든 제휴 할인은 온라인, 콜센터, 매장에서 적용 가능하며, 대부분의 할인은 중복 적용이 불가합니다.
+            </p>
         </div>
     </div>
 
