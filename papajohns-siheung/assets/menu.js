@@ -1,248 +1,638 @@
-// =================================================================
-// 🍕 피자 메뉴 페이지 (menu.html) 로직 파일 - assets/menu.js
-// =================================================================
-
-// --- 1. 가격 데이터 정의 (모든 함수가 필요로 하는 데이터) ---
-const PIZZA_PRICES = {
-    // R: 레귤러(25cm), L: 라지(31cm), F: 패밀리(36cm), P: 파티(41cm)
-    'barbeque_shortrib_crunch': { R: 0, L: 34500, F: 41900, P: 0 },
-    'mellow_corn_cream': { R: 0, L: 27500, F: 33900, P: 41500 },
-    'starlight_basil': { R: 0, L: 33500, F: 39900, P: 48500 },
-    'double_hot_spicy_mexican': { R: 0, L: 33500, F: 39900, P: 0 },
-    'super_papas': { R: 19900, L: 28500, F: 33900, P: 42500 },
-    'johns_favorite': { R: 0, L: 29500, F: 34900, P: 45500 },
-    'all_meat': { R: 19900, L: 29500, F: 34900, P: 45500 },
-    'spicy_chicken_ranch': { R: 19900, L: 29500, F: 34900, P: 43500 },
-    'irish_potato': { R: 18900, L: 27500, F: 32900, P: 40500 },
-    'chicken_barbeque': { R: 18900, L: 27500, F: 32900, P: 40500 },
-    'crispy_cheese_pepperoni': { R: 0, L: 0, F: 31900, P: 0 },
-    'crispy_cheese_triple': { R: 0, L: 0, F: 33900, P: 0 },
-    'ham_mushroom_six_cheese': { R: 0, L: 28500, F: 33900, P: 42500 },
-    'wisconsin_cheese_potato': { R: 0, L: 29500, F: 35900, P: 45500 },
-    'double_cheeseburger': { R: 0, L: 29500, F: 34900, P: 43500 },
-    'premium_bulgogi': { R: 0, L: 29500, F: 34900, P: 43500 },
-    'six_cheese': { R: 0, L: 26500, F: 31900, P: 39500 },
-    'spicy_italian': { R: 0, L: 27500, F: 33900, P: 40500 },
-    'shrimp_alfredo': { R: 0, L: 0, F: 34900, P: 0 },
-    'margherita': { R: 16900, L: 23500, F: 28900, P: 36500 },
-    'pepperoni': { R: 17900, L: 25500, F: 30900, P: 38500 },
-    'hawaiian': { R: 17900, L: 26500, F: 32900, P: 39500 },
-    'garden_special': { R: 17900, L: 26500, F: 31900, P: 39500 },
-    'green_it_margherita': { R: 0, L: 26500, F: 0, P: 0 },
-    'green_it_garden_special': { R: 0, L: 29500, F: 0, P: 0 }
-};
-
-// **새로 추가된 피자 이름 매핑 객체**
-const PIZZA_NAME_MAP = {
-    pizza_bbq_shortrib.jpg: '바베큐 숏립 크런치',
-    pizza_mellow_corn_cream.jpg: '멜로우 콘크림',
-    'starlight_basil': '스타라이트 바질',
-    'double_hot_spicy_mexican': '더블 핫 앤 스파이시 멕시칸',
-    'super_papas': '수퍼 파파스',
-    'johns_favorite': '존스 페이버릿',
-    'all_meat': '올미트',
-    'spicy_chicken_ranch': '스파이시 치킨랜치',
-    'irish_potato': '아이리쉬 포테이토',
-    'chicken_barbeque': '치킨 바베큐',
-    'crispy_cheese_pepperoni': '크리스피 치즈 페퍼로니 피자',
-    'crispy_cheese_triple': '크리스피 치즈 트리플 피자',
-    'ham_mushroom_six_cheese': '햄 머쉬룸 식스 치즈',
-    'wisconsin_cheese_potato': '위스콘신 치즈 포테이토',
-    'double_cheeseburger': '더블 치즈버거',
-    'premium_bulgogi': '프리미엄 직화불고기',
-    'six_cheese': '식스 치즈',
-    'spicy_italian': '스파이시 이탈리안',
-    'shrimp_alfredo': '슈림프 알프레도',
-    'margherita': '마가리타',
-    'pepperoni': '페퍼로니',
-    'hawaiian': '하와이안',
-    'garden_special': '가든 스페셜',
-    'green_it_margherita': '그린잇 식물성 마가리타',
-    'green_it_garden_special': '그린잇 식물성 가든스페셜'
-};
-
-// **수정**: 크러스트 이름은 한글로 매핑하여 저장
-const CRUST_NAME_MAP = {
-    'original': '오리지널',
-    'thin': '씬',
-    'cheeseroll': '치즈롤',
-    'goldring': '골드링',
-    'spicygarlic': '스파이시 갈릭 치즈롤',
-    'croissant': '크루아상'
-};
-
-// **수정**: 크러스트 가격은 ID(영문)를 키로 사용
-const CRUST_PRICES = {
-    'original': { R: 0, L: 0, F: 0, P: 0 },
-    'thin': { R: 0, L: 0, F: 0, P: 0 }, 
-    'cheeseroll': { R: 0, L: 4000, F: 5000, P: 6000 },
-    'goldring': { R: 0, L: 4000, F: 5000, P: 6000 },
-    'spicygarlic': { R: 0, L: 4000, F: 5000, P: 6000 },
-    'croissant': { R: 0, L: 6000, F: 6000, P: 6000 }
-};
-
-// --- 2. 유틸리티 함수 ---
-function formatPrice(amount) {
-    if (typeof amount !== 'number' || isNaN(amount)) return '₩0';
-    return `₩${amount.toLocaleString('ko-KR')}`;
-}
-
-// --- 3. 메뉴 옵션 동적 생성 함수 ---
-function createSizeOptions(pizzaId) {
-    const card = document.getElementById(pizzaId);
-    if (!card) return;
-
-    const prices = PIZZA_PRICES[pizzaId];
-    if (!prices) return;
-
-    const sizeSelect = card.querySelector('.size-select');
-    if (!sizeSelect) return;
-
-    sizeSelect.innerHTML = '';
-
-    const defaultOption = document.createElement('option');
-    defaultOption.value = '0';
-    defaultOption.textContent = '사이즈를 선택하세요';
-    sizeSelect.appendChild(defaultOption);
-
-    Object.keys(prices).forEach(sizeCode => {
-        const price = prices[sizeCode];
-        if (price > 0) {
-             const option = document.createElement('option');
-             option.value = sizeCode;
-             option.textContent = `${sizeCode} (${formatPrice(price)})`; 
-             sizeSelect.appendChild(option);
-        }
-    });
-}
-
-
-// --- 4. 가격 계산 함수 (핵심 로직) ---
-window.updatePrice = function(pizzaId) {
-    const card = document.getElementById(pizzaId);
-    if (!card) return;
-
-    const sizeSelect = card.querySelector('.size-select');
-    const crustSelect = card.querySelector('.crust-select');
-    const quantityInput = card.querySelector('.quantity-input');
-    const totalPriceElement = document.getElementById(`total-price-${pizzaId}`);
-    
-    const selectedSize = sizeSelect ? sizeSelect.value : null; 
-    const selectedCrustId = crustSelect ? crustSelect.value : 'original';
-    const quantity = parseInt(quantityInput.value) || 1;
-
-    let basePrice = 0;
-    let crustAddPrice = 0;
-
-    // 1. 기본 가격 계산
-    if (selectedSize === '0' || !selectedSize || !PIZZA_PRICES[pizzaId] || !PIZZA_PRICES[pizzaId][selectedSize]) {
-        basePrice = 0;
-    } else {
-        basePrice = PIZZA_PRICES[pizzaId][selectedSize];
-    }
-    
-    // 2. 크러스트 추가 가격 계산 (사이즈 기반)
-    if (selectedSize !== '0' && selectedSize && CRUST_PRICES[selectedCrustId] && CRUST_PRICES[selectedCrustId][selectedSize]) {
-        crustAddPrice = CRUST_PRICES[selectedCrustId][selectedSize];
-    }
-
-    const finalPrice = (basePrice + crustAddPrice) * quantity;
-    
-    // 3. 가격 표시 및 장바구니 버튼 상태 제어
-    const addButton = card.querySelector('.add-to-bill-btn');
-    
-    if (finalPrice === 0 || selectedSize === '0') {
-        totalPriceElement.textContent = '사이즈를 선택하세요';
-        if (addButton) addButton.disabled = true;
-    } else {
-        totalPriceElement.textContent = formatPrice(finalPrice);
-        if (addButton) addButton.disabled = false;
-    }
-};
-
-// --- 5. 장바구니 추가 함수 (로컬 스토리지 저장 로직 통합) ---
-window.addToCart = function(pizzaId) {
-    const card = document.getElementById(pizzaId);
-    const sizeSelect = card.querySelector('.size-select');
-    const crustSelect = card.querySelector('.crust-select');
-    const quantityInput = card.querySelector('.quantity-input');
-    
-    const selectedSize = sizeSelect ? sizeSelect.value : null;
-    const selectedCrustId = crustSelect ? crustSelect.value : 'original';
-    const quantity = parseInt(quantityInput.value) || 1;
-    
-    if (selectedSize === '0' || !selectedSize) {
-        alert('🍕 사이즈를 먼저 선택해주세요!');
-        return;
-    }
-    
-    // 최종 가격 다시 계산 (안전성 확보)
-    const basePrice = PIZZA_PRICES[pizzaId][selectedSize];
-    const crustAddPrice = CRUST_PRICES[selectedCrustId][selectedSize];
-    const itemPricePerUnit = basePrice + crustAddPrice; // 단가
-    
-    // **수정**: PIZZA_NAME_MAP에서 이름을 가져옵니다.
-    const pizzaName = PIZZA_NAME_MAP[pizzaId] || pizzaId; 
-    
-    const item = {
-        id: `${pizzaId}-${selectedSize}-${selectedCrustId}`, 
-        pizzaId: pizzaId,
-        name: pizzaName, // 👈 여기서 수정된 이름을 사용
-        size: selectedSize,
-        crustId: selectedCrustId,
-        crustName: CRUST_NAME_MAP[selectedCrustId],
-        price: itemPricePerUnit, // 단가
-        quantity: quantity,
-        total: itemPricePerUnit * quantity
-    };
-
-    // 1. 로컬 스토리지에서 현재 장바구니 데이터 가져오기
-    let cart = JSON.parse(localStorage.getItem('papaJohnsCart')) || [];
-
-    // 2. 장바구니에 동일한 옵션의 상품이 이미 있는지 확인 (수량 업데이트)
-    const existingItemIndex = cart.findIndex(
-        i => i.pizzaId === item.pizzaId && i.size === item.size && i.crustId === item.crustId
-    );
-
-    if (existingItemIndex > -1) {
-        cart[existingItemIndex].quantity += quantity;
-        cart[existingItemIndex].total = cart[existingItemIndex].price * cart[existingItemIndex].quantity;
-    } else {
-        cart.push(item);
-    }
-
-    // 3. 로컬 스토리지에 업데이트된 장바구니 저장
-    localStorage.setItem('papaJohnsCart', JSON.stringify(cart));
-    
-    // 4. 사용자에게 알림
-    alert(`[${item.name} (${item.size}, ${item.crustName})] ${quantity}개를 장바구니에 추가했습니다.`);
-    
-    // 장바구니 페이지로 이동
-    window.location.href = 'cart.html'; 
-};
-
-
-// --- 6. 초기화 (모든 카드에 기능 적용) ---
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.pizza-card').forEach(card => {
-        const pizzaId = card.id;
-        
-        // 1. 사이즈 옵션 동적 생성
-        createSizeOptions(pizzaId); 
-        
-        // 2. 이벤트 리스너 재등록
-        card.querySelectorAll('.size-select, .crust-select, .quantity-input').forEach(element => {
-            element.addEventListener('change', () => updatePrice(pizzaId));
-            element.addEventListener('input', () => updatePrice(pizzaId));
-        });
-
-        // 3. 초기 가격 설정
-        updatePrice(pizzaId);
-
-        // 4. '장바구니 담기' 버튼 리스너
-        const addButton = card.querySelector('.add-to-bill-btn');
-        if (addButton) {
-             addButton.addEventListener('click', () => addToCart(pizzaId));
-        }
-    });
-});
+<!DOCTYPE html>
+- [ ] <html lang="ko">
+- [ ] <head>
+- [ ]     <meta charset="UTF-8">
+- [ ]     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+- [ ]     <title>🍕 파파존스 피자 메뉴</title>
+- [ ] 
+- [ ]     <link href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff" rel="stylesheet"> 
+- [ ] 
+- [ ]     <style>
+- [ ]         /* ---------------------------------------------------- */
+- [ ]         /* 1. G마켓 산스 폰트 및 올리브 테마 커스텀 변수 정의 */
+- [ ]         /* ---------------------------------------------------- */
+- [ ]         :root {
+- [ ]             /* 새 올리브 테마 변수 (cart.html이 사용하는 Tailwind 기반 변수) */
+- [ ]             --primary-color: #059669; 
+- [ ]             --button-color: #065f46; 
+- [ ]             --highlight-color: #f59e0b; 
+- [ ]             --bogo-color: #ef4444; 
+- [ ]             
+- [ ]             /* 🎯 기존 menu.html 변수를 새 변수로 연결하여 충돌 방지 */
+- [ ]             --main-color: var(--button-color); 
+- [ ]             --accent-color: var(--bogo-color); 
+- [ ]             
+- [ ]             /* 공통 변수 */
+- [ ]             --text-color: #333;
+- [ ]             --white: #ffffff;
+- [ ]             --bg-light: #f4f4f4;
+- [ ]             --font-family: 'Gmarket Sans', 'Noto Sans KR', sans-serif;
+- [ ]             --danger-color: #d9534f;
+- [ ]             --info-color: #46b8da;
+- [ ]         }
+- [ ]         
+- [ ]         body { 
+- [ ]             font-family: var(--font-family); 
+- [ ]             background-color: #f7f9f7; 
+- [ ]             color: var(--text-color);
+- [ ]             margin: 0;
+- [ ]             padding: 0;
+- [ ]             line-height: 1.6;
+- [ ]         }
+- [ ] 
+- [ ]         /* ---------------------------------------------------- */
+- [ ]         /* 2. 장바구니 및 공통 스타일 (메뉴 버튼 등) */
+- [ ]         /* ---------------------------------------------------- */
+- [ ]         .header-bg {
+- [ ]             background-color: var(--white); 
+- [ ]             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+- [ ]         }
+- [ ] 
+- [ ]         .tab-button.active {
+- [ ]             border-bottom: 2px solid var(--button-color);
+- [ ]             color: var(--button-color);
+- [ ]             font-weight: bold;
+- [ ]         }
+- [ ] 
+- [ ]         /* ---------------------------------------------------- */
+- [ ]         /* 3. 피자 메뉴 페이지 (menu.html) 스타일 */
+- [ ]         /* ---------------------------------------------------- */
+- [ ]         .pizza-menu-container {
+- [ ]             width: 90%;
+- [ ]             max-width: 1200px;
+- [ ]             margin: 40px auto;
+- [ ]             padding: 0 15px;
+- [ ]         }
+- [ ] 
+- [ ]         h1 {
+- [ ]             color: var(--main-color);
+- [ ]             text-align: center;
+- [ ]             margin-bottom: 50px;
+- [ ]             font-size: 2.5em;
+- [ ]         }
+- [ ] 
+- [ ]         h2 {
+- [ ]             color: var(--main-color); 
+- [ ]             border-bottom: 3px solid var(--primary-color); 
+- [ ]             padding-bottom: 10px;
+- [ ]             margin-top: 50px;
+- [ ]             margin-bottom: 30px;
+- [ ]             font-weight: 700;
+- [ ]             font-size: 1.8em;
+- [ ]         }
+- [ ] 
+- [ ]         .pizza-list {
+- [ ]             display: grid;
+- [ ]             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+- [ ]             gap: 25px;
+- [ ]         }
+- [ ] 
+- [ ]         .pizza-card {
+- [ ]             background-color: var(--white);
+- [ ]             padding: 20px;
+- [ ]             border-radius: 10px;
+- [ ]             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+- [ ]             overflow: hidden;
+- [ ]             display: flex;
+- [ ]             flex-direction: column;
+- [ ]             transition: transform 0.2s, box-shadow 0.2s;
+- [ ]         }
+- [ ]         
+- [ ]         .pizza-card:hover {
+- [ ]             transform: translateY(-5px);
+- [ ]             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+- [ ]         }
+- [ ] 
+- [ ]         .pizza-image-area {
+- [ ]             text-align: center;
+- [ ]             margin-bottom: 15px;
+- [ ]         }
+- [ ] 
+- [ ]         .pizza-image {
+- [ ]             width: 100%;
+- [ ]             height: auto;
+- [ ]             max-height: 200px;
+- [ ]             object-fit: contain;
+- [ ]             border-radius: 8px;
+- [ ]         }
+- [ ] 
+- [ ]         .pizza-info h3 {
+- [ ]             font-size: 1.4em;
+- [ ]             color: var(--text-color);
+- [ ]             margin-top: 0;
+- [ ]             margin-bottom: 5px;
+- [ ]         }
+- [ ] 
+- [ ]         .pizza-info p.note {
+- [ ]             color: var(--bogo-color); 
+- [ ]             font-weight: bold;
+- [ ]             font-size: 0.9em;
+- [ ]             margin-bottom: 10px;
+- [ ]         }
+- [ ] 
+- [ ]         .price-selector, .crust-selector {
+- [ ]             margin-bottom: 15px;
+- [ ]             padding: 10px;
+- [ ]             background-color: var(--bg-light);
+- [ ]             border-radius: 5px;
+- [ ]         }
+- [ ] 
+- [ ]         .price-selector label, .crust-selector label {
+- [ ]             display: block;
+- [ ]             margin-bottom: 5px;
+- [ ]             font-weight: 600;
+- [ ]         }
+- [ ] 
+- [ ]         .price-selector select, .crust-selector select {
+- [ ]             width: 100%;
+- [ ]             padding: 8px;
+- [ ]             border-radius: 5px;
+- [ ]             border: 1px solid #ccc;
+- [ ]             background-color: var(--white);
+- [ ]             appearance: none; /* 기본 브라우저 스타일 제거 */
+- [ ]         }
+- [ ] 
+- [ ]         .current-price-area {
+- [ ]             text-align: right;
+- [ ]             margin-top: 15px;
+- [ ]             padding-top: 15px;
+- [ ]             border-top: 1px dashed #ddd;
+- [ ]         }
+- [ ] 
+- [ ]         .current-price {
+- [ ]             font-size: 1.6em;
+- [ ]             font-weight: bold;
+- [ ]             color: var(--primary-color);
+- [ ]         }
+- [ ]         
+- [ ]         .add-to-cart-button {
+- [ ]             display: block;
+- [ ]             width: 100%;
+- [ ]             padding: 12px;
+- [ ]             margin-top: 15px;
+- [ ]             background-color: var(--button-color);
+- [ ]             color: var(--white);
+- [ ]             border: none;
+- [ ]             border-radius: 5px;
+- [ ]             font-size: 1.1em;
+- [ ]             font-weight: bold;
+- [ ]             cursor: pointer;
+- [ ]             transition: background-color 0.2s;
+- [ ]         }
+- [ ] 
+- [ ]         .add-to-cart-button:hover {
+- [ ]             background-color: #044b36; /* 버튼 호버 색상 */
+- [ ]         }
+- [ ]     </style>
+- [ ] </head>
+- [ ] 
+- [ ] <body>
+- [ ]     <div class="pizza-menu-container">
+- [ ]         <h1>🍕 파파존스 메뉴판 (자동 계산)</h1>
+- [ ]         
+- [ ]         <h2>프리미엄 피자</h2>
+- [ ]         <div class="pizza-list" id="premium-list"></div>
+- [ ] 
+- [ ]         <h2>베스트 피자</h2>
+- [ ]         <div class="pizza-list" id="best-list"></div>
+- [ ] 
+- [ ]         <h2>스페셜티 & 씬 피자</h2>
+- [ ]         <div class="pizza-list" id="specialty-list"></div>
+- [ ] 
+- [ ]         <h2>클래식 피자</h2>
+- [ ]         <div class="pizza-list" id="classic-list"></div>
+- [ ] 
+- [ ]         <h2>비건 피자</h2>
+- [ ]         <div class="pizza-list" id="vegan-list"></div>
+- [ ] 
+- [ ]         </div>
+- [ ]     
+- [ ]     <script>
+- [ ]         // 최종 수정된 PIZZA_DATA: images/Pizzas폴더 경로 적용 및 문법 오류 수정
+- [ ]         const PIZZA_DATA = [
+- [ ]             {
+- [ ]                 id: "barbeque_shortrib_crunch",
+- [ ]                 name: "바베큐 숏립 크런치",
+- [ ]                 category: "프리미엄 피자",
+- [ ]                 prices: { L: 34500, F: 41900 },
+- [ ]                 crusts: {
+- [ ]                     original: { name: "오리지널", add: 0 },
+- [ ]                     thin: { name: "씬 (THIN)", add: 0 },
+- [ ]                     cheeseroll: { name: "치즈롤", add: 4000 },
+- [ ]                     goldring: { name: "골드링", add: 4000 },
+- [ ]                     spicygarliccheeseroll: { name: "스파이시 갈릭 치즈롤", add: 4000 },
+- [ ]                     croissant: { name: "크루아상", add: 6000 }
+- [ ]                 },
+- [ ]                 image: "images/Pizzas폴더/pizza_bbq_shortrib.jpg", 
+- [ ]                 note: "NEW"
+- [ ]             },
+- [ ]             {
+- [ ]                 id: "mellow_corn_cream",
+- [ ]                 name: "멜로우 콘크림",
+- [ ]                 category: "프리미엄 피자",
+- [ ]                 prices: { L: 27500, F: 33900, P: 41500 },
+- [ ]                 crusts: {
+- [ ]                     original: { name: "오리지널", add: 0 },
+- [ ]                     thin: { name: "씬 (THIN)", add: 0 },
+- [ ]                     cheeseroll: { name: "치즈롤", add: 4000 },
+- [ ]                     goldring: { name: "골드링", add: 4000 },
+- [ ]                     spicygarliccheeseroll: { name: "스파이시 갈릭 치즈롤", add: 4000 },
+- [ ]                     croissant: { name: "크루아상", add: 6000 }
+- [ ]                 },
+- [ ]                 image: "images/Pizzas폴더/pizza_mellow_corn_cream.jpg", 
+- [ ]                 note: ""
+- [ ]             },
+- [ ]             {
+- [ ]                 id: "starlight_basil",
+- [ ]                 name: "스타라이트 바질",
+- [ ]                 category: "프리미엄 피자",
+- [ ]                 prices: { L: 33500, F: 39900, P: 48500 },
+- [ ]                 crusts: { original: { name: "크러스트 변경 불가", add: 0 } },
+- [ ]                 image: "images/Pizzas폴더/pizza_starlight_basil.jpg", 
+- [ ]                 note: "* 크러스트 변경 불가합니다."
+- [ ]             },
+- [ ]             {
+- [ ]                 id: "double_hot_spicy_mexican",
+- [ ]                 name: "더블 핫 앤 스파이시 멕시칸",
+- [ ]                 category: "프리미엄 피자",
+- [ ]                 prices: { L: 33500, F: 39900 },
+- [ ]                 crusts: {
+- [ ]                     original: { name: "오리지널", add: 0 },
+- [ ]                     spicygarliccheeseroll: { name: "스파이시 갈릭 치즈롤", add: 4000 }
+- [ ]                 },
+- [ ]                 image: "images/Pizzas폴더/pizza_double_hot_mexican.jpg", 
+- [ ]                 note: ""
+- [ ]             },
+- [ ]             {
+- [ ]                 id: "super_papas",
+- [ ]                 name: "수퍼 파파스",
+- [ ]                 category: "베스트 피자",
+- [ ]                 prices: { R: 19900, L: 28500, F: 33900, P: 42500 },
+- [ ]                 crusts: {
+- [ ]                     original: { name: "오리지널", add: 0 }, thin: { name: "씬 (THIN)", add: 0 },
+- [ ]                     cheeseroll: { name: "치즈롤", add: 4000 }, goldring: { name: "골드링", add: 4000 },
+- [ ]                     spicygarliccheeseroll: { name: "스파이시 갈릭 치즈롤", add: 4000 }, croissant: { name: "크루아상", add: 6000 }
+- [ ]                 },
+- [ ]                 image: "images/Pizzas폴더/pizza_super_papas.jpg", 
+- [ ]                 note: "BEST, 1+1"
+- [ ]             },
+- [ ]             {
+- [ ]                 id: "johns_favorite",
+- [ ]                 name: "존스 페이버릿",
+- [ ]                 category: "베스트 피자",
+- [ ]                 prices: { L: 29500, F: 34900, P: 45500 },
+- [ ]                 crusts: {
+- [ ]                     original: { name: "오리지널", add: 0 }, thin: { name: "씬 (THIN)", add: 0 },
+- [ ]                     cheeseroll: { name: "치즈롤", add: 4000 }, goldring: { name: "골드링", add: 4000 },
+- [ ]                     spicygarliccheeseroll: { name: "스파이시 갈릭 치즈롤", add: 4000 }, croissant: { name: "크루아상", add: 6000 }
+- [ ]                 },
+- [ ]                 image: "images/Pizzas폴더/pizza_johns_favorite.jpg", 
+- [ ]                 note: "BEST, 1+1"
+- [ ]             },
+- [ ]             {
+- [ ]                 id: "all_meat",
+- [ ]                 name: "올미트",
+- [ ]                 category: "베스트 피자",
+- [ ]                 prices: { R: 19900, L: 29500, F: 34900, P: 45500 },
+- [ ]                 crusts: {
+- [ ]                     original: { name: "오리지널", add: 0 }, thin: { name: "씬 (THIN)", add: 0 },
+- [ ]                     cheeseroll: { name: "치즈롤", add: 4000 }, goldring: { name: "골드링", add: 4000 },
+- [ ]                     spicygarliccheeseroll: { name: "스파이시 갈릭 치즈롤", add: 4000 }, croissant: { name: "크루아상", add: 6000 }
+- [ ]                 },
+- [ ]                 image: "images/Pizzas폴더/pizza_all_meats.jpg", 
+- [ ]                 note: ""
+- [ ]             },
+- [ ]             {
+- [ ]                 id: "spicy_chicken_ranch",
+- [ ]                 name: "스파이시 치킨랜치",
+- [ ]                 category: "베스트 피자",
+- [ ]                 prices: { R: 19900, L: 29500, F: 34900, P: 43500 },
+- [ ]                 crusts: {
+- [ ]                     original: { name: "오리지널", add: 0 }, thin: { name: "씬 (THIN)", add: 0 },
+- [ ]                     cheeseroll: { name: "치즈롤", add: 4000 }, goldring: { name: "골드링", add: 4000 },
+- [ ]                     spicygarliccheeseroll: { name: "스파이시 갈릭 치즈롤", add: 4000 }, croissant: { name: "크루아상", add: 6000 }
+- [ ]                 },
+- [ ]                 image: "images/Pizzas폴더/pizza_spicy_chicken_ranch.jpg", 
+- [ ]                 note: "1+1"
+- [ ]             },
+- [ ]             {
+- [ ]                 id: "irish_potato",
+- [ ]                 name: "아이리쉬 포테이토",
+- [ ]                 category: "베스트 피자",
+- [ ]                 prices: { R: 18900, L: 27500, F: 32900, P: 40500 },
+- [ ]                 crusts: {
+- [ ]                     original: { name: "오리지널", add: 0 }, thin: { name: "씬 (THIN)", add: 0 },
+- [ ]                     cheeseroll: { name: "치즈롤", add: 4000 }, goldring: { name: "골드링", add: 4000 },
+- [ ]                     spicygarliccheeseroll: { name: "스파이시 갈릭 치즈롤", add: 4000 }, croissant: { name: "크루아상", add: 6000 }
+- [ ]                 },
+- [ ]                 image: "images/Pizzas폴더/pizza_irish_potato.jpg", 
+- [ ]                 note: "1+1"
+- [ ]             },
+- [ ]             {
+- [ ]                 id: "chicken_bbq",
+- [ ]                 name: "치킨 바베큐",
+- [ ]                 category: "베스트 피자",
+- [ ]                 prices: { R: 18900, L: 27500, F: 32900, P: 40500 },
+- [ ]                 crusts: {
+- [ ]                     original: { name: "오리지널", add: 0 }, thin: { name: "씬 (THIN)", add: 0 },
+- [ ]                     cheeseroll: { name: "치즈롤", add: 4000 }, goldring: { name: "골드링", add: 4000 },
+- [ ]                     spicygarliccheeseroll: { name: "스파이시 갈릭 치즈롤", add: 4000 }, croissant: { name: "크루아상", add: 6000 }
+- [ ]                 },
+- [ ]                 image: "images/Pizzas폴더/pizza_chicken_barbeque.jpg", 
+- [ ]                 note: "1+1"
+- [ ]             },
+- [ ]             {
+- [ ]                 id: "crispy_cheese_pepperoni_thin",
+- [ ]                 name: "크리스피 치즈 페퍼로니 피자",
+- [ ]                 category: "스페셜티 & 씬 피자",
+- [ ]                 prices: { F: 31900 },
+- [ ]                 crusts: { thin: { name: "씬 (THIN) - TH전용", add: 0 } },
+- [ ]                 image: "images/Pizzas폴더/pizza_crispy_pepperoni.jpg", 
+- [ ]                 note: "TH전용"
+- [ ]             },
+- [ ]             {
+- [ ]                 id: "crispy_cheese_triple_thin",
+- [ ]                 name: "크리스피 치즈 트리플 피자",
+- [ ]                 category: "스페셜티 & 씬 피자",
+- [ ]                 prices: { F: 33900 },
+- [ ]                 crusts: { thin: { name: "씬 (THIN) - TH전용", add: 0 } },
+- [ ]                 image: "images/Pizzas폴더/pizza_crispy_triple.jpg", 
+- [ ]                 note: "TH전용"
+- [ ]             },
+- [ ]             {
+- [ ]                 id: "ham_mushroom_six_cheese",
+- [ ]                 name: "햄 머쉬룸 식스 치즈",
+- [ ]                 category: "스페셜티 & 씬 피자",
+- [ ]                 prices: { L: 28500, F: 33900, P: 42500 },
+- [ ]                 crusts: {
+- [ ]                     original: { name: "오리지널", add: 0 }, thin: { name: "씬 (THIN)", add: 0 },
+- [ ]                     cheeseroll: { name: "치즈롤", add: 4000 }, goldring: { name: "골드링", add: 4000 },
+- [ ]                     spicygarliccheeseroll: { name: "스파이시 갈릭 치즈롤", add: 4000 }, croissant: { name: "크루아상", add: 6000 }
+- [ ]                 },
+- [ ]                 image: "images/Pizzas폴더/pizza_ham_mushroom_six.jpg", 
+- [ ]                 note: ""
+- [ ]             },
+- [ ]             {
+- [ ]                 id: "wisconsin_cheese_potato",
+- [ ]                 name: "위스콘신 치즈 포테이토",
+- [ ]                 category: "스페셜티 & 씬 피자",
+- [ ]                 prices: { L: 29500, F: 35900, P: 45500 },
+- [ ]                 crusts: {
+- [ ]                     original: { name: "오리지널", add: 0 },
+- [ ]                     cheeseroll: { name: "치즈롤", add: 4000 }, goldring: { name: "골드링", add: 4000 },
+- [ ]                     spicygarliccheeseroll: { name: "스파이시 갈릭 치즈롤", add: 4000 }, croissant: { name: "크루아상", add: 6000 }
+- [ ]                 },
+- [ ]                 image: "images/Pizzas폴더/pizza_wisconsin_potato.jpg", 
+- [ ]                 note: ""
+- [ ]             },
+- [ ]             {
+- [ ]                 id: "double_cheeseburger",
+- [ ]                 name: "더블 치즈버거",
+- [ ]                 category: "스페셜티 & 씬 피자",
+- [ ]                 prices: { L: 29500, F: 34900, P: 43500 },
+- [ ]                 crusts: {
+- [ ]                     original: { name: "오리지널", add: 0 }, thin: { name: "씬 (THIN)", add: 0 },
+- [ ]                     cheeseroll: { name: "치즈롤", add: 4000 }, goldring: { name: "골드링", add: 4000 },
+- [ ]                     spicygarliccheeseroll: { name: "스파이시 갈릭 치즈롤", add: 4000 }, croissant: { name: "크루아상", add: 6000 }
+- [ ]                 },
+- [ ]                 image: "images/Pizzas폴더/pizza_double_cheeseburger.jpg", 
+- [ ]                 note: "1+1"
+- [ ]             },
+- [ ]             {
+- [ ]                 id: "premium_bulgogi",
+- [ ]                 name: "프리미엄 직화불고기",
+- [ ]                 category: "스페셜티 & 씬 피자",
+- [ ]                 prices: { L: 29500, F: 34900, P: 43500 },
+- [ ]                 crusts: {
+- [ ]                     original: { name: "오리지널", add: 0 }, thin: { name: "씬 (THIN)", add: 0 },
+- [ ]                     cheeseroll: { name: "치즈롤", add: 4000 }, goldring: { name: "골드링", add: 4000 },
+- [ ]                     spicygarliccheeseroll: { name: "스파이시 갈릭 치즈롤", add: 4000 }, croissant: { name: "크루아상", add: 6000 }
+- [ ]                 },
+- [ ]                 image: "images/Pizzas폴더/pizza_premium_bulgogi.jpg", 
+- [ ]                 note: "1+1"
+- [ ]             },
+- [ ]             {
+- [ ]                 id: "six_cheese",
+- [ ]                 name: "식스 치즈",
+- [ ]                 category: "스페셜티 & 씬 피자",
+- [ ]                 prices: { L: 26500, F: 31900, P: 39500 },
+- [ ]                 crusts: {
+- [ ]                     original: { name: "오리지널", add: 0 }, thin: { name: "씬 (THIN)", add: 0 },
+- [ ]                     cheeseroll: { name: "치즈롤", add: 4000 }, goldring: { name: "골드링", add: 4000 },
+- [ ]                     spicygarliccheeseroll: { name: "스파이시 갈릭 치즈롤", add: 4000 }, croissant: { name: "크루아상", add: 6000 }
+- [ ]                 },
+- [ ]                 image: "images/Pizzas폴더/pizza_six_cheese.jpg", 
+- [ ]                 note: ""
+- [ ]             },
+- [ ]             {
+- [ ]                 id: "spicy_italian",
+- [ ]                 name: "스파이시 이탈리안",
+- [ ]                 category: "스페셜티 & 씬 피자",
+- [ ]                 prices: { L: 27500, F: 33900, P: 40500 },
+- [ ]                 crusts: {
+- [ ]                     original: { name: "오리지널", add: 0 }, thin: { name: "씬 (THIN)", add: 0 },
+- [ ]                     cheeseroll: { name: "치즈롤", add: 4000 }, goldring: { name: "골드링", add: 4000 },
+- [ ]                     spicygarliccheeseroll: { name: "스파이시 갈릭 치즈롤", add: 4000 }, croissant: { name: "크루아상", add: 6000 }
+- [ ]                 },
+- [ ]                 image: "images/Pizzas폴더/pizza_spicy_italian.jpg", 
+- [ ]                 note: ""
+- [ ]             },
+- [ ]             {
+- [ ]                 id: "shrimp_alfredo_thin",
+- [ ]                 name: "슈림프 알프레도",
+- [ ]                 category: "스페셜티 & 씬 피자",
+- [ ]                 prices: { F: 34900 },
+- [ ]                 crusts: { thin: { name: "씬 (THIN) - TH전용", add: 0 } },
+- [ ]                 image: "images/Pizzas폴더/pizza_shrimp_alfredo.jpg", 
+- [ ]                 note: "TH전용"
+- [ ]             },
+- [ ]             {
+- [ ]                 id: "margarita",
+- [ ]                 name: "마가리타",
+- [ ]                 category: "클래식 피자",
+- [ ]                 prices: { R: 16900, L: 23500, F: 28900, P: 36500 },
+- [ ]                 crusts: {
+- [ ]                     original: { name: "오리지널", add: 0 }, thin: { name: "씬 (THIN)", add: 0 },
+- [ ]                     cheeseroll: { name: "치즈롤", add: 4000 }, goldring: { name: "골드링", add: 4000 },
+- [ ]                     spicygarliccheeseroll: { name: "스파이시 갈릭 치즈롤", add: 4000 }, croissant: { name: "크루아상", add: 6000 }
+- [ ]                 },
+- [ ]                 image: "images/Pizzas폴더/pizza_margherita.jpg", 
+- [ ]                 note: ""
+- [ ]             },
+- [ ]             {
+- [ ]                 id: "pepperoni",
+- [ ]                 name: "페퍼로니",
+- [ ]                 category: "클래식 피자",
+- [ ]                 prices: { R: 17900, L: 25500, F: 30900, P: 38500 },
+- [ ]                 crusts: {
+- [ ]                     original: { name: "오리지널", add: 0 }, thin: { name: "씬 (THIN)", add: 0 },
+- [ ]                     cheeseroll: { name: "치즈롤", add: 4000 }, goldring: { name: "골드링", add: 4000 },
+- [ ]                     spicygarliccheeseroll: { name: "스파이시 갈릭 치즈롤", add: 4000 }, croissant: { name: "크루아상", add: 6000 }
+- [ ]                 },
+- [ ]                 image: "images/Pizzas폴더/pizza_classic_pepperoni.jpg", 
+- [ ]                 note: ""
+- [ ]             },
+- [ ]             {
+- [ ]                 id: "hawaiian",
+- [ ]                 name: "하와이안",
+- [ ]                 category: "클래식 피자",
+- [ ]                 prices: { R: 17900, L: 26500, F: 32900, P: 39500 },
+- [ ]                 crusts: {
+- [ ]                     original: { name: "오리지널", add: 0 }, thin: { name: "씬 (THIN)", add: 0 },
+- [ ]                     cheeseroll: { name: "치즈롤", add: 4000 }, goldring: { name: "골드링", add: 4000 },
+- [ ]                     spicygarliccheeseroll: { name: "스파이시 갈릭 치즈롤", add: 4000 }, croissant: { name: "크루아상", add: 6000 }
+- [ ]                 },
+- [ ]                 image: "images/Pizzas폴더/pizza_hawaiian.jpg", 
+- [ ]                 note: ""
+- [ ]             },
+- [ ]             {
+- [ ]                 id: "garden_special",
+- [ ]                 name: "가든 스페셜",
+- [ ]                 category: "클래식 피자",
+- [ ]                 prices: { R: 17900, L: 26500, F: 31900, P: 39500 },
+- [ ]                 crusts: {
+- [ ]                     original: { name: "오리지널", add: 0 }, thin: { name: "씬 (THIN)", add: 0 },
+- [ ]                     cheeseroll: { name: "치즈롤", add: 4000 }, goldring: { name: "골드링", add: 4000 },
+- [ ]                     spicygarliccheeseroll: { name: "스파이시 갈릭 치즈롤", add: 4000 }, croissant: { name: "크루아상", add: 6000 }
+- [ ]                 },
+- [ ]                 image: "images/Pizzas폴더/pizza_garden_special.jpg", 
+- [ ]                 note: ""
+- [ ]             },
+- [ ]             {
+- [ ]                 id: "green_it_margarita",
+- [ ]                 name: "그린잇 식물성 마가리타",
+- [ ]                 category: "비건 피자",
+- [ ]                 prices: { R: 26500 },
+- [ ]                 crusts: { original: { name: "크러스트 변경 불가", add: 0 } },
+- [ ]                 image: "images/Pizzas폴더/pizza_vegan_margherita.jpg", 
+- [ ]                 note: "VEGAN, * 크러스트 변경 불가합니다."
+- [ ]             },
+- [ ]             {
+- [ ]                 id: "green_it_garden_special",
+- [ ]                 name: "그린잇 식물성 가든스페셜",
+- [ ]                 category: "비건 피자",
+- [ ]                 prices: { R: 29500 },
+- [ ]                 crusts: { original: { name: "크러스트 변경 불가", add: 0 } },
+- [ ]                 image: "images/Pizzas폴더/pizza_vegan_garden.jpg", 
+- [ ]                 note: "VEGAN, * 크러스트 변경 불가합니다."
+- [ ]             }
+- [ ]         ];
+- [ ]     </script>
+- [ ] 
+- [ ]     <script>
+- [ ]         // 4. JavaScript 기능 코드 (이전 대화에서 제공된 내용으로 가정하고, 계산 기능 등 전체 코드를 붙여넣으세요.)
+- [ ]         document.addEventListener('DOMContentLoaded', () => {
+- [ ]             // 이 위치에 calculatePizzaPrice(), createPizzaCard() 함수와 
+- [ ]             // initializePizzaCards() 호출 코드가 모두 들어가야 합니다.
+- [ ]             
+- [ ]             // 예시: 
+- [ ]             function formatPrice(price) {
+- [ ]                 return price.toLocaleString('ko-KR') + '원';
+- [ ]             }
+- [ ] 
+- [ ]             function getPizzaData(id) {
+- [ ]                 return PIZZA_DATA.find(p => p.id === id);
+- [ ]             }
+- [ ] 
+- [ ]             function calculatePizzaPrice(pizzaId, size, crustId) {
+- [ ]                 const pizza = getPizzaData(pizzaId);
+- [ ]                 if (!pizza) return 0;
+- [ ]                 
+- [ ]                 const basePrice = pizza.prices[size];
+- [ ]                 const crust = pizza.crusts[crustId];
+- [ ]                 
+- [ ]                 return basePrice + (crust ? crust.add : 0);
+- [ ]             }
+- [ ]             
+- [ ]             function createPizzaCard(pizza) {
+- [ ]                 // 피자 카드를 동적으로 생성하는 복잡한 HTML 생성 함수가 이 위치에 들어갑니다.
+- [ ]                 // 편의상, HTML 구조에 맞게 간단히 생성하는 코드만 예시로 남깁니다.
+- [ ]                 
+- [ ]                 const card = document.createElement('div');
+- [ ]                 card.className = 'pizza-card';
+- [ ]                 
+- [ ]                 let sizeOptions = '';
+- [ ]                 for (const size in pizza.prices) {
+- [ ]                     sizeOptions += `<option value="${size}">${size} (${formatPrice(pizza.prices[size])})</option>`;
+- [ ]                 }
+- [ ]                 
+- [ ]                 let crustOptions = '';
+- [ ]                 for (const crustId in pizza.crusts) {
+- [ ]                     const crust = pizza.crusts[crustId];
+- [ ]                     const priceText = crust.add > 0 ? ` (+${formatPrice(crust.add)})` : '';
+- [ ]                     crustOptions += `<option value="${crustId}">${crust.name}${priceText}</option>`;
+- [ ]                 }
+- [ ] 
+- [ ]                 card.innerHTML = `
+- [ ]                     <div class="pizza-image-area">
+- [ ]                         <img src="${pizza.image}" alt="${pizza.name}" class="pizza-image">
+- [ ]                     </div>
+- [ ]                     <div class="pizza-info">
+- [ ]                         <h3>${pizza.name}</h3>
+- [ ]                         ${pizza.note ? `<p class="note">${pizza.note}</p>` : ''}
+- [ ]                         
+- [ ]                         <div class="price-selector">
+- [ ]                             <label for="${pizza.id}-size">사이즈 선택:</label>
+- [ ]                             <select id="${pizza.id}-size" data-pizza-id="${pizza.id}">
+- [ ]                                 ${sizeOptions}
+- [ ]                             </select>
+- [ ]                         </div>
+- [ ]                         
+- [ ]                         <div class="crust-selector">
+- [ ]                             <label for="${pizza.id}-crust">크러스트 선택:</label>
+- [ ]                             <select id="${pizza.id}-crust" data-pizza-id="${pizza.id}">
+- [ ]                                 ${crustOptions}
+- [ ]                             </select>
+- [ ]                         </div>
+- [ ]                         
+- [ ]                         <div class="current-price-area">
+- [ ]                             <span class="current-price" id="${pizza.id}-price">
+- [ ]                                 ${formatPrice(calculatePizzaPrice(pizza.id, Object.keys(pizza.prices)[0], Object.keys(pizza.crusts)[0]))}
+- [ ]                             </span>
+- [ ]                         </div>
+- [ ]                         
+- [ ]                         <button class="add-to-cart-button" data-pizza-id="${pizza.id}">장바구니 담기</button>
+- [ ]                     </div>
+- [ ]                 `;
+- [ ]                 
+- [ ]                 // 가격 계산 이벤트 리스너 설정
+- [ ]                 const sizeSelect = card.querySelector(`#${pizza.id}-size`);
+- [ ]                 const crustSelect = card.querySelector(`#${pizza.id}-crust`);
+- [ ]                 const priceDisplay = card.querySelector(`#${pizza.id}-price`);
+- [ ] 
+- [ ]                 const updatePrice = () => {
+- [ ]                     const selectedSize = sizeSelect.value;
+- [ ]                     const selectedCrust = crustSelect.value;
+- [ ]                     const newPrice = calculatePizzaPrice(pizza.id, selectedSize, selectedCrust);
+- [ ]                     priceDisplay.textContent = formatPrice(newPrice);
+- [ ]                 };
+- [ ] 
+- [ ]                 if (sizeSelect) sizeSelect.addEventListener('change', updatePrice);
+- [ ]                 if (crustSelect) crustSelect.addEventListener('change', updatePrice);
+- [ ] 
+- [ ]                 return card;
+- [ ]             }
+- [ ] 
+- [ ]             function initializePizzaCards() {
+- [ ]                 const lists = {
+- [ ]                     "프리미엄 피자": document.getElementById('premium-list'),
+- [ ]                     "베스트 피자": document.getElementById('best-list'),
+- [ ]                     "스페셜티 & 씬 피자": document.getElementById('specialty-list'),
+- [ ]                     "클래식 피자": document.getElementById('classic-list'),
+- [ ]                     "비건 피자": document.getElementById('vegan-list'),
+- [ ]                 };
+- [ ] 
+- [ ]                 PIZZA_DATA.forEach(pizza => {
+- [ ]                     const card = createPizzaCard(pizza);
+- [ ]                     const listElement = lists[pizza.category];
+- [ ]                     if (listElement) {
+- [ ]                         listElement.appendChild(card);
+- [ ]                     }
+- [ ]                 });
+- [ ]             }
+- [ ] 
+- [ ]             initializePizzaCards();
+- [ ]         });
+- [ ]     </script>
+- [ ]     </body>
+- [ ] </html>
