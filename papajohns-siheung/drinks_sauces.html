@@ -4,143 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🥤 음료 & 소스 | 시흥은행점 파파존스</title>
-    <style>
-        /* (index.html에서 제공된 모든 CSS 코드를 여기에 복사하여 붙여넣으세요) */
-        :root {
-            --main-color: #4a6c4c;
-            --accent-color: #ffcc00;
-            --text-color: #333;
-            --white: #ffffff;
-            --font-family: 'Malgun Gothic', 'Arial', sans-serif;
-        }
-
-        body {
-            font-family: var(--font-family);
-            margin: 0;
-            padding: 0;
-            background-color: #f8f8f8;
-            color: var(--text-color);
-        }
-
-        header {
-            background-color: var(--main-color);
-            color: var(--white);
-            padding: 20px 0;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        header h1 {
-            margin: 0;
-            font-size: 1.5em;
-            letter-spacing: 2px;
-        }
-
-        nav {
-            background-color: var(--white);
-            border-bottom: 1px solid #eee;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
-        nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        nav ul li a {
-            display: block;
-            color: var(--text-color);
-            text-decoration: none;
-            font-weight: bold;
-            padding: 15px 20px;
-            transition: background-color 0.2s, color 0.2s;
-        }
-        nav ul li a:hover, nav ul li a.active {
-            background-color: var(--accent-color);
-            color: var(--text-color);
-        }
-
-        .main-content {
-            padding: 40px 20px;
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        .menu-section {
-            background-color: var(--white);
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            margin-bottom: 30px;
-        }
-        .menu-section h2 {
-            color: var(--main-color);
-            border-bottom: 3px solid var(--accent-color);
-            padding-bottom: 10px;
-            margin-bottom: 30px;
-        }
-
-        /* 음료/소스 테이블 스타일 */
-        .drink-table, .sauce-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 30px;
-        }
-        .drink-table th, .drink-table td, .sauce-table th, .sauce-table td {
-            border: 1px solid #ddd;
-            padding: 12px;
-            text-align: center;
-        }
-        .drink-table th, .sauce-table th {
-            background-color: var(--main-color);
-            color: var(--white);
-            font-size: 1.1em;
-        }
-        .drink-table .price-col {
-            font-weight: bold;
-            color: #d9534f;
-            width: 20%;
-        }
-        .sauce-table td:nth-child(2) {
-            font-weight: bold;
-            color: #d9534f;
-            width: 30%;
-        }
-        .note {
-            background-color: #fff9e6;
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 5px solid var(--accent-color);
-            font-size: 0.9em;
-        }
-        .drink-table td, .sauce-table td {
-            position: relative;
-        }
-        .drink-table td img, .sauce-table td img {
-            width: 40px; /* 아이콘 크기 조정 */
-            height: auto;
-            margin-right: 5px;
-            vertical-align: middle;
-        }
-
-        /* 3. 하단 정보 (Footer) */
-        footer {
-            background-color: #333;
-            color: #ccc;
-            padding: 20px 0;
-            text-align: center;
-            font-size: 0.9em;
-            margin-top: 40px;
-        }
-        footer p {
-            margin: 5px 0;
-        }
-        footer a {
-            color: var(--accent-color);
-            text-decoration: none;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css"> 
 </head>
 <body>
 
@@ -161,76 +25,173 @@
     
     <div class="main-content">
         <div class="menu-section">
-            <h2>🥤 음료 (Drinks)</h2>
-            <table class="drink-table">
-                <thead>
-                    <tr>
-                        <th>메뉴</th>
-                        <th>1.5L / 1.25L</th>
-                        <th>500ml</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><img src="assets/images/drink/coca_cola_1250.jpg" alt="콜라"> 코카-콜라 (일반)</td>
-                        <td class="price-col">2,300원</td>
-                        <td class="price-col">1,700원</td>
-                    </tr>
-                    <tr>
-                        <td><img src="assets/images/drink/coca_cola_zero_1250.jpg" alt="콜라 제로"> 코카-콜라 제로</td>
-                        <td class="price-col">2,300원</td>
-                        <td class="price-col">1,700원</td>
-                    </tr>
-                    <tr>
-                        <td><img src="assets/images/drink/sprite_1500.jpg" alt="스프라이트"> 스프라이트 (일반)</td>
-                        <td class="price-col">2,300원</td>
-                        <td class="price-col">1,700원</td>
-                    </tr>
-                    <tr>
-                        <td><img src="assets/images/drink/sprite_zero_1500.jpg" alt="스프라이트 제로"> 스프라이트 제로</td>
-                        <td class="price-col">2,300원</td>
-                        <td class="price-col">1,700원</td>
-                    </tr>
-                </tbody>
-            </table>
-            
-            <h2>🧂 추가 소스 (Extra Sauces)</h2>
-            <table class="sauce-table">
-                <thead>
-                    <tr>
-                        <th>소스명</th>
-                        <th>가격</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><img src="assets/images/sauce/fresh_pickle.jpg" alt="피클"> 프레쉬 피클</td>
-                        <td>600원</td>
-                    </tr>
-                    <tr>
-                        <td><img src="assets/images/sauce/garlic_dip.jpg" alt="갈릭 디핑소스"> 갈릭 디핑소스</td>
-                        <td>500원</td>
-                    </tr>
-                    <tr>
-                        <td><img src="assets/images/sauce/honey_mustard.jpg" alt="허니 머스터드"> 허니머스터드 소스</td>
-                        <td>100원</td>
-                    </tr>
-                    <tr>
-                        <td><img src="assets/images/sauce/hot_sauce.jpg" alt="핫소스"> 핫소스</td>
-                        <td>100원</td>
-                    </tr>
-                </tbody>
-            </table>
+            <h2>🥤 코카-콜라 계열</h2>
+            <div class="menu-grid">
+                
+                <div class="menu-card" data-menu-name="코카-콜라 1.25L" data-menu-price="2,300원">
+                    <img src="assets/images/drinks/coca_cola_1250.jpg" alt="코카-콜라 1.25L 이미지">
+                    <div class="menu-info">
+                        <h3>코카-콜라 1.25L</h3>
+                        <p class="description">기본 탄산음료 (대용량).</p>
+                        <div class="price-tag">
+                            <span>2,300원</span>
+                            <button class="add-to-cart-btn">담기</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="menu-card" data-menu-name="코카콜라 500ml" data-menu-price="1,700원">
+                    <img src="assets/images/drinks/coca_cola_500.jpg" alt="코카콜라 500ml 이미지">
+                    <div class="menu-info">
+                        <h3>코카콜라 500ml</h3>
+                        <p class="description">기본 탄산음료 (중용량).</p>
+                        <div class="price-tag">
+                            <span>1,700원</span>
+                            <button class="add-to-cart-btn">담기</button>
+                        </div>
+                    </div>
+                </div>
 
-            <p class="note">
-                💡 피자 주문 시 기본 제공되는 소스와 피클 외에 추가로 필요하시면 여기서 주문하실 수 있습니다.
-            </p>
+                <div class="menu-card" data-menu-name="코카-콜라 제로 1.25L" data-menu-price="2,300원">
+                    <img src="assets/images/drinks/coca_cola_zero_1250.jpg" alt="코카-콜라 제로 1.25L 이미지">
+                    <div class="menu-info">
+                        <h3>코카-콜라 제로 1.25L</h3>
+                        <p class="description">칼로리 부담 없는 코카콜라 제로 (대용량).</p>
+                        <div class="price-tag">
+                            <span>2,300원</span>
+                            <button class="add-to-cart-btn">담기</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="menu-card" data-menu-name="코카콜라 제로 500ml" data-menu-price="1,700원">
+                    <img src="assets/images/drinks/coca_cola_zero_500.jpg" alt="코카콜라 제로 500ml 이미지">
+                    <div class="menu-info">
+                        <h3>코카콜라 제로 500ml</h3>
+                        <p class="description">칼로리 부담 없는 코카콜라 제로 (중용량).</p>
+                        <div class="price-tag">
+                            <span>1,700원</span>
+                            <button class="add-to-cart-btn">담기</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-section">
+            <h2>✨ 스프라이트 계열</h2>
+            <div class="menu-grid">
+                
+                <div class="menu-card" data-menu-name="스프라이트 1.5L" data-menu-price="2,300원">
+                    <img src="assets/images/drinks/sprite_1500.jpg" alt="스프라이트 1.5L 이미지">
+                    <div class="menu-info">
+                        <h3>스프라이트 1.5L</h3>
+                        <p class="description">시원하고 청량한 스프라이트 (대용량).</p>
+                        <div class="price-tag">
+                            <span>2,300원</span>
+                            <button class="add-to-cart-btn">담기</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="menu-card" data-menu-name="스프라이트 500ml" data-menu-price="1,700원">
+                    <img src="assets/images/drinks/sprite_500.jpg" alt="스프라이트 500ml 이미지">
+                    <div class="menu-info">
+                        <h3>스프라이트 500ml</h3>
+                        <p class="description">시원하고 청량한 스프라이트 (중용량).</p>
+                        <div class="price-tag">
+                            <span>1,700원</span>
+                            <button class="add-to-cart-btn">담기</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-card" data-menu-name="스프라이트 제로 1.5L" data-menu-price="2,300원">
+                    <img src="assets/images/drinks/sprite_zero_1500.jpg" alt="스프라이트 제로 1.5L 이미지">
+                    <div class="menu-info">
+                        <h3>스프라이트 제로 1.5L</h3>
+                        <p class="description">제로 칼로리로 즐기는 스프라이트 (대용량).</p>
+                        <div class="price-tag">
+                            <span>2,300원</span>
+                            <button class="add-to-cart-btn">담기</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="menu-card" data-menu-name="스프라이트 제로 500ml" data-menu-price="1,700원">
+                    <img src="assets/images/drinks/sprite_zero_500.jpg" alt="스프라이트 제로 500ml 이미지">
+                    <div class="menu-info">
+                        <h3>스프라이트 제로 500ml</h3>
+                        <p class="description">제로 칼로리로 즐기는 스프라이트 (중용량).</p>
+                        <div class="price-tag">
+                            <span>1,700원</span>
+                            <button class="add-to-cart-btn">담기</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-section">
+            <h2>소스 & 피클 (Sauces & Pickles)</h2>
+            <div class="menu-grid">
+                
+                <div class="menu-card" data-menu-name="갈릭 디핑소스" data-menu-price="500원">
+                    <img src="assets/images/drinks/garlic_dip.jpg" alt="갈릭 디핑소스 이미지">
+                    <div class="menu-info">
+                        <h3>갈릭 디핑소스</h3>
+                        <p class="description">피자 엣지와 환상의 궁합!</p>
+                        <div class="price-tag">
+                            <span>500원</span>
+                            <button class="add-to-cart-btn">담기</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-card" data-menu-name="프레쉬 피클" data-menu-price="600원">
+                    <img src="assets/images/drinks/fresh_pickle.jpg" alt="프레쉬 피클 이미지">
+                    <div class="menu-info">
+                        <h3>프레쉬 피클</h3>
+                        <p class="description">아삭하고 상큼한 수제 피클.</p>
+                        <div class="price-tag">
+                            <span>600원</span>
+                            <button class="add-to-cart-btn">담기</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="menu-card" data-menu-name="핫소스" data-menu-price="100원">
+                    <img src="assets/images/drinks/hot_sauce.jpg" alt="핫소스 이미지">
+                    <div class="menu-info">
+                        <h3>핫소스</h3>
+                        <p class="description">피자의 매콤함을 더해주는 필수 소스.</p>
+                        <div class="price-tag">
+                            <span>100원</span>
+                            <button class="add-to-cart-btn">담기</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-card" data-menu-name="허니머스터드 소스" data-menu-price="100원">
+                    <img src="assets/images/drinks/honey_mustard.jpg" alt="허니머스터드 소스 이미지">
+                    <div class="menu-info">
+                        <h3>허니머스터드 소스</h3>
+                        <p class="description">치킨 스트립, 윙 등과 잘 어울리는 소스.</p>
+                        <div class="price-tag">
+                            <span>100원</span>
+                            <button class="add-to-cart-btn">담기</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <footer>
         <p><strong>파파존스피자 시흥은행점</strong> | 전화번호: <a href="tel:0313136995">031-313-6995</a></p>
     </footer>
+
+    <script src="menu.js"></script>
 
 </body>
 </html>
