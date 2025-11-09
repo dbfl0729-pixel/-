@@ -1,3 +1,333 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍕 파파존스 피자 메뉴</title>
+    <style>
+        :root {
+            --main-color: #4a6c4c;
+            --accent-color: #ffcc00;
+            --text-color: #333;
+            --white: #ffffff;
+            --font-family: 'Malgun Gothic', 'Arial', sans-serif;
+            --danger-color: #d9534f;
+            --info-color: #46b8da;
+        }
+
+        body {
+            font-family: var(--font-family);
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+            color: var(--text-color);
+        }
+
+        /* (헤더, 네비게이션 스타일은 이전과 동일) */
+        header {
+            background-color: var(--main-color);
+            color: var(--white);
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 1.5em;
+            letter-spacing: 2px;
+        }
+        nav {
+            background-color: var(--white);
+            border-bottom: 1px solid #eee;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        nav ul li a {
+            display: block;
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: bold;
+            padding: 15px 20px;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        nav ul li a[href="pizza.html"] {
+            background-color: var(--accent-color);
+            color: var(--text-color);
+        }
+        nav ul li a:hover {
+            background-color: var(--accent-color);
+        }
+
+        /* 크러스트 요약 안내 스타일 */
+        .crust-summary {
+            background-color: var(--white);
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 1200px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        .crust-summary h3 {
+            color: var(--main-color);
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1.5em;
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 5px;
+        }
+        .crust-list-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            list-style: none;
+            padding: 0;
+        }
+        .crust-list-grid li {
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f4f4f4;
+            font-size: 0.9em;
+        }
+        .crust-list-grid strong {
+            color: var(--text-color);
+            display: block;
+            margin-bottom: 3px;
+        }
+        .crust-note-price {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #fff0d4;
+            border-left: 5px solid var(--accent-color);
+            font-weight: bold;
+            color: var(--danger-color);
+            line-height: 1.5;
+        }
+        .crust-note-price span {
+            color: var(--text-color);
+        }
+
+        /* 피자 메뉴판 스타일 */
+        .pizza-menu-container {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .pizza-menu-container h2 {
+            text-align: center;
+            color: var(--main-color);
+            font-size: 2.2em;
+            margin-bottom: 30px;
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 10px;
+        }
+        .pizza-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        .pizza-card {
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            transition: transform 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+        .pizza-card:hover {
+            transform: translateY(-5px);
+        }
+        .pizza-card-header {
+            padding: 15px;
+            background-color: var(--main-color);
+            color: var(--white);
+        }
+        .pizza-card-header h3 {
+            margin: 0;
+            font-size: 1.4em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .pizza-card-header h3 span.badge {
+            background-color: var(--danger-color);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 5px;
+            font-size: 0.7em;
+            font-weight: bold;
+        }
+        .pizza-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .pizza-card-body {
+            padding: 15px;
+            flex-grow: 1;
+        }
+        .pizza-card-body p {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        /* 가격 노트 스타일 (수정됨) */
+        .pizza-price-notes {
+            margin-bottom: 15px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            padding: 10px;
+            background-color: #fcfcfc;
+        }
+        .price-item {
+            font-size: 0.9em;
+            margin-bottom: 3px;
+            color: var(--text-color);
+        }
+        .price-item strong {
+            color: var(--main-color);
+            margin-right: 5px;
+        }
+        /* 계산/옵션 선택 UX 개선 스타일 */
+        .pizza-options {
+            padding: 15px;
+            border-top: 1px dashed #ddd;
+            background-color: #f9f9f9;
+        }
+        .option-group {
+            margin-bottom: 10px;
+        }
+        .option-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: var(--text-color);
+        }
+        .option-group select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            font-size: 1em;
+            background-color: var(--white);
+        }
+        .current-price {
+            text-align: right;
+            font-size: 1.3em;
+            font-weight: bold;
+            color: var(--danger-color);
+            margin-top: 10px;
+            margin-bottom: 10px;
+            padding-top: 5px;
+            border-top: 1px solid #eee;
+        }
+        .current-price small {
+            font-size: 0.7em;
+            color: #666;
+            font-weight: normal;
+            margin-left: 5px;
+        }
+        .add-to-bill-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: var(--main-color);
+            color: var(--white);
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 15px;
+        }
+        .add-to-bill-btn:hover {
+            background-color: #3b523c;
+        }
+        .crust-note-small {
+            font-size: 0.8em;
+            color: var(--danger-color);
+            text-align: center;
+            padding: 10px 0;
+            background-color: #fff0f0;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+        .vegan-badge {
+            background-color: #4CAF50 !important; /* 녹색 */
+        }
+        .thin-note {
+            font-size: 0.8em;
+            color: var(--info-color);
+            text-align: center;
+            padding: 10px 0;
+            background-color: #f0f8ff;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+        .sp-crust-only-note {
+            font-size: 0.8em;
+            color: var(--danger-color);
+            text-align: center;
+            padding: 10px 0;
+            background-color: #fff0f0;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+        /* (푸터 스타일은 이전과 동일) */
+        footer {
+            background-color: #333;
+            color: #ccc;
+            padding: 20px 0;
+            text-align: center;
+            font-size: 0.9em;
+            margin-top: 40px;
+        }
+        footer p {
+            margin: 5px 0;
+        }
+        footer a {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>시흥은행점 파파존스 메뉴판</h1>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="index.html">🏠 첫 화면</a></li>
+            <li><a href="pizza.html">🍕 피자</a></li>
+            <li><a href="sides.html">🍗 사이드</a></li>
+            <li><a href="drinks_sauces.html">🥤 음료 & 소스</a></li>
+            <li><a href="discounts.html">💸 제휴 할인</a></li>
+            <li><a href="bill.html">🧾 계산서</a></li>
+        </ul>
+    </nav>
+
+    <div class="crust-summary">
+        <h3>파파존스 크러스트 소개</h3>
+        
+        <ul class="crust-list-grid">
+            <li><strong>오리지널</strong> - 쫄깃하고 고소한 기본에 충실한 맛</li>
+            <li><strong>씬(THIN)</strong> - 바삭하고 얇은 도우로 토핑의 맛을 극대화</li>
+            <li><strong>치즈롤</strong> - 짭쪼름한 체다치즈가 뿌려진 크러스트 속 스트링치즈와의 조합</li>
+            <li><strong>골드링</strong> - 달콤한 고구마 무스와 스트링 치즈의 조화</li>
+            <li><strong>스파이시 갈릭 치즈롤</strong> - 갈릭 향과 투 블렌드 치즈 레드페퍼를 사용한 진한 풍미</li>
+            <li><strong>크루아상</strong> - 겹겹이 살아있는 바삭함 버터의 풍미로 완성 된 도우</li>
+        </ul>
 
     </div>
     
@@ -5,7 +335,6 @@
         <h2>🍕 파파존스 피자 메뉴 🍕</h2>
         
         <div class="pizza-list">
-
             <div class="pizza-card" id="pizza-1" 
                  data-prices='{"L": 34500, "F": 41900}' 
                  data-available-sizes='["L", "F"]'
@@ -306,7 +635,7 @@
                     </div>
                 </div>
                 <div class="pizza-options">
-                    <div class="option-group"><label for="size-11">사이즈 선택:</label><select id="size-11" class="size-select"><option value="F">패밀리(F) - 31,900원</option></select></div>
+                    <div class="option-group"><label for="size-11">사이즈 선택:</label><select id="size-11" class="size-select"><option value="F - 31,900원">패밀리(F) - 31,900원</option></select></div>
                     <div class="thin-note">* THIN(씬) 크러스트 전용 메뉴이며, 사이즈 및 크러스트 변경 불가.</div>
                     <div class="current-price">총 금액: <span id="total-price-11">31,900</span>원</div>
                     <button class="add-to-bill-btn" data-pizza-id="11">🧾 계산서에 담기</button>
@@ -328,7 +657,7 @@
                     </div>
                 </div>
                 <div class="pizza-options">
-                    <div class="option-group"><label for="size-12">사이즈 선택:</label><select id="size-12" class="size-select"><option value="F">패밀리(F) - 33,900원</option></select></div>
+                    <div class="option-group"><label for="size-12">사이즈 선택:</label><select id="size-12" class="size-select"><option value="F - 33,900원">패밀리(F) - 33,900원</option></select></div>
                     <div class="thin-note">* THIN(씬) 크러스트 전용 메뉴이며, 사이즈 및 크러스트 변경 불가.</div>
                     <div class="current-price">총 금액: <span id="total-price-12">33,900</span>원</div>
                     <button class="add-to-bill-btn" data-pizza-id="12">🧾 계산서에 담기</button>
@@ -524,7 +853,7 @@
                     </div>
                 </div>
                 <div class="pizza-options">
-                    <div class="option-group"><label for="size-19">사이즈 선택:</label><select id="size-19" class="size-select"><option value="F">패밀리(F) - 34,900원</option></select></div>
+                    <div class="option-group"><label for="size-19">사이즈 선택:</label><select id="size-19" class="size-select"><option value="F - 34,900원">패밀리(F) - 34,900원</option></select></div>
                     <div class="thin-note">* THIN(씬) 크러스트 전용 메뉴이며, 사이즈 및 크러스트 변경 불가.</div>
                     <div class="current-price">총 금액: <span id="total-price-19">34,900</span>원</div>
                     <button class="add-to-bill-btn" data-pizza-id="19">🧾 계산서에 담기</button>
@@ -662,7 +991,7 @@
                     </div>
                 </div>
                 <div class="pizza-options">
-                    <div class="option-group"><label for="size-24">사이즈 선택:</label><select id="size-24" class="size-select"><option value="L">라지(L) - 26,500원</option></select></div>
+                    <div class="option-group"><label for="size-24">사이즈 선택:</label><select id="size-24" class="size-select"><option value="L - 26,500원">라지(L) - 26,500원</option></select></div>
                     <div class="crust-note-small">* 비건 전용 피자로 사이즈/크러스트 변경 불가합니다.</div>
                     <div class="current-price">총 금액: <span id="total-price-24">26,500</span>원</div>
                     <button class="add-to-bill-btn" data-pizza-id="24">🧾 계산서에 담기</button>
@@ -684,7 +1013,7 @@
                     </div>
                 </div>
                 <div class="pizza-options">
-                    <div class="option-group"><label for="size-25">사이즈 선택:</label><select id="size-25" class="size-select"><option value="L">라지(L) - 29,500원</option></select></div>
+                    <div class="option-group"><label for="size-25">사이즈 선택:</label><select id="size-25" class="size-select"><option value="L - 29,500원">라지(L) - 29,500원</option></select></div>
                     <div class="crust-note-small">* 비건 전용 피자로 사이즈/크러스트 변경 불가합니다.</div>
                     <div class="current-price">총 금액: <span id="total-price-25">29,500</span>원</div>
                     <button class="add-to-bill-btn" data-pizza-id="25">🧾 계산서에 담기</button>
@@ -701,7 +1030,7 @@
     </footer>
 
     <script>
-        // 크러스트 사이즈별 추가금액 정보 (이전과 동일)
+        // 크러스트 사이즈별 추가금액 정보
         const CRUST_ADD_PRICES = {
             'L': { 'cheeseroll': 4000, 'goldring': 4000, 'spicygarlic': 4000, 'croissant': 6000 },
             'F': { 'cheeseroll': 5000, 'goldring': 5000, 'spicygarlic': 5000, 'croissant': 6000 },
@@ -709,7 +1038,7 @@
             'R': { 'cheeseroll': 0, 'goldring': 0, 'spicygarlic': 0, 'croissant': 0, 'thin': 0 }
         };
 
-        // 사이즈 코드별 이름 정보 (이전과 동일)
+        // 사이즈 코드별 이름 정보
         const SIZE_DETAILS = {
             'R': { name: '레귤러' },
             'L': { name: '라지' },
@@ -730,7 +1059,7 @@
             const totalPriceSpan = document.getElementById(`total-price-${pizzaId}`);
             const crustAddText = document.getElementById(`crust-add-text-${pizzaId}`);
             
-            if (!sizeSelect || !totalPriceSpan) return; // sizeSelect는 모든 메뉴에 있음
+            if (!sizeSelect || !totalPriceSpan) return; 
 
             const selectedOptionValue = sizeSelect.value;
             const parts = selectedOptionValue.split('-');
@@ -740,7 +1069,7 @@
             const basePriceText = parts[1] ? parts[1].replace(/,/g, '').replace('원', '').trim() : '0';
             const basePrice = parseInt(basePriceText) || 0;
             
-            const selectedCrust = crustSelect ? crustSelect.value : 'original'; // 크러스트 선택바가 없으면 기본으로 설정
+            const selectedCrust = crustSelect ? crustSelect.value : 'original'; 
             
             let crustAddPrice = 0;
             let crustLimitMessage = '';
@@ -770,7 +1099,7 @@
                 }
             } else {
                 // 크러스트 선택바가 없는 메뉴 (THIN 전용, 비건 전용, 별모양 등)
-                isCrustValid = true; // 가격 변동 없음
+                isCrustValid = true; 
             }
 
             // 2. 최종 금액 계산 및 메시지 업데이트
@@ -783,7 +1112,6 @@
                 }
             } else if (crustAddText) {
                  if (crustLimitMessage) crustAddText.textContent = crustLimitMessage;
-                 // 유효하지 않은 크러스트 선택 시 추가금 미반영
             }
             
             totalPriceSpan.textContent = formatPrice(totalPrice);
@@ -817,3 +1145,38 @@
                         sizeSelect.appendChild(option);
                     });
                 }
+
+                // 이벤트 리스너 등록
+                if (sizeSelect) {
+                    sizeSelect.addEventListener('change', () => { updatePrice(pizzaId); });
+                }
+                if (crustSelect) {
+                    crustSelect.addEventListener('change', () => { updatePrice(pizzaId); });
+                }
+
+                if (addButton) {
+                    addButton.addEventListener('click', () => {
+                        const selectedSizeValue = sizeSelect ? sizeSelect.value : (availableSizes.length > 0 ? `${availableSizes[0]} - ${formatPrice(prices[availableSizes[0]])}원` : 'L - 0원');
+                        const selectedSizeCode = selectedSizeValue.split('-')[0].trim();
+                        const selectedCrustOption = crustSelect ? crustSelect.options[crustSelect.selectedIndex] : { textContent: '오리지널', value: 'original' };
+                        const finalPrice = document.getElementById(`total-price-${pizzaId}`).textContent.replace(/,/g, '');
+                        const pizzaName = card.getAttribute('data-name');
+                        
+                        alert(`
+                            🧾 계산서에 추가됨:
+                            - 메뉴: ${pizzaName}
+                            - 사이즈: ${selectedSizeCode}
+                            - 크러스트: ${selectedCrustOption.textContent.split('(')[0].trim()}
+                            - 최종 가격: ${finalPrice}원
+                        `);
+                    });
+                }
+
+                // 초기 가격 설정
+                updatePrice(pizzaId);
+            });
+        });
+    </script>
+
+</body>
+</html>
