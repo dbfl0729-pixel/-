@@ -1,432 +1,3 @@
-/* ================== 전역 설정 및 폰트 (기존) ================== */
-:root {
-    --color-primary: #5c6c4c;   /* 올리브색 (파파존스 메인색) */
-    --color-light: #f4f6f1;     /* 밝은 배경색 */
-    --color-dark: #333;         /* 기본 텍스트색 */
-    --color-accent: #c43026;    /* 파파존스 레드 (강조/가격색) */
-    --font-ko: 'Gmarket Sans', sans-serif;
-    --font-en: Helvetica, Arial, sans-serif;
-}
-
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
-    font-family: var(--font-ko);
-    color: var(--color-dark);
-    background-color: var(--color-light);
-    line-height: 1.6;
-}
-
-a { text-decoration: none; color: inherit; }
-ul { list-style: none; }
-
-
-/* ================== 상단 배너 (Header) 스타일 ================== */
-.main-header {
-    background-color: var(--color-primary);
-    color: white;
-    padding: 15px 0;
-}
-
-.header-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.logo { font-size: 1.5em; }
-
-/* ================== 내비게이션 스타일 (Nav) ================== */
-.main-nav {
-    background-color: white;
-    border-bottom: 1px solid #ddd;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-}
-
-.main-nav ul {
-    display: flex;
-    justify-content: center;
-    gap: 0;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.main-nav a {
-    display: block;
-    padding: 15px 20px;
-    font-weight: bold;
-    transition: background-color 0.2s;
-    white-space: nowrap;
-}
-
-.main-nav a:hover,
-.main-nav a.active {
-    background-color: var(--color-accent);
-    color: white;
-}
-
-
-/* ================== 컨텐츠 영역 (Content) 스타일 ================== */
-.content-wrapper {
-    padding: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.menu-section {
-    margin-bottom: 40px;
-    padding: 20px;
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-}
-
-.menu-section h2 {
-    color: var(--color-primary);
-    font-size: 2em;
-    margin-bottom: 20px;
-    border-bottom: 2px solid var(--color-accent);
-    padding-bottom: 10px;
-}
-
-/* 메뉴 그리드 레이아웃 */
-.menu-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 30px;
-}
-
-
-/* ================== 메뉴 카드 (Pizza, Side, Drink) 스타일 ================== */
-
-/* 피자 카드 (pizza.html) 및 메뉴 카드 (sides.html, drinks_sauces.html) 공통 */
-.pizza-card, .menu-item {
-    background-color: #f9f9f9;
-    border: 1px solid #eee;
-    border-radius: 8px;
-    overflow: hidden;
-    text-align: center;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-    transition: transform 0.2s, box-shadow 0.2s;
-    cursor: pointer; /* 클릭 가능 표시 */
-    display: flex;
-    flex-direction: column;
-}
-
-.pizza-card:hover, .menu-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-}
-
-.menu-image img {
-    width: 100%;
-    height: auto;
-    display: block;
-    /* 이미지 비율 유지를 위해 object-fit: cover를 사용하거나, 이미지 자체를 1:1 비율로 맞추는 것이 좋습니다. */
-}
-
-.menu-info {
-    padding: 15px;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-.menu-info h3 {
-    font-size: 1.3em;
-    font-weight: bold;
-    margin-top: 0;
-    margin-bottom: 5px;
-    color: var(--color-dark);
-}
-
-.menu-info .description {
-    font-size: 0.9em;
-    color: #666;
-    margin-bottom: 15px;
-    flex-grow: 1; /* 설명 영역이 공간을 차지하도록 */
-}
-
-/* 가격 및 버튼 박스 */
-.price-box {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 10px;
-    border-top: 1px solid #ddd;
-    margin-top: auto; /* 하단에 붙이기 */
-}
-
-/* 가격 텍스트 */
-.price-box .price {
-    font-size: 1.2em;
-    font-weight: bold;
-    color: var(--color-accent); /* 빨간색 */
-}
-
-.add-to-cart-btn {
-    background-color: var(--color-primary);
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1em;
-    font-weight: bold;
-    transition: background-color 0.2s;
-}
-
-.add-to-cart-btn:hover {
-    background-color: #3b523c;
-}
-
-
-/* ================== 계산서 페이지 (bill.html) 스타일 ================== */
-
-/* 장바구니 목록 */
-#cart-list {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 0;
-    margin-bottom: 30px;
-}
-
-.cart-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px;
-    border-bottom: 1px solid #eee;
-}
-
-.cart-item:last-child {
-    border-bottom: none;
-}
-
-.item-details {
-    flex-grow: 1;
-}
-
-.item-details strong {
-    font-size: 1.1em;
-    color: var(--color-dark);
-}
-
-.item-options {
-    font-size: 0.9em;
-    color: #666;
-    margin-top: 3px;
-}
-
-.item-price {
-    font-weight: 700;
-    color: var(--color-accent); /* 🔴 개별 가격 빨간색으로 수정 */
-    margin-left: 20px;
-    white-space: nowrap; 
-}
-
-.item-actions {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    margin-left: 20px;
-}
-
-.item-actions button {
-    background: none;
-    border: 1px solid #ccc;
-    color: var(--color-dark);
-    cursor: pointer;
-    padding: 5px 8px;
-    border-radius: 4px;
-    font-size: 0.9em;
-}
-
-.item-actions button:hover {
-    border-color: var(--color-accent);
-    color: var(--color-accent);
-}
-
-.item-quantity {
-    display: inline-block;
-    min-width: 20px;
-    text-align: center;
-    font-weight: bold;
-}
-
-/* 할인/결제 옵션 박스 */
-.option-box {
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: #f7f7f7;
-    margin-bottom: 20px;
-}
-
-.option-box h4 {
-    margin-bottom: 10px;
-    font-size: 1.1em;
-    font-weight: 600;
-    color: var(--color-dark);
-}
-
-.option-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    margin-bottom: 15px;
-}
-
-.option-group label {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-}
-
-.option-box select, 
-.option-box input[type="text"],
-.option-box button {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-family: var(--font-ko);
-    margin-top: 8px;
-}
-
-.option-box button.apply-btn {
-    background-color: var(--color-accent);
-    color: white;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.option-box button.apply-btn:hover {
-    background-color: #a8271e;
-}
-
-/* 최종 금액 요약 */
-.total-summary {
-    display: flex;
-    flex-direction: column;
-    margin-top: 40px;
-    padding-top: 20px;
-    border-top: 2px solid var(--color-primary);
-}
-
-.summary-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
-    font-size: 1.1em;
-}
-
-.summary-row.final {
-    font-size: 1.5em;
-    font-weight: bold;
-    color: var(--color-accent);
-    margin-top: 10px;
-}
-
-/* 결제 버튼 */
-.checkout-btn {
-    width: 100%;
-    padding: 15px;
-    margin-top: 20px;
-    background-color: var(--color-primary);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 1.3em;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.checkout-btn:hover {
-    background-color: #3b523c;
-}
-
-/* ================== 피자 옵션 팝업 스타일 (pizza.html) ================== */
-
-/* 팝업 전체 오버레이 */
-.popup-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7); 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000; 
-}
-
-/* 팝업 내용 컨테이너 */
-.pizza-popup-content {
-    background-color: var(--color-light);
-    padding: 30px;
-    border-radius: 10px;
-    width: 90%;
-    max-width: 500px;
-    position: relative;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-    animation: fadeIn 0.3s ease-out; 
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* 팝업 헤더 (피자 이름) */
-.pizza-popup-content h3 {
-    color: var(--color-primary);
-    font-size: 1.8em;
-    margin-top: 0;
-    margin-bottom: 20px;
-    border-bottom: 2px solid var(--color-accent);
-    padding-bottom: 10px;
-}
-
-/* 닫기 버튼 */
-#close-popup {
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    font-size: 2em;
-    font-weight: bold;
-    color: #999;
-    cursor: pointer;
-    transition: color 0.2s;
-}
-
-#close-popup:hover {
-    color: var(--color-dark);
-}
-
-/* 옵션 그룹 제목 */
-.pizza-popup-content h4 {
-    color: var(--color-dark);
-    font-size: 1.1em;
-    margin-top: 20px;
-    margin-bottom: 10px;
-    font-weight: 600;
-}
-
-/* 옵션 선택 영역 */
-.option-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
 /* 옵션 라벨 디자인 */
 .option-group label {
     flex: 1 1 auto; 
@@ -438,6 +9,10 @@ ul { list-style: none; }
     cursor: pointer;
     background-color: white;
     transition: all 0.2s;
+    /* ⭐️ flex 속성 추가: input과 span을 같은 줄에 배열하기 위함 */
+    display: flex; 
+    align-items: center;
+    justify-content: center;
 }
 
 /* 라디오 버튼 숨기기 */
@@ -445,54 +20,38 @@ ul { list-style: none; }
     display: none;
 }
 
-/* 선택된 옵션 스타일 */
-.option-group input[type="radio"]:checked + label {
+/* ⭐️ label 내부의 텍스트 <span>에 스타일을 적용합니다. */
+.option-group label span {
+    display: block; /* 텍스트만 중앙 정렬되도록 블록 요소로 만듭니다. */
+}
+
+/* ⭐️ 선택된 옵션 스타일 (input이 체크되었을 때, 그 다음 요소인 <span>에 스타일 적용) */
+.option-group input[type="radio"]:checked + span { 
     border-color: var(--color-accent);
     background-color: var(--color-accent);
     color: white;
     font-weight: bold;
     box-shadow: 0 0 5px rgba(196, 48, 38, 0.5);
-}
-
-/* 최종 가격 표시 */
-#selected-pizza-price {
-    font-size: 1.5em;
-    font-weight: bold;
-    color: var(--color-accent); 
-    text-align: right;
-    margin-top: 30px;
-    margin-bottom: 20px;
-}
-
-/* 장바구니 담기 버튼 */
-#add-pizza-to-cart {
-    width: 100%;
-    padding: 15px;
-    background-color: var(--color-primary);
-    color: white;
-    border: none;
+    padding: 12px; /* label의 padding을 대신합니다 */
     border-radius: 6px;
-    font-size: 1.2em;
-    cursor: pointer;
-    transition: background-color 0.2s;
 }
 
-#add-pizza-to-cart:hover {
-    background-color: #3b523c; 
+/* ⭐️ 중요한 수정: input:checked + label{...} 대신 input:checked + span{...}를 사용해야 합니다. 
+    이전 CSS가 input:checked + label이었을 경우, 아래 코드를 추가해야 합니다. */
+.option-group input[type="radio"]:checked + label {
+    /* 이 부분을 삭제하거나, 아래 코드가 span에 적용되도록 수정해야 합니다. */
+    /* 현재는 label에 스타일을 주고 input:checked + label을 사용했었는데,
+       html 구조 변경(input + span)에 따라 이 선택자는 작동하지 않을 수 있습니다.
+       위의 input:checked + span으로 수정하는 것이 정확합니다. */
+    border-color: var(--color-accent); /* label의 border-color는 그대로 둡니다 */
+    background-color: white; /* 선택되지 않았을 때 label의 배경색을 유지 */
+    color: var(--color-dark); /* 선택되지 않았을 때 label의 글자색을 유지 */
+    font-weight: normal;
 }
-
-
-/* ================== 푸터 스타일 (Footer) ================== */
-.main-footer {
-    background-color: var(--color-dark);
-    color: #ccc;
-    padding: 20px 0;
-    text-align: center;
-    font-size: 0.9em;
-    margin-top: 40px;
-}
-
-.main-footer a {
-    color: var(--color-accent);
-    text-decoration: none;
+/* ⭐️ 최종 수정: label 자체에는 배경색을 주지 않고, input:checked + span에 배경색을 줍니다. */
+.option-group input[type="radio"]:checked + span {
+    background-color: var(--color-accent);
+    color: white;
+    font-weight: bold;
+    /* label에 준 border 스타일을 span에 적용하지 않도록 주의합니다. */
 }
