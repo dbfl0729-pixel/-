@@ -58,11 +58,32 @@ function renderCart() {
     let hasPizza = false;
     // 장바구니 렌더링 로직 (생략)
     cart.forEach(item => {
-        // ... (이전 장바구니 아이템 생성 로직) ...
+        const li = document.createElement('li');
+        li.className = 'cart-item';
+        
+        // 가격 계산: 기본 가격 + 크러스트 가격
+        const itemPrice = item.price + (item.crustPrice || 0);
+        const itemTotal = itemPrice * item.quantity;
+        
+        let optionText = '';
         if (item.type === 'pizza') {
             hasPizza = true;
+            optionText = `(${item.size}, ${item.crust})`;
         }
-        // ...
+
+        li.innerHTML = `
+            <div class="item-details">
+                <strong>${item.name}</strong>
+                <p class="item-options">${optionText}</p>
+            </div>
+            <span class="item-price">${itemTotal.toLocaleString()}원</span>
+            <div class="item-actions">
+                <button onclick="updateQuantity(${item.id}, -1)">-</button>
+                <span class="item-quantity">${item.quantity}</span>
+                <button onclick="updateQuantity(${item.id}, 1)">+</button>
+                <button class="delete-btn" onclick="deleteItem(${item.id})">삭제</button>
+            </div>
+        `;
         cartList.appendChild(li);
     });
     
@@ -153,8 +174,7 @@ function attachSideMenuListeners() {
     });
 }
 
-
-// -------------------- 4. 피자 옵션 선택 기능 (추가/활성화) --------------------
+// -------------------- 4. 피자 옵션 선택 기능 (활성화) --------------------
 
 function attachPizzaListeners() {
     // 모든 피자 카드에 클릭 리스너 연결
@@ -172,6 +192,7 @@ function attachPizzaListeners() {
     document.getElementById('close-popup')?.addEventListener('click', hidePizzaOptions);
     
     // 팝업 내 옵션 변경 이벤트 리스너 (가격 업데이트)
+    // input[name="pizza-size"] 또는 input[name="pizza-crust"] 변경 시
     document.getElementById('pizza-options')?.addEventListener('change', updatePizzaPrice);
 
     // 장바구니 추가 버튼
@@ -182,6 +203,11 @@ function attachPizzaListeners() {
 function showPizzaOptions(pizzaName) {
     const popup = document.getElementById('pizza-popup');
     document.getElementById('popup-pizza-name').textContent = pizzaName;
+    
+    // 팝업을 띄울 때마다 기본 옵션(L, 오리지널)을 체크 상태로 만듭니다.
+    document.querySelector('input[name="pizza-size"][value="L"]').checked = true;
+    document.querySelector('input[name="pizza-crust"][value="오리지널"]').checked = true;
+    
     popup.style.display = 'flex'; // 팝업 표시
 
     // 팝업 초기 가격 설정
@@ -242,12 +268,11 @@ function handleAddPizzaToCart() {
     alert(`${pizzaName} (${size}, ${crust}) 1개를 장바구니에 담았습니다.`);
 }
 
-
 // -------------------- 5. DOMContentLoaded: 페이지 진입점 --------------------
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    // 피자 페이지 로직 (pizza.html) 활성화
+    // ⭐️ 피자 페이지 로직 (pizza.html) 활성화
     if (document.querySelector('.pizza-card')) {
         attachPizzaListeners(); 
     }
