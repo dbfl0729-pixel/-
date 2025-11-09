@@ -1,338 +1,248 @@
-// menu.js (최종 - 할인, 계산 로직, 아코디언 기능 포함)
+// =================================================================
+// 🍕 피자 메뉴 페이지 (menu.html) 로직 파일 - assets/menu.js
+// =================================================================
 
-let cart = JSON.parse(localStorage.getItem('papaJohnsCart')) || [];
-let currentCoupon = null; // 적용된 할인 코드 (퍼센트 할인)
+// --- 1. 가격 데이터 정의 (모든 함수가 필요로 하는 데이터) ---
+const PIZZA_PRICES = {
+    // R: 레귤러(25cm), L: 라지(31cm), F: 패밀리(36cm), P: 파티(41cm)
+    'barbeque_shortrib_crunch': { R: 0, L: 34500, F: 41900, P: 0 },
+    'mellow_corn_cream': { R: 0, L: 27500, F: 33900, P: 41500 },
+    'starlight_basil': { R: 0, L: 33500, F: 39900, P: 48500 },
+    'double_hot_spicy_mexican': { R: 0, L: 33500, F: 39900, P: 0 },
+    'super_papas': { R: 19900, L: 28500, F: 33900, P: 42500 },
+    'johns_favorite': { R: 0, L: 29500, F: 34900, P: 45500 },
+    'all_meat': { R: 19900, L: 29500, F: 34900, P: 45500 },
+    'spicy_chicken_ranch': { R: 19900, L: 29500, F: 34900, P: 43500 },
+    'irish_potato': { R: 18900, L: 27500, F: 32900, P: 40500 },
+    'chicken_barbeque': { R: 18900, L: 27500, F: 32900, P: 40500 },
+    'crispy_cheese_pepperoni': { R: 0, L: 0, F: 31900, P: 0 },
+    'crispy_cheese_triple': { R: 0, L: 0, F: 33900, P: 0 },
+    'ham_mushroom_six_cheese': { R: 0, L: 28500, F: 33900, P: 42500 },
+    'wisconsin_cheese_potato': { R: 0, L: 29500, F: 35900, P: 45500 },
+    'double_cheeseburger': { R: 0, L: 29500, F: 34900, P: 43500 },
+    'premium_bulgogi': { R: 0, L: 29500, F: 34900, P: 43500 },
+    'six_cheese': { R: 0, L: 26500, F: 31900, P: 39500 },
+    'spicy_italian': { R: 0, L: 27500, F: 33900, P: 40500 },
+    'shrimp_alfredo': { R: 0, L: 0, F: 34900, P: 0 },
+    'margherita': { R: 16900, L: 23500, F: 28900, P: 36500 },
+    'pepperoni': { R: 17900, L: 25500, F: 30900, P: 38500 },
+    'hawaiian': { R: 17900, L: 26500, F: 32900, P: 39500 },
+    'garden_special': { R: 17900, L: 26500, F: 31900, P: 39500 },
+    'green_it_margherita': { R: 0, L: 26500, F: 0, P: 0 },
+    'green_it_garden_special': { R: 0, L: 29500, F: 0, P: 0 }
+};
 
-// --- 기본 장바구니 기능 ---
+// **새로 추가된 피자 이름 매핑 객체**
+const PIZZA_NAME_MAP = {
+    pizza_bbq_shortrib.jpg: '바베큐 숏립 크런치',
+    pizza_mellow_corn_cream.jpg: '멜로우 콘크림',
+    'starlight_basil': '스타라이트 바질',
+    'double_hot_spicy_mexican': '더블 핫 앤 스파이시 멕시칸',
+    'super_papas': '수퍼 파파스',
+    'johns_favorite': '존스 페이버릿',
+    'all_meat': '올미트',
+    'spicy_chicken_ranch': '스파이시 치킨랜치',
+    'irish_potato': '아이리쉬 포테이토',
+    'chicken_barbeque': '치킨 바베큐',
+    'crispy_cheese_pepperoni': '크리스피 치즈 페퍼로니 피자',
+    'crispy_cheese_triple': '크리스피 치즈 트리플 피자',
+    'ham_mushroom_six_cheese': '햄 머쉬룸 식스 치즈',
+    'wisconsin_cheese_potato': '위스콘신 치즈 포테이토',
+    'double_cheeseburger': '더블 치즈버거',
+    'premium_bulgogi': '프리미엄 직화불고기',
+    'six_cheese': '식스 치즈',
+    'spicy_italian': '스파이시 이탈리안',
+    'shrimp_alfredo': '슈림프 알프레도',
+    'margherita': '마가리타',
+    'pepperoni': '페퍼로니',
+    'hawaiian': '하와이안',
+    'garden_special': '가든 스페셜',
+    'green_it_margherita': '그린잇 식물성 마가리타',
+    'green_it_garden_special': '그린잇 식물성 가든스페셜'
+};
 
-function parsePrice(priceText) {
-    if (!priceText) return 0;
-    
-    // 피자 메뉴처럼 L: F: P: 사이즈 정보가 있는 경우, L 사이즈 가격을 추출
-    const lSizeMatch = priceText.match(/L:\s*([\d,]+)/);
-    if (lSizeMatch) {
-        return parseInt(lSizeMatch[1].replace(/,/g, ''), 10);
-    }
-    
-    // R 사이즈로 표기된 경우 (비건 피자 등)
-    const rSizeMatch = priceText.match(/R\(31cm\)\s*([\d,]+)/) || priceText.match(/R:\s*([\d,]+)/);
-    if (rSizeMatch) {
-         return parseInt(rSizeMatch[1].replace(/,/g, ''), 10);
-    }
+// **수정**: 크러스트 이름은 한글로 매핑하여 저장
+const CRUST_NAME_MAP = {
+    'original': '오리지널',
+    'thin': '씬',
+    'cheeseroll': '치즈롤',
+    'goldring': '골드링',
+    'spicygarlic': '스파이시 갈릭 치즈롤',
+    'croissant': '크루아상'
+};
 
-    // 단일 가격 (사이드, 음료, 소스, TH전용 F)
-    const singlePriceMatch = priceText.match(/([\d,]+)/);
-    if (singlePriceMatch) {
-        return parseInt(singlePriceMatch[0].replace(/,/g, ''), 10);
-    }
+// **수정**: 크러스트 가격은 ID(영문)를 키로 사용
+const CRUST_PRICES = {
+    'original': { R: 0, L: 0, F: 0, P: 0 },
+    'thin': { R: 0, L: 0, F: 0, P: 0 }, 
+    'cheeseroll': { R: 0, L: 4000, F: 5000, P: 6000 },
+    'goldring': { R: 0, L: 4000, F: 5000, P: 6000 },
+    'spicygarlic': { R: 0, L: 4000, F: 5000, P: 6000 },
+    'croissant': { R: 0, L: 6000, F: 6000, P: 6000 }
+};
 
-    return 0;
+// --- 2. 유틸리티 함수 ---
+function formatPrice(amount) {
+    if (typeof amount !== 'number' || isNaN(amount)) return '₩0';
+    return `₩${amount.toLocaleString('ko-KR')}`;
 }
 
-function addToCart(name, priceText) {
-    const price = parsePrice(priceText);
-    const key = `${name}-${priceText}`; 
+// --- 3. 메뉴 옵션 동적 생성 함수 ---
+function createSizeOptions(pizzaId) {
+    const card = document.getElementById(pizzaId);
+    if (!card) return;
 
-    if (price === 0) {
-        alert(`[${name}]의 가격 정보를 읽을 수 없어 추가할 수 없습니다.`);
-        return;
-    }
+    const prices = PIZZA_PRICES[pizzaId];
+    if (!prices) return;
 
-    const existingItem = cart.find(item => item.key === key);
+    const sizeSelect = card.querySelector('.size-select');
+    if (!sizeSelect) return;
 
-    if (existingItem) {
-        existingItem.quantity += 1;
-    } else {
-        cart.push({
-            key: key,
-            name: name,
-            price: price,
-            priceText: priceText,
-            quantity: 1,
-            isPizza: name.includes('피자') || name.includes('파파스') || name.includes('페이버릿') // 1+1 로직을 위해 추가
-        });
-    }
+    sizeSelect.innerHTML = '';
 
-    saveCart();
-    alert(`[${name.replace(/\s*\(\w\)/, '')}]이(가) 장바구니에 추가되었습니다.`);
-}
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '0';
+    defaultOption.textContent = '사이즈를 선택하세요';
+    sizeSelect.appendChild(defaultOption);
 
-function saveCart() {
-    localStorage.setItem('papaJohnsCart', JSON.stringify(cart));
-}
-
-function updateQuantity(index, delta) {
-    if (cart[index]) {
-        cart[index].quantity += delta;
-        
-        if (cart[index].quantity <= 0) {
-            removeItem(index);
-        } else {
-            saveCart();
-            renderCart();
-        }
-    }
-}
-
-function removeItem(index) {
-    if (confirm(`[${cart[index].name.replace(/\s*\(\w\)/, '')}]을(를) 장바구니에서 삭제하시겠습니까?`)) {
-        cart.splice(index, 1);
-        saveCart();
-        renderCart();
-    }
-}
-
-// --- 할인 및 계산 로직 (추가됨) ---
-
-/**
- * 장바구니 항목의 기본 합계 금액을 계산 (할인/배달비 미포함)
- * @returns {number} 총 기본 금액
- */
-function calculateSubtotal() {
-    let subtotal = 0;
-    let pizzaPrices = []; // 1+1 로직을 위한 피자 가격 리스트
-
-    cart.forEach(item => {
-        subtotal += item.price * item.quantity;
-        
-        if (item.isPizza && item.quantity > 0) {
-            for (let i = 0; i < item.quantity; i++) {
-                pizzaPrices.push(item.price);
-            }
+    Object.keys(prices).forEach(sizeCode => {
+        const price = prices[sizeCode];
+        if (price > 0) {
+             const option = document.createElement('option');
+             option.value = sizeCode;
+             option.textContent = `${sizeCode} (${formatPrice(price)})`; 
+             sizeSelect.appendChild(option);
         }
     });
+}
 
-    // 1+1 할인 적용 (금요일 행사)
-    const today = new Date();
-    // 0:일, 1:월, 2:화, 3:수, 4:목, 5:금, 6:토
-    const isFriday = today.getDay() === 5; 
-    let onePlusOneDiscount = 0;
-    let pizzaSubtotal = pizzaPrices.reduce((sum, price) => sum + price, 0);
 
-    if (isFriday && pizzaPrices.length >= 2) {
-        // 가격이 비싼 피자부터 정렬
-        pizzaPrices.sort((a, b) => b - a);
-        
-        // 1+1은 짝수번째 피자(두 번째, 네 번째 등)의 가격을 할인
-        for (let i = 1; i < pizzaPrices.length; i += 2) {
-            onePlusOneDiscount += pizzaPrices[i];
-        }
+// --- 4. 가격 계산 함수 (핵심 로직) ---
+window.updatePrice = function(pizzaId) {
+    const card = document.getElementById(pizzaId);
+    if (!card) return;
+
+    const sizeSelect = card.querySelector('.size-select');
+    const crustSelect = card.querySelector('.crust-select');
+    const quantityInput = card.querySelector('.quantity-input');
+    const totalPriceElement = document.getElementById(`total-price-${pizzaId}`);
+    
+    const selectedSize = sizeSelect ? sizeSelect.value : null; 
+    const selectedCrustId = crustSelect ? crustSelect.value : 'original';
+    const quantity = parseInt(quantityInput.value) || 1;
+
+    let basePrice = 0;
+    let crustAddPrice = 0;
+
+    // 1. 기본 가격 계산
+    if (selectedSize === '0' || !selectedSize || !PIZZA_PRICES[pizzaId] || !PIZZA_PRICES[pizzaId][selectedSize]) {
+        basePrice = 0;
+    } else {
+        basePrice = PIZZA_PRICES[pizzaId][selectedSize];
     }
     
-    // 1+1 할인 금액은 피자가 아닌 메뉴에는 적용되지 않으므로, subtotal에서 차감합니다.
-    return { 
-        baseTotal: subtotal, 
-        onePlusOneDiscount: onePlusOneDiscount,
-        isFriday: isFriday
+    // 2. 크러스트 추가 가격 계산 (사이즈 기반)
+    if (selectedSize !== '0' && selectedSize && CRUST_PRICES[selectedCrustId] && CRUST_PRICES[selectedCrustId][selectedSize]) {
+        crustAddPrice = CRUST_PRICES[selectedCrustId][selectedSize];
+    }
+
+    const finalPrice = (basePrice + crustAddPrice) * quantity;
+    
+    // 3. 가격 표시 및 장바구니 버튼 상태 제어
+    const addButton = card.querySelector('.add-to-bill-btn');
+    
+    if (finalPrice === 0 || selectedSize === '0') {
+        totalPriceElement.textContent = '사이즈를 선택하세요';
+        if (addButton) addButton.disabled = true;
+    } else {
+        totalPriceElement.textContent = formatPrice(finalPrice);
+        if (addButton) addButton.disabled = false;
+    }
+};
+
+// --- 5. 장바구니 추가 함수 (로컬 스토리지 저장 로직 통합) ---
+window.addToCart = function(pizzaId) {
+    const card = document.getElementById(pizzaId);
+    const sizeSelect = card.querySelector('.size-select');
+    const crustSelect = card.querySelector('.crust-select');
+    const quantityInput = card.querySelector('.quantity-input');
+    
+    const selectedSize = sizeSelect ? sizeSelect.value : null;
+    const selectedCrustId = crustSelect ? crustSelect.value : 'original';
+    const quantity = parseInt(quantityInput.value) || 1;
+    
+    if (selectedSize === '0' || !selectedSize) {
+        alert('🍕 사이즈를 먼저 선택해주세요!');
+        return;
+    }
+    
+    // 최종 가격 다시 계산 (안전성 확보)
+    const basePrice = PIZZA_PRICES[pizzaId][selectedSize];
+    const crustAddPrice = CRUST_PRICES[selectedCrustId][selectedSize];
+    const itemPricePerUnit = basePrice + crustAddPrice; // 단가
+    
+    // **수정**: PIZZA_NAME_MAP에서 이름을 가져옵니다.
+    const pizzaName = PIZZA_NAME_MAP[pizzaId] || pizzaId; 
+    
+    const item = {
+        id: `${pizzaId}-${selectedSize}-${selectedCrustId}`, 
+        pizzaId: pizzaId,
+        name: pizzaName, // 👈 여기서 수정된 이름을 사용
+        size: selectedSize,
+        crustId: selectedCrustId,
+        crustName: CRUST_NAME_MAP[selectedCrustId],
+        price: itemPricePerUnit, // 단가
+        quantity: quantity,
+        total: itemPricePerUnit * quantity
     };
-}
 
+    // 1. 로컬 스토리지에서 현재 장바구니 데이터 가져오기
+    let cart = JSON.parse(localStorage.getItem('papaJohnsCart')) || [];
 
-/**
- * 최종 금액 계산 및 화면 업데이트
- */
-function calculateFinalTotal() {
-    const { baseTotal, onePlusOneDiscount, isFriday } = calculateSubtotal();
-    let total = baseTotal;
-    let totalDiscount = 0; // 적용된 총 할인 금액 (포장, 제휴, 쿠폰)
+    // 2. 장바구니에 동일한 옵션의 상품이 이미 있는지 확인 (수량 업데이트)
+    const existingItemIndex = cart.findIndex(
+        i => i.pizzaId === item.pizzaId && i.size === item.size && i.crustId === item.crustId
+    );
 
-    // 1. 1+1 할인 적용
-    total -= onePlusOneDiscount;
-    totalDiscount += onePlusOneDiscount;
-    document.getElementById('promo-notice').style.display = isFriday && onePlusOneDiscount > 0 ? 'block' : 'none';
-
-    // 2. 주문 방식 (배달/포장)
-    const isPickup = document.getElementById('pickup').checked;
-    const deliveryFee = 3000;
-    let pickupDiscount = 0;
-
-    if (isPickup) {
-        // 포장 30% 할인 적용
-        pickupDiscount = Math.round(total * 0.3);
-        total -= pickupDiscount;
-        totalDiscount += pickupDiscount;
+    if (existingItemIndex > -1) {
+        cart[existingItemIndex].quantity += quantity;
+        cart[existingItemIndex].total = cart[existingItemIndex].price * cart[existingItemIndex].quantity;
     } else {
-        // 배달비 적용
-        total += deliveryFee;
+        cart.push(item);
     }
 
-    // 3. 제휴 할인 (1+1, 포장 할인과 중복 불가)
-    let affiliateDiscount = 0;
-    const selectedDiscount = document.getElementById('affiliated-discount').value;
-    const discountMatch = selectedDiscount.match(/(\d+)%/);
-
-    // 1+1 할인이 적용된 경우, 다른 제휴 할인은 적용 불가 (사용자 요구사항)
-    if (onePlusOneDiscount === 0 && discountMatch) {
-        const discountRate = parseInt(discountMatch[1], 10) / 100;
-        affiliateDiscount = Math.round(total * discountRate);
-        total -= affiliateDiscount;
-        totalDiscount += affiliateDiscount;
-    }
-
-    // 4. 할인 코드 (20250923 = 20% 할인)
-    let couponDiscount = 0;
-    if (currentCoupon === '20250923') {
-        // 할인 코드 적용 (다른 할인과 중복 적용 불가 조건이 없으므로 최종 금액에 적용)
-        couponDiscount = Math.round(total * 0.20);
-        total -= couponDiscount;
-        totalDiscount += couponDiscount;
-    }
-
-
-    // --- 최종 출력 ---
-    const detail = `(1+1 할인: ${onePlusOneDiscount.toLocaleString()}원, 포장 할인: ${pickupDiscount.toLocaleString()}원, 제휴 할인: ${affiliateDiscount.toLocaleString()}원, 할인 코드: ${couponDiscount.toLocaleString()}원, 배달비: ${isPickup ? '0원' : deliveryFee.toLocaleString() + '원'})`;
+    // 3. 로컬 스토리지에 업데이트된 장바구니 저장
+    localStorage.setItem('papaJohnsCart', JSON.stringify(cart));
     
-    document.getElementById('final-total-price').textContent = Math.max(0, total).toLocaleString() + '원';
-    document.getElementById('discount-detail').textContent = `총 할인액: ${totalDiscount.toLocaleString()}원 ${isPickup ? '' : `+ 배달비 ${deliveryFee.toLocaleString()}원`}`;
+    // 4. 사용자에게 알림
+    alert(`[${item.name} (${item.size}, ${item.crustName})] ${quantity}개를 장바구니에 추가했습니다.`);
     
-    // 총 금액 요약을 위해 baseTotal도 업데이트합니다.
-    document.getElementById('base-total-price').textContent = baseTotal.toLocaleString() + '원';
-}
+    // 장바구니 페이지로 이동
+    window.location.href = 'cart.html'; 
+};
 
-/**
- * 계산서 페이지에서 장바구니 목록을 렌더링
- */
-function renderCart() {
-    const cartList = document.getElementById('cart-list');
-    
-    if (!cartList) return; // 계산서 페이지가 아니면 종료
 
-    cartList.innerHTML = '';
-    
-    if (cart.length === 0) {
-        cartList.innerHTML = '<li style="text-align: center; color: #888; padding: 30px;">장바구니가 비어있습니다. 메뉴를 담아주세요.</li>';
-        document.getElementById('final-total-price').textContent = '0원';
-        document.getElementById('discount-detail').textContent = '';
-        return;
-    }
-
-    let subTotalNoDiscount = 0;
-    cart.forEach((item, index) => {
-        const itemTotal = item.price * item.quantity;
-        subTotalNoDiscount += itemTotal;
+// --- 6. 초기화 (모든 카드에 기능 적용) ---
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.pizza-card').forEach(card => {
+        const pizzaId = card.id;
         
-        // 피자 이름에서 L사이즈 정보를 제거하고 표시 (계산서 보기 좋게)
-        const displayName = item.name.replace(/\s*\(\w\)/, '');
-        const unitPriceDisplay = item.price.toLocaleString();
-
-
-        const listItem = document.createElement('li');
-        listItem.innerHTML = `
-            <div class="item-details">
-                <div class="name">${displayName}</div>
-                <div class="price-unit">${unitPriceDisplay}원 (단가)</div>
-            </div>
-            <div class="quantity-control">
-                <button onclick="updateQuantity(${index}, -1)">-</button>
-                <span class="quantity">${item.quantity}</span>
-                <button onclick="updateQuantity(${index}, 1)">+</button>
-                <button onclick="removeItem(${index})" style="margin-left: 10px; background-color: #ddd; color: #333;">삭제</button>
-            </div>
-            <div class="item-total">${itemTotal.toLocaleString()}원</div>
-        `;
-        cartList.appendChild(listItem);
-    });
-    
-    // 장바구니 목록 하단에 기본 합계 금액 표시
-    const subtotalLi = document.createElement('li');
-    subtotalLi.innerHTML = `
-        <div class="item-details"><div class="name">상품 합계</div></div>
-        <div class="item-total" id="base-total-price" style="font-size: 1.2em;">${subTotalNoDiscount.toLocaleString()}원</div>
-    `;
-    cartList.appendChild(subtotalLi);
-
-    calculateFinalTotal(); // 최종 금액 계산 및 표시
-}
-
-/**
- * 할인 코드 적용
- */
-function applyCoupon() {
-    const codeInput = document.getElementById('coupon-code').value.trim();
-    if (codeInput === '20250923') {
-        currentCoupon = codeInput;
-        alert("할인 코드 [20250923] (20% 할인)이 적용되었습니다.");
-    } else if (codeInput === '') {
-        currentCoupon = null;
-        alert("할인 코드를 해제했습니다.");
-    } else {
-        currentCoupon = null;
-        alert("유효하지 않은 할인 코드입니다.");
-    }
-    calculateFinalTotal(); // 할인 적용 후 총 금액 재계산
-}
-
-
-/**
- * 페이지 로드 시 실행 함수
- */
-document.addEventListener('DOMContentLoaded', () => {
-    // 1. 메뉴 카드에 이벤트 리스너 추가 (메뉴 페이지)
-    document.querySelectorAll('[data-menu-name]').forEach(element => {
-        const name = element.dataset.menuName;
-        const priceText = element.dataset.menuPrice;
+        // 1. 사이즈 옵션 동적 생성
+        createSizeOptions(pizzaId); 
         
-        const button = element.querySelector('.add-to-cart-btn');
-        if (button) {
-            button.onclick = () => addToCart(name, priceText);
+        // 2. 이벤트 리스너 재등록
+        card.querySelectorAll('.size-select, .crust-select, .quantity-input').forEach(element => {
+            element.addEventListener('change', () => updatePrice(pizzaId));
+            element.addEventListener('input', () => updatePrice(pizzaId));
+        });
+
+        // 3. 초기 가격 설정
+        updatePrice(pizzaId);
+
+        // 4. '장바구니 담기' 버튼 리스너
+        const addButton = card.querySelector('.add-to-bill-btn');
+        if (addButton) {
+             addButton.addEventListener('click', () => addToCart(pizzaId));
         }
     });
-
-    // 2. 계산서 페이지에서 카트 렌더링 및 이벤트 리스너 추가
-    if (document.getElementById('cart-list')) {
-        renderCart();
-        
-        // 주문 방식, 제휴 할인 변경 시 최종 금액 재계산
-        document.querySelectorAll('input[name="order-type"]').forEach(radio => {
-            radio.addEventListener('change', calculateFinalTotal);
-        });
-        document.getElementById('affiliated-discount').addEventListener('change', calculateFinalTotal);
-    }
 });
-
-// 주문하기 버튼 기능 (간단 알림)
-function completeOrder() {
-    if (cart.length === 0) {
-        alert("장바구니가 비어있습니다. 메뉴를 담아주세요!");
-        return;
-    }
-    const finalPrice = document.getElementById('final-total-price').textContent;
-    alert(`총 ${finalPrice}으로 주문이 접수되었습니다!\n(이것은 시뮬레이션입니다. 실제 주문은 불가합니다.)`);
-    
-    // 주문 완료 후 장바구니 초기화
-    cart = [];
-    saveCart();
-    // 페이지 리로드 또는 카트 초기화 후 렌더링
-    if (document.getElementById('cart-list')) {
-        renderCart();
-    } else {
-        alert("장바구니가 비어있습니다. 메뉴를 담아주세요!");
-    }
-}
-
-// --- 크러스트 안내 디자인 개선을 위한 아코디언 기능 (추가됨) ---
-/**
- * 아코디언(접었다 펴는) 기능을 토글합니다.
- * @param {string} id - 콘텐츠 영역의 ID (예: 'crust-guide', 'event-guide')
- */
-function toggleAccordion(id) {
-    const content = document.getElementById(id + '-content');
-    const icon = document.getElementById(id + '-icon');
-    
-    if (content.style.display === "block") {
-        content.style.display = "none";
-        icon.textContent = "+";
-    } else {
-        // 다른 모든 아코디언 닫기
-        document.querySelectorAll('.accordion-content').forEach(item => {
-            if (item.id !== id + '-content') {
-                item.style.display = 'none';
-                document.getElementById(item.id.replace('-content', '-icon')).textContent = '+';
-            }
-        });
-        
-        // 현재 아코디언 열기
-        content.style.display = "block";
-        icon.textContent = "−";
-    }
-}
