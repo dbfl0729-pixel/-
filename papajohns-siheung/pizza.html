@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍕 피자 메뉴 | 시흥은행점 파파존스</title>
+    <style>
+        /* (index.html에서 제공된 모든 CSS 코드를 여기에 복사하여 붙여넣으세요) */
+        :root {
+            --main-color: #4a6c4c; /* 올리브색 계열 */
+            --accent-color: #ffcc00; /* 파파존스 옐로우 */
+            --text-color: #333;
+            --white: #ffffff;
+            --font-family: 'Malgun Gothic', 'Arial', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-family);
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+            color: var(--text-color);
+        }
+
+        /* 1. 상단 배너 (Header) */
+        header {
+            background-color: var(--main-color);
+            color: var(--white);
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 1.5em;
+            letter-spacing: 2px;
+        }
+
+        /* 2. 네비게이션 버튼 (바로가기) */
+        nav {
+            background-color: var(--white);
+            border-bottom: 1px solid #eee;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        nav ul li a {
+            display: block;
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: bold;
+            padding: 15px 20px;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        nav ul li a:hover, nav ul li a.active {
+            background-color: var(--accent-color);
+            color: var(--text-color);
+        }
+
+        /* 메인 콘텐츠 영역 */
+        .main-content {
+            padding: 40px 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .menu-section {
+            background-color: var(--white);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+        .menu-section h2 {
+            color: var(--main-color);
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+
+        /* 피자 메뉴 카드 스타일 (변경 없음) */
+        .pizza-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .pizza-card {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            overflow: hidden;
+            background-color: var(--white);
+            transition: transform 0.2s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+        .pizza-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .pizza-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block; 
+        }
+
+        .pizza-info {
+            padding: 15px;
+        }
+        .pizza-info h3 {
+            color: #d9534f; /* 강조 색상 */
+            margin-top: 0;
+            margin-bottom: 5px;
+            font-size: 1.3em;
+        }
+        .pizza-info .description {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+            min-height: 40px;
+        }
+        .pizza-info .prices {
+            font-weight: bold;
+            color: var(--text-color);
+            line-height: 1.8;
+            border-top: 1px dashed #eee;
+            padding-top: 10px;
+        }
+        .pizza-info .prices span {
+            display: block;
+            font-size: 0.9em;
+        }
+        .pizza-info .prices .best-tag {
+            background-color: var(--accent-color);
+            color: var(--text-color);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            margin-left: 5px;
+        }
+        
+        /* 크러스트 안내 섹션 스타일 */
+        .crust-notice {
+            padding: 25px; /* 패딩 증가 */
+            background-color: #fff9e6;
+            border: 1px solid var(--accent-color);
+            border-radius: 12px; /* 둥근 모서리 증가 */
+            margin-top: 30px;
+            font-size: 0.9em;
+        }
+        .crust-notice h2 {
+            border-bottom: 2px dashed var(--accent-color);
+        }
+        .crust-notice table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0; /* 마진 증가 */
+        }
+        .crust-notice th, .crust-notice td {
+            border: 1px solid #ffe0a3;
+            padding: 10px; /* 패딩 증가 */
+            text-align: center;
+        }
+        .crust-notice th {
+            background-color: var(--accent-color);
+            color: var(--text-color);
+            font-size: 1em;
+        }
+        .crust-notice strong {
+            color: #d9534f;
+            font-size: 1.05em;
+        }
+        .crust-notice .event-rule {
+            background-color: #fae0e0;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 15px;
+            font-weight: bold;
+            color: #d9534f;
+        }
+        .crust-notice .thin-goldring {
+            background-color: #e0f2f1;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            color: var(--main-color);
+            font-weight: bold;
+        }
+        /* 3. 하단 정보 (Footer) */
+        footer {
+            background-color: #333;
+            color: #ccc;
+            padding: 20px 0;
+            text-align: center;
+            font-size: 0.9em;
+            margin-top: 40px;
+        }
+        footer p {
+            margin: 5px 0;
+        }
+        footer a {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>시흥은행점 파파존스 메뉴판</h1>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="index.html">🏠 첫 화면</a></li>
+            <li><a href="pizza.html" class="active">🍕 피자</a></li>
+            <li><a href="sides.html">🍗 사이드</a></li>
+            <li><a href="drinks_sauces.html">🥤 음료 & 소스</a></li>
+            <li><a href="discounts.html">💸 제휴 할인</a></li>
+            <li><a href="bill.html">🧾 계산서</a></li>
+        </ul>
+    </nav>
+    
+    <div class="main-content">
+        <div class="menu-section">
+            <h2>🏆 프리미엄 피자 (Premium Pizza)</h2>
+            <div class="pizza-grid">
+                <div class="pizza-card" id="one-plus-one-pizzas">
+                    <img src="assets/images/pizzas/pizza_super_papas.jpg" alt="수퍼 파파스 피자 이미지">
+                    <div class="pizza-info">
+                        <h3>수퍼 파파스 <span class="best-tag">BEST</span><span class="best-tag" style="background-color: #d9534f;">1+1 금</span></h3>
+                        <p class="description">신선한 토마토 소스 위에 각종 고기와 채소가 듬뿍 토핑된 파파존스의 베스트 피자.</p>
+                        <div class="prices">
+                            <span>R: 19,900원 | L: 28,500원</span>
+                            <span>F: 33,900원 | P: 42,500원</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pizza-card">
+                    <img src="assets/images/pizzas/pizza_johns_favorite.jpg" alt="존스 페이버릿 피자 이미지">
+                    <div class="pizza-info">
+                        <h3>존스 페이버릿 <span class="best-tag">BEST</span><span class="best-tag" style="background-color: #d9534f;">1+1 금</span></h3>
+                        <p class="description">이탈리안 소시지, 페퍼로니와 6종의 치즈가 만들어 내는 진한 풍미의 베스트 셀러.</p>
+                        <div class="prices">
+                            <span>L: 29,500원 | F: 34,900원</span>
+                            <span>P: 45,500원</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="pizza-card">
+                    <img src="assets/images/pizzas/pizza_barbeque_shortrib_crunch.jpg" alt="바베큐 숏립 크런치 피자 이미지">
+                    <div class="pizza-info">
+                        <h3>바베큐 숏립 크런치</h3>
+                        <p class="description">한 판 가득 소갈비, 오리지널 아메리칸 BBQ! 치즈와 바삭한 식감까지 더한 리얼 고기 피자.</p>
+                        <div class="prices">
+                            <span>L: 34,500원 | F: 41,900원</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pizza-card">
+                    <img src="assets/images/pizzas/pizza_mellow_corn_cream.jpg" alt="멜로우 콘크림 피자 이미지">
+                    <div class="pizza-info">
+                        <h3>멜로우 콘크림</h3>
+                        <p class="description">부드러운 옥수수크림과 콘&파인애플을 더한 달콤한 피자.</p>
+                        <div class="prices">
+                            <span>L: 27,500원 | F: 33,900원 | P: 41,500원</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pizza-card">
+                    <img src="assets/images/pizzas/pizza_starlight_basil.jpg" alt="스타라이트 바질 피자 이미지">
+                    <div class="pizza-info">
+                        <h3>스타라이트 바질</h3>
+                        <p class="description">입안 가득 바질의 향긋함과 고소한 치즈의 풍미가 느껴지는 특별한 별모양 피자.</p>
+                        <div class="prices">
+                            <span>L: 33,500원 | F: 39,900원 | P: 48,500원</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pizza-card">
+                    <img src="assets/images/pizzas/pizza_double_hot_spicy_mexican.jpg" alt="더블 핫 앤 스파이시 멕시칸 피자 이미지">
+                    <div class="pizza-info">
+                        <h3>더블 핫 앤 스파이시 멕시칸</h3>
+                        <p class="description">새로운 맛의 스파이시 갈릭 치즈롤과 할라페뇨의 만남으로 강렬한 매콤함이 가득한 피자.</p>
+                        <div class="prices">
+                            <span>L: 33,500원 | F: 39,900원</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-section">
+            <h2>⭐ BEST & 클래식 피자 (Classic & Specialty)</h2>
+            <div class="pizza-grid">
+                <div class="pizza-card">
+                    <img src="assets/images/pizzas/pizza_irish_potato.jpg" alt="아이리쉬 포테이토 피자 이미지">
+                    <div class="pizza-info">
+                        <h3>아이리쉬 포테이토 <span class="best-tag" style="background-color: #d9534f;">1+1 금</span></h3>
+                        <p class="description">진한 갈릭 소스와 담백한 포테이토 청크의 조화로 사랑 받는 베스트 셀러.</p>
+                        <div class="prices">
+                            <span>R: 18,900원 | L: 27,500원</span>
+                            <span>F: 32,900원 | P: 40,500원</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="pizza-card">
+                    <img src="assets/images/pizzas/pizza_chicken_barbeque.jpg" alt="치킨 바베큐 피자 이미지">
+                    <div class="pizza-info">
+                        <h3>치킨 바베큐 <span class="best-tag" style="background-color: #d9534f;">1+1 금</span></h3>
+                        <p class="description">새콤달콤한 타바스코 BBQ 소스와 두툼한 그릴드 치킨이 어우러진 특별한 치킨 피자.</p>
+                        <div class="prices">
+                            <span>R: 18,900원 | L: 27,500원</span>
+                            <span>F: 32,900원 | P: 40,500원</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="pizza-card">
+                    <img src="assets/images/pizzas/pizza_spicy_chicken_ranch.jpg" alt="스파이시 치킨랜치 피자 이미지">
+                    <div class="pizza-info">
+                        <h3>스파이시 치킨랜치 <span class="best-tag" style="background-color: #d9534f;">1+1 금</span></h3>
+                        <p class="description">랜치 소스, 그릴드 치킨, 상큼한 토마토와 할라페뇨가 토핑된 피자.</p>
+                        <div class="prices">
+                            <span>R: 19,900원 | L: 29,500원</span>
+                            <span>F: 34,900원 | P: 43,500원</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="pizza-card">
+                    <img src="assets/images/pizzas/pizza_double_cheeseburger.jpg" alt="더블 치즈버거 피자 이미지">
+                    <div class="pizza-info">
+                        <h3>더블 치즈버거 <span class="best-tag" style="background-color: #d9534f;">1+1 금</span></h3>
+                        <p class="description">제스티 버거 소스위에 비프와 상큼한 토마토, 피클이 어우진 풍부한 맛.</p>
+                        <div class="prices">
+                            <span>L: 29,500원 | F: 34,900원 | P: 43,500원</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="pizza-card">
+                    <img src="assets/images/pizzas/pizza_premium_bulgogi.jpg" alt="프리미엄 직화불고기 피자 이미지">
+                    <div class="pizza-info">
+                        <h3>프리미엄 직화불고기 <span class="best-tag" style="background-color: #d9534f;">1+1 금</span></h3>
+                        <p class="description">정통 직화 불고기, 신선한 채소 토핑으로 누구나 좋아할 스테디 셀러.</p>
+                        <div class="prices">
+                            <span>L: 29,500원 | F: 34,900원 | P: 43,500원</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="pizza-card">
+                    <img src="assets/images/pizzas/pizza_margherita.jpg" alt="마가리타 피자 이미지">
+                    <div class="pizza-info">
+                        <h3>마가리타 (Classic)</h3>
+                        <p class="description">파파존스 특유의 진한 토마토 소스와 최상급 모짜렐라 치즈가 토핑된 치즈피자.</p>
+                        <div class="prices">
+                            <span>R: 16,900원 | L: 23,500원</span>
+                            <span>F: 28,900원 | P: 36,500원</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="pizza-card">
+                    <img src="assets/images/pizzas/pizza_all_meat.jpg" alt="올미트 피자 이미지">
+                    <div class="pizza-info">
+                        <h3>올미트</h3>
+                        <p class="description">페퍼로니, 햄, 이탈리안 소시지, 비프 토핑까지 엄선된 고기 토핑으로 꽉 채운 피자.</p>
+                        <div class="prices">
+                            <span>R: 19,900원 | L: 29,500원</span>
+                            <span>F: 34,900원 | P: 45,500원</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="pizza-card">
+                    <img src="assets/images/pizzas/pizza_six_cheese.jpg" alt="식스 치즈 피자 이미지">
+                    <div class="pizza-info">
+                        <h3>식스 치즈</h3>
+                        <p class="description">6종의 치즈 맛을 풍부하게 느낄 수 있는 정통 치즈피자.</p>
+                        <div class="prices">
+                            <span>L: 26,500원 | F: 31,900원 | P: 39,500원</span>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+        <div class="menu-section">
+            <h2>🌱 그린잇 비건 피자 (Green It - Vegan)</h2>
+            <div class="pizza-grid">
+                 <div class="pizza-card">
+                    <img src="assets/images/pizzas/pizza_green_it_margherita.jpg" alt="그린잇 식물성 마가리타 피자 이미지">
+                    <div class="pizza-info">
+                        <h3>그린잇 식물성 마가리타</h3>
+                        <p class="description">SHEESE사의 비건치즈와 신선한 토마토 소스의 만남으로 깔끔한 풍미.</p>
+                        <div class="prices">
+                            <span>L: 26,500원 (오리지널 크러스트만 가능)</span>
+                        </div>
+                    </div>
+                </div>
+                 <div class="pizza-card">
+                    <img src="assets/images/pizzas/pizza_green_it_garden_special.jpg" alt="그린잇 식물성 가든스페셜 피자 이미지">
+                    <div class="pizza-info">
+                        <h3>그린잇 식물성 가든스페셜</h3>
+                        <p class="description">비건치즈와 신선한 채소가 어우러진 처음 맛보는 웰빙 채식 피자.</p>
+                        <div class="prices">
+                            <span>L: 29,500원 (오리지널 크러스트만 가능)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="menu-section crust-notice">
+            <h2>⚠️ 크러스트 변경 및 추가금 안내</h2>
+            <p><strong>(R 사이즈는 크러스트 변경이 불가합니다.)</strong></p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>크러스트 종류</th>
+                        <th>L 사이즈</th>
+                        <th>F 사이즈</th>
+                        <th>P 사이즈</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>치즈롤 / 골드링 / 스파이시 갈릭 치즈롤</td>
+                        <td>+4,000원</td>
+                        <td>+5,000원</td>
+                        <td>+6,000원</td>
+                    </tr>
+                    <tr>
+                        <td>크루아상 크러스트</td>
+                        <td colspan="3">사이즈 상관없이 <strong>+6,000원</strong></td>
+                    </tr>
+                    <tr>
+                        <td>씬(Thin) 크러스트</td>
+                        <td>-</td>
+                        <td>무료 변경</td>
+                        <td>-</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="event-rule">
+                🔥 <strong>[금요일 1+1 행사] 크러스트 추가금 안내 (L 사이즈 기준)</strong>
+                <ul>
+                    <li>**골드링 / 치즈롤 / 스파이시 갈릭 치즈롤** 변경 시: 1판당 **4,000원** 추가 (2판 총 **8,000원**)</li>
+                    <li>**크루아상** 변경 시: 1판당 **6,000원** 추가 (2판 총 **12,000원**)</li>
+                    <li>*1+1 행사는 오리지널 크러스트 또는 위의 크러스트만 선택 가능하며, 씬(Thin) 크러스트는 행사 제외입니다.*</li>
+                </ul>
+            </div>
+            
+            <div class="thin-goldring">
+                ✨ **씬(Thin) 크러스트 골드링 추가** (F 사이즈에만 적용)
+                <ul>
+                    <li>씬 전용 피자 3종(**슈림프 알프레도, 크리스피 치즈 트리플, 크리스피 치즈 페퍼로니**)을 제외한 F 사이즈 피자에 **5,000원** 추가 시 골드링 크러스트로 변경 가능합니다.</li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <p><strong>파파존스피자 시흥은행점</strong> | 전화번호: <a href="tel:0313136995">031-313-6995</a></p>
+    </footer>
+
+</body>
+</html>
