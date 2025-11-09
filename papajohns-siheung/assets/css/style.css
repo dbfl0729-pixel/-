@@ -1,3 +1,5 @@
+/* style.css (최종) */
+
 /* 기본 설정 */
 :root {
     --main-color: #4a6c4c; /* 올리브색 계열 */
@@ -279,4 +281,86 @@ footer {
 footer a {
     color: var(--accent-color);
     text-decoration: none;
+}
+/* style.css에 추가할 아코디언(크러스트 안내) 스타일 */
+
+/* 크러스트 안내 섹션 전체 */
+.crust-info-section {
+    margin-top: 30px;
+}
+
+/* 아코디언 헤더 (버튼) */
+.accordion-header {
+    background-color: var(--main-color);
+    color: var(--white);
+    padding: 15px 20px;
+    cursor: pointer;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.2em;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+.accordion-header:hover {
+    background-color: #3b523c;
+}
+
+/* 아코디언 아이콘 (펼치기/접기) */
+.accordion-header .icon {
+    font-size: 1.5em;
+    transition: transform 0.3s;
+}
+
+/* 내용 부분 */
+.accordion-content {
+    padding: 15px 20px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    display: none; /* 초기에는 숨김 */
+    overflow: hidden;
+    transition: max-height 0.4s ease-out;
+}
+
+/* 크러스트 테이블 스타일 (간소화) */
+.accordion-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+.accordion-content th, .accordion-content td {
+    border: 1px solid #f1f1f1; /* 선을 매우 연하게 */
+    padding: 10px;
+    text-align: center;
+    font-size: 0.95em;
+}
+.accordion-content thead th {
+    background-color: #f9f9f9;
+    color: var(--text-color);
+    border-bottom: 2px solid var(--accent-color);
+}
+.accordion-content td:first-child {
+    font-weight: bold;
+    color: var(--main-color);
+    text-align: left;
+}
+
+/* 이벤트/안내 문구 스타일 */
+.event-info-box {
+    background-color: #fffaf0; /* 연한 노랑/크림색 */
+    border: 1px solid #ffcc00;
+    padding: 15px;
+    border-radius: 6px;
+    margin-top: 15px;
+    line-height: 1.6;
+}
+.event-info-box h4 {
+    color: var(--primary-red);
+    margin-top: 0;
+    font-size: 1.1em;
 }
