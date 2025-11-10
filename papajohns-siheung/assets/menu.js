@@ -210,3 +210,58 @@ document.addEventListener('DOMContentLoaded', () => {
     // 참고: 'bill.html'에서 장바구니를 렌더링하는 'renderCart()' 함수는 
     // 이 파일의 addToCart 함수를 사용합니다.
 });
+// menu.js에 추가/수정
+function showPizzaOptions(pizzaName) {
+    document.getElementById('popup-pizza-name').textContent = pizzaName;
+    document.getElementById('pizza-popup').style.display = 'flex'; // 팝업 보이기
+    document.body.style.overflow = 'hidden'; // 뒷 배경 스크롤 방지
+}
+
+function hidePizzaOptions() {
+    document.getElementById('pizza-popup').style.display = 'none'; // 팝업 숨기기
+    document.body.style.overflow = ''; // 뒷 배경 스크롤 허용
+}
+// menu.js의 '피자 페이지 로직' 섹션에 다음 함수가 포함되어 있는지 확인
+
+function attachPizzaListeners() {
+    // 팝업 열기 리스너: 모든 피자 카드의 버튼에 연결
+    const pizzaButtons = document.querySelectorAll('.pizza-card .add-to-bill-btn');
+
+    pizzaButtons.forEach(button => {
+        button.addEventListener('click', (event) => {
+            const pizzaCard = event.target.closest('.pizza-card');
+            const pizzaName = pizzaCard.querySelector('.pizza-card-header h3').textContent.split(' - ')[0].trim();
+            
+            showPizzaOptions(pizzaName); // 팝업 열기
+        });
+    });
+
+    // 팝업 닫기 리스너
+    document.getElementById('close-popup').addEventListener('click', hidePizzaOptions);
+    
+    // (선택 사항) 팝업 외부 클릭 시 닫기
+    document.getElementById('pizza-popup').addEventListener('click', (event) => {
+        if (event.target.id === 'pizza-popup') {
+            hidePizzaOptions();
+        }
+    });
+
+    // 최종 장바구니 담기 버튼 리스너 (팝업 내)
+    document.getElementById('add-pizza-to-cart').addEventListener('click', handleAddPizzaToCart);
+
+    // 옵션 변경 시 가격 업데이트 리스너 (사이즈/크러스트 라디오 버튼)
+    document.querySelectorAll('input[name="pizza-size"], input[name="pizza-crust"]').forEach(input => {
+        input.addEventListener('change', updatePrice);
+    });
+
+    // 페이지 로드 시 초기 가격 업데이트 (updatePrice 함수가 정의되어 있어야 함)
+    // updatePrice(); 
+}
+
+// 이 함수가 DOMContentLoaded 시점에 호출되어야 합니다.
+document.addEventListener('DOMContentLoaded', () => {
+    if (document.querySelector('.pizza-card')) {
+        attachPizzaListeners(); // ⭐️ 이 부분이 중요!
+    }
+    // ... 나머지 코드 ...
+});
