@@ -92,8 +92,9 @@ function showPizzaOptions(pizzaCard) {
         sizeOptionGroup.appendChild(label);
     });
 
+    // ✅ 수정 완료: 문법 오류 수정 및 'change'를 'click'으로 변경
     sizeOptionGroup.querySelectorAll('input[name="pizza-size"]').forEach(input => {
-        input.addEventListener('change', updatePrice);
+        input.addEventListener('click', updatePrice);
     });
     
     document.querySelectorAll('input[name="pizza-crust"]').forEach(input => {
@@ -127,8 +128,9 @@ function attachPizzaListeners() {
 
     document.getElementById('add-pizza-to-cart')?.addEventListener('click', handleAddPizzaToCart);
 
+    // ✅ 수정 완료: 문법 오류 수정 및 'change'를 'click'으로 변경
     document.querySelectorAll('input[name="pizza-crust"]').forEach(input => {
-        input.addEventListener('change', updatePrice);
+        input.addEventListener('click', updatePrice);
     });
 }
 
