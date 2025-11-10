@@ -67,7 +67,7 @@ function showPizzaOptions(pizzaCard) {
     const availableSizes = JSON.parse(availableSizesJson); 
 
     const popupElement = document.getElementById('pizza-popup');
-    const sizeOptionGroup = popupElement.querySelector('#pizza-options > .option-group:first-of-type'); 
+    const sizeOptionGroup = popupElement.querySelector('#pizza-options > .option-group:first-of-type');
     const popupContent = popupElement.querySelector('.pizza-popup-content');
     
     document.getElementById('popup-pizza-name').textContent = pizzaName;
