@@ -1017,7 +1017,8 @@
                     <div class="crust-note-small">* 비건 전용 피자로 사이즈/크러스트 변경 불가합니다.</div>
                     <div class="current-price">총 금액: <span id="total-price-25">29,500</span>원</div>
                     <button class="add-to-bill-btn" data-pizza-id="25">🧾 계산서에 담기</button>
-                                      </div> </div> </div> </div> <footer>
+                    
+</div> </div> <footer>
         <p><strong>파파존스피자 시흥은행점</strong></p>
         <p>주소: 경기 시흥시 은행로 86 1층 106호</p>
         <p>영업시간: 매일 오전 11:00 - 오후 11:00</p>
@@ -1033,20 +1034,25 @@
                 
                 <h4>사이즈 선택</h4>
                 <div class="option-group">
-                    <label for="size-L"><input type="radio" id="size-L" name="pizza-size" value="L" checked>라지 (L)</label>
                     </div>
 
                 <h4>크러스트 선택</h4>
                 <div class="option-group">
                     <label for="crust-original"><input type="radio" id="crust-original" name="pizza-crust" value="오리지널" checked>오리지널</label>
-                    </div>
-                
-                <div id="selected-pizza-price">총 금액: 0원</div>
-                <button id="add-pizza-to-cart" class="btn btn-primary">선택 완료 후 장바구니 담기</button>
+                    <label for="crust-thin"><input type="radio" id="crust-thin" name="pizza-crust" value="씬">씬</label>
+                    <label for="crust-goldring"><input type="radio" id="crust-goldring" name="pizza-crust" value="골드링">골드링 (+추가금)</label>
+                    <label for="crust-cheeseroll"><input type="radio" id="crust-cheeseroll" name="pizza-crust" value="치즈롤">치즈롤 (+추가금)</label>
+                    <label for="crust-spicy"><input type="radio" id="crust-spicy" name="pizza-crust" value="스파이시 치즈갈릭롤">스파이시 치즈갈릭롤 (+4,000원)</label>
+                    <label for="crust-croissant"><input type="radio" id="crust-croissant" name="pizza-crust" value="크루아상">크루아상 (모든 사이즈 +6,000원)</label>
+                    <label for="crust-thin-goldring"><input type="radio" id="crust-thin-goldring" name="pizza-crust" value="씬+골드링">씬+골드링 (F만 +5,000원)</label>
+                    
+                </div>
             </div>
+
+            <div id="selected-pizza-price">총 금액: 0원</div>
+            <button id="add-pizza-to-cart" class="btn btn-primary">선택 완료 후 장바구니 담기</button>
         </div>
     </div>
-    
     <script src="menu.js"></script> 
 </body> 
 </html>
