@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>👛 제휴할인 </title>
+    <title> 파파존스 제휴할인</title>
     <style>
         :root {
             --main-color: #4a6c4c;
@@ -49,6 +49,11 @@
             justify-content: center;
             flex-wrap: wrap;
         }
+        /* 사이드 메뉴 활성화 표시 */
+        nav ul li a[href="sides.html"] {
+            background-color: var(--accent-color);
+            color: var(--text-color);
+        }
         nav ul li a {
             display: block;
             color: var(--text-color);
@@ -57,251 +62,38 @@
             padding: 15px 20px;
             transition: background-color 0.2s, color 0.2s;
         }
-        nav ul li a[href="pizza.html"] {
-            background-color: var(--accent-color);
-            color: var(--text-color);
-        }
         nav ul li a:hover {
             background-color: var(--accent-color);
         }
 
-        /* 크러스트 요약 안내 스타일 */
-        .crust-summary {
-            background-color: var(--white);
-            padding: 20px;
-            margin: 20px auto;
-            max-width: 1200px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        }
-        .crust-summary h3 {
-            color: var(--main-color);
-            margin-top: 0;
-            margin-bottom: 10px;
-            font-size: 1.5em;
-            border-bottom: 2px solid var(--accent-color);
-            padding-bottom: 5px;
-        }
-        .crust-list-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-            list-style: none;
-            padding: 0;
-        }
-        .crust-list-grid li {
-            padding: 10px;
-            border-radius: 5px;
-            background-color: #f4f4f4;
-            font-size: 0.9em;
-        }
-        .crust-list-grid strong {
-            color: var(--text-color);
-            display: block;
-            margin-bottom: 3px;
-        }
-        .crust-note-price {
-            margin-top: 15px;
-            padding: 10px;
-            background-color: #fff0d4;
-            border-left: 5px solid var(--accent-color);
-            font-weight: bold;
-            color: var(--danger-color);
-            line-height: 1.5;
-        }
-        .crust-note-price span {
-            color: var(--text-color);
-        }
-
-        /* 피자 메뉴판 스타일 */
-        .pizza-menu-container {
+        /* 메뉴판 컨테이너 스타일 */
+        .content-wrapper {
             padding: 20px;
             max-width: 1200px;
             margin: 0 auto;
         }
-        .pizza-menu-container h2 {
-            text-align: center;
+        
+        .menu-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        .menu-section h2 {
             color: var(--main-color);
-            font-size: 2.2em;
-            margin-bottom: 30px;
-            border-bottom: 3px solid var(--accent-color);
+            font-size: 2em;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--accent-color);
             padding-bottom: 10px;
         }
-        .pizza-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
-        .pizza-card {
-            background-color: var(--white);
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            overflow: hidden;
-            transition: transform 0.3s;
-            display: flex;
-            flex-direction: column;
-        }
-        .pizza-card:hover {
-            transform: translateY(-5px);
-        }
-        .pizza-card-header {
-            padding: 15px;
-            background-color: var(--main-color);
-            color: var(--white);
-        }
-        .pizza-card-header h3 {
-            margin: 0;
-            font-size: 1.4em;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .pizza-card-header h3 span.badge {
-            background-color: var(--danger-color);
-            color: white;
-            padding: 4px 8px;
-            border-radius: 5px;
-            font-size: 0.7em;
-            font-weight: bold;
-        }
-        .pizza-card img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-        }
-        .pizza-card-body {
-            padding: 15px;
-            flex-grow: 1;
-        }
-        .pizza-card-body p {
-            font-size: 0.9em;
-            color: #666;
-            margin-bottom: 10px;
-        }
-        /* 가격 노트 스타일 (수정됨) */
-        .pizza-price-notes {
-            margin-bottom: 15px;
-            border: 1px solid #eee;
-            border-radius: 5px;
-            padding: 10px;
-            background-color: #fcfcfc;
-        }
-        .price-item {
-            font-size: 0.9em;
-            margin-bottom: 3px;
-            color: var(--text-color);
-        }
-        .price-item strong {
-            color: var(--main-color);
-            margin-right: 5px;
-        }
-        /* 계산/옵션 선택 UX 개선 스타일 */
-        .pizza-options {
-            padding: 15px;
-            border-top: 1px dashed #ddd;
-            background-color: #f9f9f9;
-        }
-        .option-group {
-            margin-bottom: 10px;
-        }
-        .option-group label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: var(--text-color);
-        }
-        .option-group select {
-            width: 100%;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            box-sizing: border-box;
-            font-size: 1em;
-            background-color: var(--white);
-        }
-        .current-price {
-            text-align: right;
-            font-size: 1.3em;
-            font-weight: bold;
-            color: var(--danger-color);
-            margin-top: 10px;
-            margin-bottom: 10px;
-            padding-top: 5px;
-            border-top: 1px solid #eee;
-        }
-        .current-price small {
-            font-size: 0.7em;
-            color: #666;
-            font-weight: normal;
-            margin-left: 5px;
-        }
-        .add-to-bill-btn {
-            display: block;
-            width: 100%;
-            padding: 15px;
-            background-color: var(--main-color);
-            color: var(--white);
-            border: none;
-            border-radius: 5px;
-            font-size: 1.1em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            margin-top: 15px;
-        }
-        .add-to-bill-btn:hover {
-            background-color: #3b523c;
-        }
-        .crust-note-small {
-            font-size: 0.8em;
-            color: var(--danger-color);
-            text-align: center;
-            padding: 10px 0;
-            background-color: #fff0f0;
-            border-radius: 5px;
-            margin-top: 5px;
-        }
-        .vegan-badge {
-            background-color: #4CAF50 !important; /* 녹색 */
-        }
-        .thin-note {
-            font-size: 0.8em;
-            color: var(--info-color);
-            text-align: center;
-            padding: 10px 0;
-            background-color: #f0f8ff;
-            border-radius: 5px;
-            margin-top: 5px;
-        }
-        .sp-crust-only-note {
-            font-size: 0.8em;
-            color: var(--danger-color);
-            text-align: center;
-            padding: 10px 0;
-            background-color: #fff0f0;
-            border-radius: 5px;
-            margin-top: 5px;
-        }
-        /* (푸터 스타일은 이전과 동일) */
-        footer {
-            background-color: #333;
-            color: #ccc;
-            padding: 20px 0;
-            text-align: center;
-            font-size: 0.9em;
-            margin-top: 40px;
-        }
-        footer p {
-            margin: 5px 0;
-        }
-        footer a {
-            color: var(--accent-color);
-            text-decoration: none;
-        }
-    </style>
-</head>
-<body>
 
+        /* Grid 레이아웃 (style.css에서 가져옴) */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        
     <header>
         <h1>시흥은행점 파파존스 메뉴판</h1>
     </header>
@@ -312,8 +104,8 @@
             <li><a href="pizza.html">🍕 피자</a></li>
             <li><a href="sides.html">🍗 사이드</a></li>
             <li><a href="drinks_sauces.html">🥤 음료 & 소스</a></li>
-            <li><a href="discounts.html">👛 제휴 할인</a></li>
-            <li><a href="bill.html">🧾 계산서</a></li>
+            <li><a href="discounts.html">💸 제휴 할인</a></li>
+            <li><a href="bill.html" class="active">🧾 계산서</a></li>
         </ul>
     </nav>
     
