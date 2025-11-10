@@ -588,3 +588,40 @@ footer {
     cursor: pointer;
     line-height: 1;
 }
+/* ================== 모바일/태블릿 반응형 조정 ================== */
+
+/* 팝업 콘텐츠 박스 */
+.pizza-popup-content {
+    /* 기존: width: 90%; max-width: 550px; */
+    /* 모바일/태블릿에서 세로 공간을 더 확보하고 스크롤 가능하게 함 */
+    max-height: 90vh; /* 화면 높이의 90%를 넘지 않도록 제한 */
+    overflow-y: auto; /* 내용이 넘치면 스크롤바 생성 */
+}
+
+/* 600px 이하 화면 (모바일) 최적화 */
+@media (max-width: 600px) {
+    /* 팝업 컨텐츠 박스 패딩 조정 */
+    .pizza-popup-content {
+        padding: 20px;
+        width: 95%; /* 모바일에서 폭을 더 넓게 사용 */
+    }
+
+    /* 옵션 그룹 헤딩 폰트 크기 조정 */
+    .pizza-popup-content h3 {
+        font-size: 1.1em;
+        margin-top: 15px;
+        margin-bottom: 5px;
+    }
+    
+    /* 옵션 라벨(버튼) 스타일 조정 */
+    .option-group label {
+        display: block; /* 라디오 버튼 라벨을 세로로 배열 */
+        margin-bottom: 8px; /* 간격 추가 */
+    }
+    
+    /* 버튼 크기 조정 */
+    .btn.btn-primary {
+        font-size: 1em;
+        padding: 10px 15px;
+    }
+}
