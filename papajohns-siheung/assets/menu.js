@@ -54,18 +54,24 @@ function addToCart(item) {
 
 // -------------------- 2. 피자 옵션 팝업 관련 함수 --------------------
 
-function hidePizzaOptions() {
-    document.getElementById('pizza-popup').style.display = 'none'; 
-    document.body.style.overflow = ''; 
-}
-
 function showPizzaOptions(pizzaCard) {
     const pizzaName = pizzaCard.querySelector('.pizza-card-header h3').textContent.split(' - ')[0].trim();
     const pizzaId = pizzaCard.id.split('-')[1];
     
-    // ⚠️ 에러 방지를 위해 속성이 없으면 빈 배열로 초기화
+    // ⭐️ 가장 안정적인 JSON 파싱 로직 적용 ⭐️
+    // 1. 속성 값이 없으면 '[]' (빈 배열)로 초기화합니다.
+    // 2. HTML 속성에 사용된 싱글 쿼트를 JSON 표준인 더블 쿼트로 변경합니다.
     const availableSizesJson = (pizzaCard.dataset.availableSizes || '[]').replace(/'/g, '"'); 
-    const availableSizes = JSON.parse(availableSizesJson); 
+    let availableSizes = [];
+    try {
+        availableSizes = JSON.parse(availableSizesJson);
+        // ⭐️ 디버깅을 위한 콘솔 로그 추가 ⭐️
+        console.log(`[DEBUG] Pizza ID: ${pizzaId}`);
+        console.log(`[DEBUG] Raw Size Data: ${pizzaCard.dataset.availableSizes}`);
+        console.log(`[DEBUG] Parsed Array: ${availableSizes}`);
+    } catch (e) {
+        console.error("사이즈 데이터 파싱 오류:", e);
+    }
 
     const popupElement = document.getElementById('pizza-popup');
     const sizeOptionGroup = popupElement.querySelector('#pizza-options > .option-group:first-of-type');
@@ -74,7 +80,7 @@ function showPizzaOptions(pizzaCard) {
     document.getElementById('popup-pizza-name').textContent = pizzaName;
     popupContent.dataset.currentPizzaId = pizzaId;
 
-    // ⭐️ 중요 수정: 옵션 그룹을 초기화하고 제목을 다시 넣어줍니다. ⭐️
+    // 헤더를 포함하여 초기화
     sizeOptionGroup.innerHTML = '<h3>사이즈 선택</h3>'; 
     
     const sizeMap = { 
@@ -82,7 +88,7 @@ function showPizzaOptions(pizzaCard) {
     };
     
     if (availableSizes.length === 0) {
-        // ⭐️ 옵션이 없을 때 명확한 안내 메시지를 추가합니다. ⭐️
+        // 옵션이 없을 때 명확한 안내 메시지를 추가합니다.
         sizeOptionGroup.innerHTML += '<p style="color: var(--color-accent); margin-top: 10px; font-weight: bold;">⚠️ 선택 가능한 옵션이 없습니다. (카드 데이터 확인 필요)</p>';
     } else {
         availableSizes.forEach((sizeCode, index) => {
@@ -99,7 +105,6 @@ function showPizzaOptions(pizzaCard) {
         });
     }
 
-    // ✅ 수정 완료: 문법 오류 수정 및 'change'를 'click'으로 변경
     sizeOptionGroup.querySelectorAll('input[name="pizza-size"]').forEach(input => {
         input.addEventListener('click', updatePrice);
     });
