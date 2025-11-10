@@ -145,17 +145,17 @@ function updatePrice() {
     const pizzaCard = document.getElementById(`pizza-${pizzaId}`);
     if (!pizzaCard) return;
 
-    const selectedSizeElement = document.querySelector('input[name="pizza-size"]:checked');
-    const selectedCrustElement = document.querySelector('input[name="pizza-crust"]:checked');
+const selectedSizeElement = document.querySelector('input[name="pizza-size"]:checked');
+const selectedCrustElement = document.querySelector('input[name="pizza-crust"]:checked');
 
-    if (!selectedSizeElement || !selectedCrustElement) return;
+if (!selectedSizeElement || !selectedCrustElement) return; 
 
     const sizeCode = selectedSizeElement.value;
     let crustValue = selectedCrustElement.value;
     
     const pricesJson = pizzaCard.dataset.prices.replace(/'/g, '"');
-    const prices = JSON.parse(pricesJson);
-    const basePrice = prices[sizeCode] || 0;
+const prices = JSON.parse(pricesJson);
+const basePrice = prices[sizeCode] || 0;
 
     const crustAddPrice = CRUST_PRICE_ADDITIONS[crustValue]?.[sizeCode] || 0;
     
