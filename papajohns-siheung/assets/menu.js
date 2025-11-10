@@ -1,248 +1,212 @@
 // ====================================================================
-// Menu.js: 장바구니(Cart), 피자 옵션, 할인 계산 통합 관리 (최종 통합본)
+// menu.js: 피자 메뉴판 동적 기능 및 장바구니(Cart) 관리 스크립트
 // ====================================================================
 
-// 전역 변수 설정 (실제 가격 데이터를 정의합니다.)
-const PIZZA_PRICES = {
-    '바베큐 숏립 크런치': { 'L': 34500, 'F': 41900 },
-    '멜로우 콘크림': { 'L': 27500, 'F': 33900, 'P': 41500 },
-    '스타라이트 바질': { 'L': 33500, 'F': 39900, 'P': 48500 },
-    '더블 핫 앤 스파이시 멕시칸': { 'L': 33500, 'F': 39900 },
-    '수퍼 파파스': { 'R': 19900, 'L': 28500, 'F': 33900, 'P': 42500 },
-    '존스 페이버릿': { 'L': 29500, 'F': 34900, 'P': 45500 },
-    '올미트': { 'R': 19900, 'L': 29500, 'F': 34900, 'P': 45500 },
-    '스파이시 치킨랜치': { 'R': 19900, 'L': 29500, 'F': 34900, 'P': 43500 },
-    '아이리쉬 포테이토': { 'R': 18900, 'L': 27500, 'F': 32900, 'P': 40500 },
-    '치킨 바베큐': { 'R': 18900, 'L': 27500, 'F': 32900, 'P': 40500 },
-    '크리스피 치즈 페퍼로니': { 'F': 31900 }, // THIN 전용
-    '크리스피 치즈 트리플': { 'F': 33900 },   // THIN 전용
-    '햄 머쉬룸 식스 치즈': { 'L': 28500, 'F': 33900, 'P': 42500 },
-    '위스콘신 치즈 포테이토': { 'L': 29500, 'F': 35900, 'P': 45500 },
-    '더블 치즈버거': { 'L': 29500, 'F': 34900, 'P': 43500 },
-    '프리미엄 직화불고기': { 'L': 29500, 'F': 34900, 'P': 43500 },
-    '식스 치즈': { 'L': 26500, 'F': 31900, 'P': 39500 },
-    '스파이시 이탈리안': { 'L': 27500, 'F': 33900, 'P': 40500 },
-    '슈림프 알프레도': { 'F': 34900 },       // THIN 전용
-    '마가리타': { 'R': 16900, 'L': 23500, 'F': 28900, 'P': 36500 },
-    '페퍼로니': { 'R': 17900, 'L': 25500, 'F': 30900, 'P': 38500 },
-    '하와이안': { 'R': 17900, 'L': 26500, 'F': 32900, 'P': 39500 },
-    '가든 스페셜': { 'R': 17900, 'L': 26500, 'F': 31900, 'P': 39500 },
-    '그린잇 식물성 마가리타': { 'L': 26500 }, // 비건 전용
-    '그린잇 식물성 가든스페셜': { 'L': 29500 }, // 비건 전용
+// -------------------- 0. 전역 설정 및 가격 데이터 --------------------
+
+// 크러스트별 사이즈별 추가 금액 정의 (HTML의 data-add 값을 기반으로 일반적인 크러스트 가격 스케일을 적용)
+const CRUST_PRICE_ADDITIONS = {
+    // 오리지널, 씬은 추가금 없음
+    'original': { 'R': 0, 'L': 0, 'F': 0, 'P': 0 },
+    'thin': { 'R': 0, 'L': 0, 'F': 0, 'P': 0 },
+    
+    // L: 4,000원, F: 6,000원, P: 8,000원 (일반적인 크러스트 옵션 가격 스케일)
+    'cheeseroll': { 'R': 3000, 'L': 4000, 'F': 6000, 'P': 8000 },
+    'goldring': { 'R': 3000, 'L': 4000, 'F': 6000, 'P': 8000 },
+    'spicygarlic': { 'R': 3000, 'L': 4000, 'F': 6000, 'P': 8000 },
+    
+    // 크루아상 (L: 6,000원, F: 8,000원, P: 10,000원 - 가장 비싼 옵션 스케일)
+    'croissant': { 'R': 4000, 'L': 6000, 'F': 8000, 'P': 10000 },
 };
 
-// 크러스트 추가금액 정보 (사이즈별)
-const CRUST_PRICES = {
-    '오리지널': { 'R': 0, 'L': 0, 'F': 0, 'P': 0 },
-    '씬 (THIN)': { 'R': 0, 'L': 0, 'F': 0, 'P': null }, // P 사이즈 불가
-    '치즈롤': { 'R': null, 'L': 4000, 'F': 5000, 'P': 6000 },
-    '골드링': { 'R': null, 'L': 4000, 'F': 5000, 'P': 6000 },
-    '스파이시 갈릭 치즈롤': { 'R': null, 'L': 4000, 'F': 5000, 'P': 6000 },
-    '크루아상': { 'R': null, 'L': 6000, 'F': 6000, 'P': 6000 }
-};
+// 장바구니 데이터 (Local Storage에 저장될 예정)
+let cart = JSON.parse(localStorage.getItem('papaJohnsCart')) || [];
 
-// 사이즈 코드별 이름 정보 (HTML과 통일)
-const SIZE_DETAILS = {
-    'R': { name: '레귤러' },
-    'L': { name: '라지' },
-    'F': { name: '패밀리' },
-    'P': { name: '파티' }
-};
-
-// ... (addToCart, saveCart, renderCart 등 기존 menu.js 함수들)
-
-// 금액을 쉼표 형식으로 변환하는 함수
+// 가격 포맷팅 헬퍼 함수
 function formatPrice(price) {
-    if (typeof price !== 'number') return '0';
     return price.toLocaleString('ko-KR');
 }
 
-// 선택된 옵션에 따라 총 가격을 업데이트하는 함수
-function updatePizzaPrice(pizzaId) {
-    const card = document.getElementById(`pizza-${pizzaId}`);
-    const sizeSelect = document.getElementById(`size-${pizzaId}`);
-    const crustSelect = document.getElementById(`crust-${pizzaId}`);
-    const totalPriceSpan = document.getElementById(`total-price-${pizzaId}`);
-    const crustAddText = document.getElementById(`crust-add-text-${pizzaId}`);
-    
-    if (!sizeSelect || !totalPriceSpan) return; 
 
-    const selectedOptionValue = sizeSelect.value;
-    const parts = selectedOptionValue.split('-');
-    
-    // selectedSize: 'L', basePrice: 28500
-    const selectedSize = parts[0].trim().replace(/\(.*\)/, ''); 
-    const basePriceText = parts[1] ? parts[1].replace(/[^0-9]/g, '').trim() : '0';
-    const basePrice = parseInt(basePriceText) || 0;
-    
-    // 크러스트 선택이 불가능한 경우 처리 ('스타라이트 바질', '그린잇' 등)
-    const selectedCrustOption = crustSelect ? crustSelect.options[crustSelect.selectedIndex] : { textContent: '오리지널', value: 'original' };
-    const selectedCrustName = selectedCrustOption.textContent.split('(')[0].trim();
-    const selectedCrustValue = selectedCrustOption.value;
-    
-    let crustAddPrice = 0;
-    let crustLimitMessage = '';
-    let isCrustValid = true;
-    
-    if (crustAddText) crustAddText.textContent = ''; 
+// -------------------- 1. 장바구니 데이터 관리 함수 --------------------
 
-    // 크러스트 선택바가 있는 경우에만 유효성 및 추가금 계산
-    if (crustSelect) {
-        // 레귤러 사이즈 크러스트 제한 (씬 제외)
-        if (selectedSize === 'R' && selectedCrustValue !== 'original' && selectedCrustValue !== 'thin') {
-            isCrustValid = false;
-            crustLimitMessage = '* 레귤러 사이즈는 씬을 제외한 특수 크러스트 변경이 불가합니다.';
-        } 
-        // 씬 크러스트 파티(P) 사이즈 제한
-        else if (selectedCrustValue === 'thin' && selectedSize === 'P') {
-            isCrustValid = false;
-            crustLimitMessage = '* 씬(THIN) 크러스트는 파티(P) 사이즈에 적용 불가합니다.';
-        } 
-        // 크러스트 추가금 계산
-        else if (selectedCrustValue !== 'original' && selectedCrustValue !== 'thin') {
-             crustAddPrice = CRUST_PRICES[selectedCrustName] ? CRUST_PRICES[selectedCrustName][selectedSize] || 0 : 0;
-        } else if (selectedCrustValue === 'thin') {
-            // 씬은 L/F 사이즈에서 무료
-            crustAddPrice = 0;
-            if (selectedSize !== 'R') {
-                crustAddText.textContent = `(씬 크러스트는 ${selectedSize} 사이즈 무료 변경입니다.)`;
+function saveCart() {
+    localStorage.setItem('papaJohnsCart', JSON.stringify(cart));
+}
+
+// 아이템을 장바구니에 추가 (피자 전용 로직)
+function addToCart(item) {
+    // 동일한 이름, 사이즈, 크러스트의 피자가 있는지 확인
+    let existingItem = cart.find(i => 
+        i.type === 'pizza' &&
+        i.name === item.name &&
+        i.size === item.size && 
+        i.crust === item.crust
+    );
+
+    if (existingItem) {
+        existingItem.quantity += 1; // 수량만 증가
+    } else {
+        item.id = Date.now(); // 고유 ID 부여
+        cart.push(item);
+    }
+
+    saveCart();
+}
+
+
+// -------------------- 2. 피자 카드 동적 기능 초기화 --------------------
+
+/**
+ * 피자 카드별 동적 요소 (사이즈 선택 옵션, 가격 계산 리스너)를 초기화합니다.
+ * @param {HTMLElement} card - 개별 피자 카드 DOM 요소
+ */
+function initializePizzaCard(card) {
+    const pizzaId = card.id.split('-')[1];
+    const pizzaName = card.dataset.name;
+    const priceData = JSON.parse(card.dataset.prices);
+    const availableSizes = JSON.parse(card.dataset.availableSizes);
+    
+    const sizeSelect = card.querySelector('.size-select');
+    const crustSelect = card.querySelector('.crust-select');
+    const totalPriceSpan = card.querySelector(`#total-price-${pizzaId}`);
+    const crustAddText = card.querySelector(`#crust-add-text-${pizzaId}`);
+    const addToBillBtn = card.querySelector('.add-to-bill-btn');
+    
+    // 2-1. 사이즈 선택 드롭다운 채우기
+    if (sizeSelect && availableSizes.length > 0) {
+        sizeSelect.innerHTML = ''; // 기존 옵션 제거
+        availableSizes.forEach(sizeCode => {
+            // R: 레귤러, L: 라지, F: 패밀리, P: 파티
+            const sizeMap = { 'R': '레귤러(R)', 'L': '라지(L)', 'F': '패밀리(F)', 'P': '파티(P)' };
+            const basePrice = priceData[sizeCode];
+            const option = document.createElement('option');
+            
+            option.value = sizeCode;
+            option.textContent = `${sizeMap[sizeCode]} - ${formatPrice(basePrice)}원`;
+            sizeSelect.appendChild(option);
+        });
+        
+        // 기본값으로 첫 번째 사이즈를 선택
+        sizeSelect.value = availableSizes[0];
+    }
+    
+    // 2-2. 가격 계산 및 업데이트 함수
+    const updatePrice = () => {
+        if (!sizeSelect) return;
+        
+        const selectedSizeCode = sizeSelect.value;
+        const basePrice = priceData[selectedSizeCode] || 0;
+        let crustAddition = 0;
+        let selectedCrustName = '오리지널'; // 기본값
+
+        if (crustSelect) {
+            const selectedCrustValue = crustSelect.value;
+            const crustOption = crustSelect.options[crustSelect.selectedIndex];
+            
+            // 크러스트 추가금 계산
+            crustAddition = CRUST_PRICE_ADDITIONS[selectedCrustValue]?.[selectedSizeCode] || 0;
+            selectedCrustName = crustOption.textContent.split('(')[0].trim();
+            
+            // 크러스트 추가금 표시 업데이트
+            if (crustAddText) {
+                if (crustAddition > 0) {
+                    crustAddText.textContent = `(${selectedCrustName} 크러스트 추가금: ${formatPrice(crustAddition)}원)`;
+                } else {
+                    crustAddText.textContent = '';
+                }
+            }
+            
+        } else {
+             // 크러스트 선택이 없는 피자 (예: 별모양, 비건 피자)는 추가금이 0이고 기본값 표시 영역을 비웁니다.
+            if (crustAddText) {
+                crustAddText.textContent = '';
             }
         }
-    } else {
-        // 크러스트 선택바가 없는 메뉴 (THIN 전용, 비건 전용, 별모양 등)
-        isCrustValid = true; 
-    }
-
-    // 최종 금액 계산 및 메시지 업데이트
-    let totalPrice = basePrice;
-    
-    if (isCrustValid) {
-        totalPrice = basePrice + crustAddPrice;
-        if (crustAddPrice > 0 && crustAddText) {
-            crustAddText.textContent = `(크러스트 추가금: +${formatPrice(crustAddPrice)}원)`;
+        
+        const finalPrice = basePrice + crustAddition;
+        
+        if (totalPriceSpan) {
+            totalPriceSpan.textContent = formatPrice(finalPrice);
         }
-    } else if (crustAddText) {
-         if (crustLimitMessage) crustAddText.textContent = crustLimitMessage;
-    }
-    
-    totalPriceSpan.textContent = formatPrice(totalPrice);
-}
-
-// 피자 장바구니 추가 처리
-function handleAddPizzaToCart(pizzaId) {
-    const card = document.getElementById(`pizza-${pizzaId}`);
-    const sizeSelect = document.getElementById(`size-${pizzaId}`);
-    const crustSelect = document.getElementById(`crust-${pizzaId}`);
-    const totalPriceSpan = document.getElementById(`total-price-${pizzaId}`);
-
-    const pizzaName = card.getAttribute('data-name');
-    
-    const selectedSizeValue = sizeSelect ? sizeSelect.value : card.querySelector('.size-select option')?.value;
-    const selectedCrustOption = crustSelect ? crustSelect.options[crustSelect.selectedIndex] : { textContent: '오리지널', value: 'original' };
-    
-    const finalPriceText = totalPriceSpan.textContent.replace(/[^0-9]/g, '');
-    const finalPrice = parseInt(finalPriceText) || 0;
-
-    const sizeParts = selectedSizeValue.split('-');
-    const sizeCode = sizeParts[0].trim();
-    const basePrice = PIZZA_PRICES[pizzaName]?.[sizeCode] || 0;
-    
-    const crustName = selectedCrustOption.textContent.split('(')[0].trim();
-    const crustValue = selectedCrustOption.value;
-    
-    let crustPrice = 0;
-    if (crustValue !== 'original' && crustValue !== 'thin') {
-        crustPrice = CRUST_PRICES[crustName] ? CRUST_PRICES[crustName][sizeCode] || 0 : 0;
-    }
-    
-    // 유효성 재확인 (여기서는 alert만 띄우고 실제 장바구니 추가 로직은 진행)
-    const crustAddText = document.getElementById(`crust-add-text-${pizzaId}`);
-    if (crustAddText && crustAddText.textContent.includes('불가합니다')) {
-        alert(`선택한 옵션이 해당 피자에 적용 불가합니다: ${crustAddText.textContent}`);
-        return;
-    }
-
-    const pizzaItem = {
-        type: 'pizza',
-        name: pizzaName,
-        price: basePrice, // 기본 피자 가격 (크러스트 추가금 제외)
-        crustPrice: crustPrice, // 추가된 크러스트 가격
-        size: sizeCode,
-        crust: crustName,
-        quantity: 1
+        
+        // 버튼에 현재 선택된 옵션 데이터 저장 (장바구니 로직을 위해)
+        addToBillBtn.dataset.size = selectedSizeCode;
+        addToBillBtn.dataset.crust = selectedCrustName;
+        addToBillBtn.dataset.finalPrice = finalPrice;
     };
 
-    addToCart(pizzaItem);
-    alert(`${pizzaName} (${SIZE_DETAILS[sizeCode].name}, ${crustName}) 1개를 장바구니에 담았습니다.`);
-}
+    // 2-3. 이벤트 리스너 연결
+    
+    // 사이즈 선택 변경 시 가격 업데이트
+    if (sizeSelect) {
+        sizeSelect.addEventListener('change', updatePrice);
+    }
+    
+    // 크러스트 선택 변경 시 가격 업데이트
+    if (crustSelect) {
+        crustSelect.addEventListener('change', updatePrice);
+    }
 
-// 피자 카드별 이벤트 리스너 연결
-function attachPizzaListeners() {
-    const pizzaCards = document.querySelectorAll('.pizza-card');
+    // 장바구니 버튼 클릭 이벤트
+    addToBillBtn.addEventListener('click', (event) => {
+        const btn = event.currentTarget;
+        const sizeCode = btn.dataset.size;
+        const crustName = btn.dataset.crust;
+        const price = parseInt(btn.dataset.finalPrice);
 
-    pizzaCards.forEach(card => {
-        const pizzaId = card.id.split('-')[1];
-        const sizeSelect = document.getElementById(`size-${pizzaId}`);
-        const crustSelect = document.getElementById(`crust-${pizzaId}`);
-        const addButton = card.querySelector('.add-to-bill-btn');
+        if (price === 0) {
+            alert('사이즈를 선택해주세요.');
+            return;
+        }
+
+        const sizeMap = { 'R': 'R', 'L': 'L', 'F': 'F', 'P': 'P' };
         
-        // 사이즈 선택 옵션 설정 (데이터 속성 기반)
-        const availableSizes = JSON.parse(card.getAttribute('data-available-sizes'));
-        const prices = JSON.parse(card.getAttribute('data-prices'));
+        const item = {
+            type: 'pizza',
+            name: pizzaName,
+            price: price, // 최종 가격
+            size: sizeMap[sizeCode],
+            crust: crustName,
+            quantity: 1
+        };
+
+        addToCart(item);
+        alert(`✅ ${pizzaName} (${sizeMap[sizeCode]}, ${crustName}) 1개를 계산서에 담았습니다!`);
         
-        if (sizeSelect) {
-            sizeSelect.innerHTML = '';
-            availableSizes.forEach(sizeCode => {
-                const price = prices[sizeCode];
-                const formattedPrice = formatPrice(price);
-                const option = document.createElement('option');
-                
-                // 최종 UX 반영: 선택바 옵션 -> 라지(L) - 28,500원
-                option.value = `${sizeCode} - ${formattedPrice}원`;
-                option.textContent = `${SIZE_DETAILS[sizeCode].name}(${sizeCode}) - ${formattedPrice}원`;
-                
-                sizeSelect.appendChild(option);
-            });
-        }
-
-        // 이벤트 리스너 등록
-        if (sizeSelect) {
-            sizeSelect.addEventListener('change', () => { updatePizzaPrice(pizzaId); });
-        }
-        if (crustSelect) {
-            crustSelect.addEventListener('change', () => { updatePizzaPrice(pizzaId); });
-        }
-
-        if (addButton) {
-            // 버튼 클릭 시 장바구니 로직 호출
-            addButton.addEventListener('click', () => {
-                handleAddPizzaToCart(pizzaId);
-            });
-        }
-
-        // 초기 가격 설정
-        updatePizzaPrice(pizzaId);
+        // 계산서 페이지로 이동 (선택 사항)
+        // window.location.href = 'bill.html'; 
     });
+
+    // 2-4. 초기 가격 설정
+    // * 특수 피자(THIN 전용, 비건, 별모양)는 sizeSelect가 커스텀 되어 있으므로, priceData를 다시 읽지 않고
+    //   HTML에 명시된 total-price 값을 초기값으로 사용하고 동적 리스너를 건너뜁니다.
+
+    if (pizzaName.includes('THIN 전용') || pizzaName.includes('별모양') || pizzaName.includes('VEGAN')) {
+        // 특수 피자는 사이즈 및 크러스트 변경이 불가하므로, 초기 가격만 설정
+        // 이 피자들은 HTML에서 이미 옵션이 설정되어 있고 가격도 명시되어 있음
+        const initialPrice = parseInt(totalPriceSpan.textContent.replace(/[^0-9]/g, ''));
+        addToBillBtn.dataset.size = availableSizes[0];
+        addToBillBtn.dataset.crust = '고정 크러스트'; // 임의의 값
+        addToBillBtn.dataset.finalPrice = initialPrice;
+        
+    } else {
+        // 일반 피자는 동적으로 가격을 계산하여 초기화
+        updatePrice(); 
+    }
 }
 
-// -------------------- 5. DOMContentLoaded: 페이지 진입점 --------------------
+
+// -------------------- 3. DOMContentLoaded: 페이지 진입점 --------------------
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    // 피자 페이지 로직 (pizza.html) 활성화
-    if (document.querySelector('.pizza-card')) {
-        attachPizzaListeners(); 
-    }
+    // 모든 피자 카드에 대한 초기화 로직 실행
+    const pizzaCards = document.querySelectorAll('.pizza-card');
+    pizzaCards.forEach(initializePizzaCard);
 
-    // 사이드/음료 페이지 로직 (sides.html, drinks_sauces.html)
-    if (document.querySelector('.menu-item') && document.querySelector('.add-to-cart-btn')) {
-        attachSideMenuListeners(); 
-    }
-
-    // 계산서 페이지 로직 (bill.html)
-    if (document.getElementById('cart-list')) {
-        renderCart(); 
-        calculateFinalTotal();
-        // 기타 bill.html 관련 리스너 연결
-    }
+    console.log("Papa John's Pizza Menu Initialized.");
+    
+    // 참고: 'bill.html'에서 장바구니를 렌더링하는 'renderCart()' 함수는 
+    // 이 파일의 addToCart 함수를 사용합니다.
 });
