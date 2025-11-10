@@ -1029,7 +1029,29 @@
         <p>전화번호: <a href="tel:0313136995">031-313-6995</a></p>
     </footer>
 
-    <script src="menu.js"></script> 
+<script src="menu.js"></script> 
+</body> 
+</html> 
+<div id="pizza-popup" class="popup-overlay" style="display:none;">
+    <div class="pizza-popup-content">
+        <h3 id="popup-pizza-name">피자 이름</h3>
+        <span id="close-popup" class="close-btn">&times;</span>
+        
+        <div id="pizza-options">
+            
+            <h4>사이즈 선택</h4>
+            <div class="option-group">
+                <label for="size-L"><input type="radio" id="size-L" name="pizza-size" value="L" checked>라지 (L)</label>
+                </div>
 
-    </body>
-</html>
+            <h4>크러스트 선택</h4>
+            <div class="option-group">
+                <label for="crust-original"><input type="radio" id="crust-original" name="pizza-crust" value="오리지널" checked>오리지널</label>
+                </div>
+            
+            <div id="selected-pizza-price">총 금액: 0원</div>
+
+            <button id="add-pizza-to-cart" class="btn btn-primary">선택 완료 후 장바구니 담기</button>
+        </div>
+    </div>
+</div>
