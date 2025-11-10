@@ -1030,8 +1030,15 @@
         <div class="pizza-popup-content">
             <h3 id="popup-pizza-name">피자 이름</h3>
             <span id="close-popup" class="close-btn">&times;</span>
+</div> <footer>
+        </footer>
+
+    <div id="pizza-popup" class="popup-overlay" style="display:none;">
+        <div class="pizza-popup-content">
+            <h3 id="popup-pizza-name">피자 이름</h3>
+            <span id="close-popup" class="close-btn">&times;</span>
             
-            <div id="pizza-options">
+            <div id="pizza-options"> 
                 
                 <h4>사이즈 선택</h4>
                 <div class="option-group" id="size-options-group">
@@ -1039,14 +1046,8 @@
 
                 <h4>크러스트 선택</h4>
                 <div class="option-group">
-                    
                     <label for="crust-original"><input type="radio" id="crust-original" name="pizza-crust" value="오리지널" checked>오리지널</label>
                     <label for="crust-thin"><input type="radio" id="crust-thin" name="pizza-crust" value="씬">씬</label>
-                    <label for="crust-goldring"><input type="radio" id="crust-goldring" name="pizza-crust" value="골드링">골드링 (+추가금)</label>
-                    <label for="crust-cheeseroll"><input type="radio" id="crust-cheeseroll" name="pizza-crust" value="치즈롤">치즈롤 (+추가금)</label>
-
-                    <label for="crust-spicy"><input type="radio" id="crust-spicy" name="pizza-crust" value="스파이시 치즈갈릭롤">스파이시 치즈갈릭롤 (+4,000원)</label>
-                    <label for="crust-croissant"><input type="radio" id="crust-croissant" name="pizza-crust" value="크루아상">크루아상 (모든 사이즈 +6,000원)</label>
                     <label for="crust-thin-goldring"><input type="radio" id="crust-thin-goldring" name="pizza-crust" value="씬+골드링">씬+골드링 (F만 +5,000원)</label>
                     
                 </div>
@@ -1056,6 +1057,7 @@
             <button id="add-pizza-to-cart" class="btn btn-primary">선택 완료 후 장바구니 담기</button>
         </div>
     </div>
+    
     <script src="menu.js"></script> 
 </body> 
 </html>
