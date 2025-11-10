@@ -63,7 +63,8 @@ function showPizzaOptions(pizzaCard) {
     const pizzaName = pizzaCard.querySelector('.pizza-card-header h3').textContent.split(' - ')[0].trim();
     const pizzaId = pizzaCard.id.split('-')[1];
     
-    const availableSizesJson = pizzaCard.dataset.availableSizes.replace(/'/g, '"');
+    // ⚠️ 에러 방지를 위해 속성이 없으면 빈 배열로 초기화
+    const availableSizesJson = (pizzaCard.dataset.availableSizes || '[]').replace(/'/g, '"'); 
     const availableSizes = JSON.parse(availableSizesJson); 
 
     const popupElement = document.getElementById('pizza-popup');
@@ -73,24 +74,30 @@ function showPizzaOptions(pizzaCard) {
     document.getElementById('popup-pizza-name').textContent = pizzaName;
     popupContent.dataset.currentPizzaId = pizzaId;
 
-    sizeOptionGroup.innerHTML = ''; 
+    // ⭐️ 중요 수정: 옵션 그룹을 초기화하고 제목을 다시 넣어줍니다. ⭐️
+    sizeOptionGroup.innerHTML = '<h3>사이즈 선택</h3>'; 
     
     const sizeMap = { 
         'R': '레귤러 (R)', 'L': '라지 (L)', 'F': '패밀리 (F)', 'P': '파티 (P)' 
     };
+    
+    if (availableSizes.length === 0) {
+        // ⭐️ 옵션이 없을 때 명확한 안내 메시지를 추가합니다. ⭐️
+        sizeOptionGroup.innerHTML += '<p style="color: var(--color-accent); margin-top: 10px; font-weight: bold;">⚠️ 선택 가능한 옵션이 없습니다. (카드 데이터 확인 필요)</p>';
+    } else {
+        availableSizes.forEach((sizeCode, index) => {
+            const sizeText = sizeMap[sizeCode] || sizeCode;
+            const label = document.createElement('label');
+            
+            label.innerHTML = `<input type="radio" id="size-${sizeCode}" name="pizza-size" value="${sizeCode}"> ${sizeText}`;
+            
+            if (index === 0) {
+                label.querySelector('input').checked = true;
+            }
 
-    availableSizes.forEach((sizeCode, index) => {
-        const sizeText = sizeMap[sizeCode] || sizeCode;
-        const label = document.createElement('label');
-        
-        label.innerHTML = `<input type="radio" id="size-${sizeCode}" name="pizza-size" value="${sizeCode}"> ${sizeText}`;
-        
-        if (index === 0) {
-            label.querySelector('input').checked = true;
-        }
-
-        sizeOptionGroup.appendChild(label);
-    });
+            sizeOptionGroup.appendChild(label);
+        });
+    }
 
     // ✅ 수정 완료: 문법 오류 수정 및 'change'를 'click'으로 변경
     sizeOptionGroup.querySelectorAll('input[name="pizza-size"]').forEach(input => {
