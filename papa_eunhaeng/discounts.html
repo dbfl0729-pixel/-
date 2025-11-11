@@ -1,0 +1,98 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>💸 제휴 할인 | 시흥은행점 파파존스</title>
+<style>
+:root { --main:#4a6c4c; --ink:#333; --muted:#666; --card:#fff; }
+*{box-sizing:border-box}
+body{font-family:'Malgun Gothic','Arial',sans-serif;margin:0;background:#f6f7f6;color:var(--ink)}
+header{background:var(--main);color:#fff;text-align:center;padding:14px 0;font-size:1.2rem}
+nav{background:#fff;border-bottom:1px solid #eee;position:sticky;top:0;z-index:5}
+nav ul{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:0;padding:0;list-style:none}
+nav a{display:block;padding:12px 14px;color:var(--ink);text-decoration:none;font-weight:700}
+nav a[href="discounts.html"]{background:#ffcc00}
+main{max-width:1200px;margin:16px auto;padding:0 16px}
+h2{margin:10px 0;color:var(--main);font-size:1.2rem}
+.hero{background:#fff;border-left:4px solid #ffcc00;padding:12px;border-radius:8px;margin-bottom:14px}
+.banners img{width:100%;height:auto;border-radius:12px;box-shadow:0 6px 14px rgba(0,0,0,.06);margin-bottom:10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-top:14px}
+.card{background:var(--card);border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.06);padding:14px}
+.row{display:flex;gap:12px;align-items:center}
+.logo{width:62px;height:62px;object-fit:contain;background:#fff;border:1px solid #eee;border-radius:10px}
+.muted{color:var(--muted);font-size:.9rem}
+.tag{display:inline-block;padding:2px 8px;border-radius:999px;background:#eef7ff;color:#2563eb;font-size:.75rem;margin-right:6px}
+.cta{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+button{border:none;border-radius:8px;padding:8px 10px;cursor:pointer}
+.btn-apply{background:var(--main);color:#fff;font-weight:700}
+.btn-copy{background:#f0f0f0}
+.btn-bill{background:#222;color:#fff;text-decoration:none;border-radius:8px;padding:8px 10px;display:inline-block}
+.fine{font-size:.8rem;color:#777;margin-top:8px}
+.back{margin-top:18px;text-align:center}
+.back img{height:46px}
+</style>
+</head>
+<body>
+<header>제휴 할인 안내</header>
+<nav>
+<ul>
+<li><a href="index.html">🏠 첫 화면</a></li>
+<li><a href="pizza.html">🍕 피자</a></li>
+<li><a href="sides.html">🍗 사이드</a></li>
+<li><a href="drinks_sauces.html">🥤 음료 & 소스</a></li>
+<li><a href="discounts.html">💸 제휴 할인</a></li>
+<li><a href="bill.html">🧾 계산서</a></li>
+</ul>
+</nav>
+<main>
+<section class="hero">
+<strong>중복 할인 불가.</strong> 1+1, 파파스데이(매월 8·18·28, L만 30%), 제휴 중에서 <u>가장 유리한 한 가지</u>를 선택하세요.
+<div class="muted">아래에서 제휴를 선택하면 계산서에 자동 반영됩니다.</div>
+</section>
+<section class="banners">
+<img src="images/assets/etx/telecom_30.jpg" alt="통신사 제휴 최대 30%" />
+<img src="images/assets/etx/papasday_30.jpg" alt="파파스데이 30% 할인" />
+<img src="images/assets/etx/friday_1plus1.jpg" alt="금요일 1+1 이벤트" />
+<img src="images/assets/etx/online_order.jpg" alt="온라인 주문 혜택" />
+</section>
+<section>
+<h2>제휴 선택</h2>
+<div class="grid" id="partner-grid"></div>
+</section>
+<div class="back">
+<a href="index.html"><img src="images/assets/etx/arrow_back.jpg" alt="뒤로가기 버튼" /></a>
+</div>
+</main>
+<footer class="card" style="max-width:1200px;margin:16px auto;padding:12px">
+<div>주소: 경기 시흥시 은행로 86 1층 106호 파파존스피자 · 영업시간: 매일 11:00–23:00 · 전화: 031-313-6995</div>
+</footer>
+<script>
+const PARTNERS=[
+{name:'LG U+',rate:0.20,code:'U+APP',img:'images/assets/etx/btn_lg_check.jpg'},
+{name:'KT',rate:0.15,code:'KT-MEM',img:'images/assets/etx/btn_kt_check.jpg'},
+{name:'SKT',rate:0.15,code:'SKT-MEM',img:'images/assets/etx/btn_skt_check.jpg'},
+{name:'네이버플러스',rate:0.20,code:'NAVER20',img:'images/assets/etx/badge_recommend.jpg'},
+{name:'VIP 멤버',rate:0.30,code:'VIP30',img:'images/assets/etx/badge_recommend.jpg'}
+];
+const grid=document.getElementById('partner-grid');
+function formatRate(r){return Math.round(r*100)+'%';}
+function cardTemplate(p){return`
+<div class="card">
+<div class="row">
+<img class="logo" src="${p.img}" alt="${p.name} 로고">
+<div><div><span class="tag">${formatRate(p.rate)}</span><strong>${p.name}</strong></div>
+<div class="muted">앱/멤버십 인증 시 적용</div></div></div>
+<div class="cta">
+<button class="btn-apply" data-rate="${p.rate}" data-name="${p.name}">이 할인 적용</button>
+<button class="btn-copy" data-code="${p.code}">코드 복사</button>
+<a href="bill.html" class="btn-bill">계산서로 이동</a></div>
+<div class="fine">코드: <code>${p.code}</code> · 일부 상품 제외 가능</div></div>`;}
+function render(){grid.innerHTML=PARTNERS.map(cardTemplate).join('');}
+function copyText(t){try{navigator.clipboard.writeText(t);alert('복사됨: '+t);}catch(e){prompt('아래 내용을 복사하세요',t);}}
+document.addEventListener('click',e=>{const a=e.target.closest('.btn-apply');if(a){const rate=a.dataset.rate;localStorage.setItem('memberRate',rate);localStorage.setItem('applyPromo','member');alert(`제휴율 ${Math.round(parseFloat(rate)*100)}% 적용. 계산서에서 확인하세요.`);}const c=e.target.closest('.btn-copy');if(c){copyText(c.dataset.code);}});
+render();
+</script>
+</body>
+</html>
