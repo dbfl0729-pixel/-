@@ -1,98 +1,350 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>💸 제휴 할인 | 시흥은행점 파파존스</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>제휴 · 이벤트 · Q&A</title>
 <style>
-:root { --main:#4a6c4c; --ink:#333; --muted:#666; --card:#fff; }
-*{box-sizing:border-box}
-body{font-family:'Malgun Gothic','Arial',sans-serif;margin:0;background:#f6f7f6;color:var(--ink)}
-header{background:var(--main);color:#fff;text-align:center;padding:14px 0;font-size:1.2rem}
-nav{background:#fff;border-bottom:1px solid #eee;position:sticky;top:0;z-index:5}
-nav ul{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:0;padding:0;list-style:none}
-nav a{display:block;padding:12px 14px;color:var(--ink);text-decoration:none;font-weight:700}
-nav a[href="discounts.html"]{background:#ffcc00}
+:root{--brand:#4a6c4c;--ink:#222;--muted:#666;--card:#fff;--pill:#ffcc00}
+*{box-sizing:border-box} body{margin:0;font-family:'Malgun Gothic','Arial',sans-serif;background:#f6f7f6;color:var(--ink)}
+header{background:var(--brand);color:#fff;padding:14px 0;text-align:center;font-weight:700}
+nav.top{background:#fff;border-bottom:1px solid #eee;position:sticky;top:0;z-index:9}
+nav.top ul{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;padding:0;margin:0;list-style:none}
+nav.top a{display:block;padding:10px 14px;text-decoration:none;color:var(--ink);font-weight:700}
 main{max-width:1200px;margin:16px auto;padding:0 16px}
-h2{margin:10px 0;color:var(--main);font-size:1.2rem}
-.hero{background:#fff;border-left:4px solid #ffcc00;padding:12px;border-radius:8px;margin-bottom:14px}
-.banners img{width:100%;height:auto;border-radius:12px;box-shadow:0 6px 14px rgba(0,0,0,.06);margin-bottom:10px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-top:14px}
-.card{background:var(--card);border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.06);padding:14px}
-.row{display:flex;gap:12px;align-items:center}
-.logo{width:62px;height:62px;object-fit:contain;background:#fff;border:1px solid #eee;border-radius:10px}
+.tabs{display:flex;gap:8px;margin-bottom:12px}
+.tab{flex:1;background:#fff;border:1px solid #eee;border-radius:10px;padding:10px;text-align:center;cursor:pointer}
+.tab.active{outline:3px solid var(--pill)}
+.section{display:none} .section.active{display:block}
+.card{background:#fff;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.06);padding:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.banner img,.clickable{width:100%;height:auto;border-radius:12px;box-shadow:0 6px 14px rgba(0,0,0,.06);margin-bottom:10px;cursor:pointer}
+.logo{width:62px;height:62px;object-fit:cover;border:1px solid #eee;border-radius:10px;background:#fff}
+.kicker{background:#fff;border-left:4px solid var(--pill);padding:10px;border-radius:8px;margin-bottom:14px}
 .muted{color:var(--muted);font-size:.9rem}
-.tag{display:inline-block;padding:2px 8px;border-radius:999px;background:#eef7ff;color:#2563eb;font-size:.75rem;margin-right:6px}
-.cta{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
-button{border:none;border-radius:8px;padding:8px 10px;cursor:pointer}
-.btn-apply{background:var(--main);color:#fff;font-weight:700}
-.btn-copy{background:#f0f0f0}
-.btn-bill{background:#222;color:#fff;text-decoration:none;border-radius:8px;padding:8px 10px;display:inline-block}
-.fine{font-size:.8rem;color:#777;margin-top:8px}
-.back{margin-top:18px;text-align:center}
-.back img{height:46px}
+.btn{border:none;border-radius:8px;padding:9px 12px;cursor:pointer}
+.btn-dark{background:#222;color:#fff} .btn-brand{background:var(--brand);color:#fff}
+.pill{display:inline-block;background:var(--pill);padding:2px 8px;border-radius:999px;font-weight:700}
+.center{text-align:center;margin:14px 0}
+.fine{font-size:.85rem;color:#777}
+hr.sep{border:none;border-top:1px dashed #e5e5e5;margin:14px 0}
+
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;padding:16px}
+.modal.open{display:flex}
+.modal .box{background:#fff;max-width:860px;width:100%;max-height:90vh;overflow:auto;border-radius:12px;padding:16px;position:relative}
+.modal .close{position:absolute;right:10px;top:8px;border:none;background:#eee;border-radius:8px;padding:6px 10px;cursor:pointer}
+.modal .box img{width:100%;height:auto;border-radius:10px}
+
+/* gallery */
+.gallery{position:relative}
+.gallery img{width:100%;height:auto;border-radius:12px}
+.gallery .nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.5);color:#fff;border:none;border-radius:8px;padding:8px 12px;cursor:pointer}
+.gallery .prev{left:8px} .gallery .next{right:8px}
+.thumb{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.thumb img{width:80px;height:80px;object-fit:cover;border-radius:8px;border:2px solid transparent;cursor:pointer}
+.thumb img.active{border-color:#2563eb}
 </style>
 </head>
 <body>
-<header>제휴 할인 안내</header>
-<nav>
-<ul>
-<li><a href="index.html">🏠 첫 화면</a></li>
-<li><a href="pizza.html">🍕 피자</a></li>
-<li><a href="sides.html">🍗 사이드</a></li>
-<li><a href="drinks_sauces.html">🥤 음료 & 소스</a></li>
-<li><a href="discounts.html">💸 제휴 할인</a></li>
-<li><a href="bill.html">🧾 계산서</a></li>
-</ul>
+<header>제휴 · 이벤트 · Q&A</header>
+
+<nav class="top">
+  <ul>
+    <li><a href="index.html">🏠 첫 화면</a></li>
+    <li><a href="pizza.html">🍕 피자</a></li>
+    <li><a href="sides.html">🍗 사이드</a></li>
+    <li><a href="drinks_sauces.html">🥤 음료 & 소스</a></li>
+    <li><a href="bill.html">🧾 계산서</a></li>
+  </ul>
 </nav>
+
 <main>
-<section class="hero">
-<strong>중복 할인 불가.</strong> 1+1, 파파스데이(매월 8·18·28, L만 30%), 제휴 중에서 <u>가장 유리한 한 가지</u>를 선택하세요.
-<div class="muted">아래에서 제휴를 선택하면 계산서에 자동 반영됩니다.</div>
-</section>
-<section class="banners">
-<img src="images/assets/etx/telecom_30.jpg" alt="통신사 제휴 최대 30%" />
-<img src="images/assets/etx/papasday_30.jpg" alt="파파스데이 30% 할인" />
-<img src="images/assets/etx/friday_1plus1.jpg" alt="금요일 1+1 이벤트" />
-<img src="images/assets/etx/online_order.jpg" alt="온라인 주문 혜택" />
-</section>
-<section>
-<h2>제휴 선택</h2>
-<div class="grid" id="partner-grid"></div>
-</section>
-<div class="back">
-<a href="index.html"><img src="images/assets/etx/arrow_back.jpg" alt="뒤로가기 버튼" /></a>
-</div>
+  <!-- 탭 -->
+  <div class="tabs">
+    <div class="tab active" data-target="#ev">이벤트</div>
+    <div class="tab" data-target="#pt">제휴</div>
+    <div class="tab" data-target="#qa">Q&A</div>
+  </div>
+
+  <!-- 이벤트 -->
+  <section id="ev" class="section active">
+    <div class="kicker"><span class="pill">사실 기준</span> 아래 배너를 누르면 상세 팝업.</div>
+    <div class="banner">
+      <!-- 1. 배너 클릭 → 팝업 -->
+      <img class="clickable" data-ev="online"  src="images/assets/etx/online_order.jpeg"  alt="온라인 회원 기본 할인">
+      <img class="clickable" data-ev="telecom" src="images/assets/etx/telecom_30.jpeg"   alt="통신사 멤버십">
+      <img class="clickable" data-ev="friday"  src="images/assets/etx/friday_1plus1.jpeg" alt="파파프라이데이 1+1">
+      <img class="clickable" data-ev="papas"   src="images/assets/etx/papasday_30.jpeg"   alt="파파스데이 30%">
+      <img class="clickable" data-ev="card"    src="images/assets/etx/card.jpeg"          alt="카드사 포인트/청구">
+    </div>
+
+    <!-- 3. BEST 클릭 → 크러스트 갤러리 팝업 -->
+    <img class="clickable" data-gallery-start="0" src="images/assets/etx/best.jpeg" alt="크러스트 추천 BEST">
+
+    <!-- 4. 추천 배지(각 크러스트별) → 해당 이미지로 갤러리 오픈 -->
+    <div class="grid" style="margin-top:10px">
+      <div class="card center">
+        <img class="clickable" data-gallery-start="0" src="images/assets/etx/badge_recommend.jpeg" alt="크루아상 추천">
+        <div class="fine">크루아상</div>
+      </div>
+      <div class="card center">
+        <img class="clickable" data-gallery-start="1" src="images/assets/etx/badge_recommend.jpeg" alt="스파이시 갈릭 치즈롤 추천">
+        <div class="fine">스파이시 갈릭 치즈롤</div>
+      </div>
+      <div class="card center">
+        <img class="clickable" data-gallery-start="2" src="images/assets/etx/badge_recommend.jpeg" alt="골드링 추천">
+        <div class="fine">골드링</div>
+      </div>
+      <div class="card center">
+        <img class="clickable" data-gallery-start="3" src="images/assets/etx/badge_recommend.jpeg" alt="치즈롤 추천">
+        <div class="fine">치즈롤</div>
+      </div>
+    </div>
+
+    <div class="center">
+      <a class="btn btn-dark" href="bill.html">계산서에서 즉시 비교</a>
+    </div>
+  </section>
+
+  <!-- 제휴 -->
+  <section id="pt" class="section">
+    <div class="kicker">
+      <span class="pill">중요</span> 1+1 / 파파스데이 / 제휴 <strong>중복 불가.</strong> 아래 통신사 이미지를 누르면 해당 설명으로 이동.
+    </div>
+
+    <div class="grid">
+      <!-- 2. 통신사 카드 클릭 → 설명 섹션으로 스크롤 -->
+      <div class="card"><div class="row">
+        <img class="logo clickable" data-scroll="#skt" src="images/assets/etx/btn_skt_check.jpeg" alt="SKT">
+        <div><strong>SKT 멤버십</strong><div class="muted">구매금액의 15% 또는 30%(VIP) 할인/적립</div></div>
+      </div></div>
+
+      <div class="card"><div class="row">
+        <img class="logo clickable" data-scroll="#kt" src="images/assets/etx/btn_kt_check.jpeg" alt="KT">
+        <div><strong>KT 멤버십</strong><div class="muted">구매금액의 15% 또는 30%(VIP) 할인</div></div>
+      </div></div>
+
+      <div class="card"><div class="row">
+        <img class="logo clickable" data-scroll="#lgu" src="images/assets/etx/btn_lg_check.jpeg" alt="LGU+">
+        <div><strong>LGU+ 멤버십</strong><div class="muted">15% 또는 20%(VIP) 포인트 차감 결제</div></div>
+      </div></div>
+    </div>
+
+    <hr class="sep">
+
+    <div id="skt" class="card">
+      <h3>SKT MemberShip (SKT 멤버십)</h3>
+      <ul>
+        <li>구매금액의 15%, 또는 30%(VIP) 할인/적립</li>
+        <li>세트 메뉴, 기타 쿠폰, 제휴 할인 및 사은품 증정 행사, 인터넷 자동할인 등 각종 할인과 중복 할인 불가</li>
+        <li>1일 1회 사용 가능</li>
+        <li>1일 최대 승인 금액 20만원 (연간 한도 내에서 할인 가능)</li>
+        <li>피자를 포함하지 않은 사이드 메뉴 및 음료 배달 주문의 경우, 할인 후 결제금액이 18,000원 이상일 경우에만 할인 적용 가능</li>
+        <li>온라인, 콜센터, 매장 적용 가능</li>
+        <li>일부 매장 사용 불가 (Q&A 참고)</li>
+        <li>적립된 포인트는 '적립 예정' 포인트로 표시, 결제일로부터 5일 이후 사용 가능 포인트로 전환</li>
+      </ul>
+    </div>
+
+    <div id="kt" class="card">
+      <h3>KT MemberShip (KT 멤버십)</h3>
+      <ul>
+        <li>구매 금액의 15%, 또는 30%(VIP) 할인</li>
+        <li>세트메뉴, 기타 쿠폰, 제휴 할인 및 사은품 증정 행사, 인터넷 자동할인 등 각종 할인과 중복 할인 불가</li>
+        <li>1일 1회 사용 가능</li>
+        <li>1일 최대 승인 금액 20만원 (연간 한도 내에서 할인 가능)</li>
+        <li>피자를 포함하지 않은 사이드 메뉴 및 음료 배달 주문의 경우, 할인 후 결제금액이 18,000원 이상일 경우에만 할인 적용 가능</li>
+        <li>기존 Show Membership은 KT Membership으로 변경 후 사용 가능</li>
+        <li>온라인, 콜센터, 매장 적용 가능</li>
+        <li>일부 매장 사용 불가 (Q&A 참고)</li>
+      </ul>
+    </div>
+
+    <div id="lgu" class="card">
+      <h3>LGU+ MemberShip (LGU+ 멤버십)</h3>
+      <ul>
+        <li>멤버십 포인트 사용하여 구매 금액의 15%, 또는 20%(VIP) 차감 결제</li>
+        <li>세트 메뉴, 기타 쿠폰, 제휴 할인 및 사은품 증정 행사, 인터넷 자동할인 등 각종 할인과 중복 할인 불가</li>
+        <li>1일 1회 사용 가능</li>
+        <li>포인트 내에서 할인 금액만큼 포인트 차감(포인트 부족 시 할인 불가)</li>
+        <li>1일 최대 승인 금액 20만원 (연간 한도 내에서 할인 가능)</li>
+        <li>피자를 포함하지 않은 사이드 메뉴 및 음료 배달 주문의 경우, 할인 후 결제금액이 18,000원 이상일 경우에만 할인 적용 가능</li>
+        <li>온라인, 콜센터, 매장 적용 가능</li>
+        <li>일부 매장 사용 불가 (Q&A 참고)</li>
+      </ul>
+    </div>
+
+    <div class="center"><a class="btn btn-brand" href="bill.html">계산서에서 제휴 적용</a></div>
+  </section>
+
+  <!-- Q&A -->
+  <section id="qa" class="section">
+    <div class="card">
+      <h3>자주 묻는 질문</h3>
+      <p><strong>파파스데이 적용</strong> · 온라인 채널에서 라지 사이즈 이상 선택 후, 사용 가능 쿠폰에서 "Papa's Day 30% 할인" 선택.</p>
+      <p><strong>중복</strong> · 1+1, 파파스데이, 제휴 중복 불가.</p>
+      <p><strong>대상</strong> · 라지 이상. 하프&하프, 레귤러 제외.</p>
+      <p><strong>크러스트</strong> · 오리지널 라지에 한해 크루아상/스파이시 갈릭 치즈롤/골드링/치즈롤로 변경 가능(추가요금은 배너에 표기된 내용 참조).</p>
+    </div>
+  </section>
 </main>
-<footer class="card" style="max-width:1200px;margin:16px auto;padding:12px">
-<div>주소: 경기 시흥시 은행로 86 1층 106호 파파존스피자 · 영업시간: 매일 11:00–23:00 · 전화: 031-313-6995</div>
-</footer>
+
+<!-- 공통 모달 -->
+<div id="modal" class="modal" aria-hidden="true">
+  <div class="box">
+    <button class="close" data-close>닫기</button>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
 <script>
-const PARTNERS=[
-{name:'LG U+',rate:0.20,code:'U+APP',img:'images/assets/etx/btn_lg_check.jpg'},
-{name:'KT',rate:0.15,code:'KT-MEM',img:'images/assets/etx/btn_kt_check.jpg'},
-{name:'SKT',rate:0.15,code:'SKT-MEM',img:'images/assets/etx/btn_skt_check.jpg'},
-{name:'네이버플러스',rate:0.20,code:'NAVER20',img:'images/assets/etx/badge_recommend.jpg'},
-{name:'VIP 멤버',rate:0.30,code:'VIP30',img:'images/assets/etx/badge_recommend.jpg'}
+/* 탭 */
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    t.classList.add('active');
+    document.querySelector(t.dataset.target).classList.add('active');
+  });
+});
+
+/* 1. 배너 → 팝업 */
+const eventsCopy={
+  online: `
+    <h3>온라인 회원 기본 할인</h3>
+    <ul>
+      <li>오직 공식 온라인으로 주문 시 배달 20% 할인</li>
+      <li>신규회원가입 25% 할인</li>
+      <li>생일회원 30% 할인</li>
+      <li>라지 사이즈 이상 피자에만 적용 가능</li>
+    </ul>
+    <p><a href="https://pji.co.kr/w_main" target="_blank" rel="noopener">파파존스 공식 앱 바로가기</a></p>
+  `,
+  telecom: `<h3>통신사 멤버십</h3><p>SKT/KT/LGU+ 멤버십 관련 안내는 ‘제휴’ 탭에서 확인.</p>`,
+  friday: `
+    <h3>파파프라이데이</h3>
+    <p>"매주 금요일 방문포장, 라지사이즈 베스트피자 7종 1+1"</p>
+    <ul>
+      <li>수퍼 파파스 · L 28,500원</li>
+      <li>치킨 바베큐 · L 27,500원</li>
+      <li>더블 치즈버거 · L 29,500원</li>
+      <li>아이리쉬 포테이토 · L 27,500원</li>
+      <li>프리미엄 직화 불고기 · L 29,500원</li>
+      <li>존스 페이버릿 · L 29,500원</li>
+      <li>스파이시 치킨랜치 · L 29,500원</li>
+    </ul>
+    <p>크러스트 변경 가능(크루아상/스파이시 갈릭 치즈롤/골드링/치즈롤). 추가요금은 배너 내용 기준.</p>
+    <p class="fine">주의: 인기피자 7종 한정, 오리지널 라지 대상. 골드링/치즈롤 변경 시 1판당 4,000원(2판 8,000원) 추가. 다른 혜택과 중복 불가. 방문 및 온라인 포장 주문만. 하프&하프 불가. 배달비는 별도.</p>
+  `,
+  papas: `
+    <h3>파파스데이</h3>
+    <p>"매달 8일, 18일, 28일 모든 피자 30% 할인"</p>
+    <p>파파존스 온라인 채널 로그인 → 라지 이상 선택 → ‘사용 가능 쿠폰 선택’에서 "Papa's Day 30% 할인" 선택 시 적용.</p>
+    <p><a href="https://pji.co.kr/w_main" target="_blank" rel="noopener">파파존스 공식 앱 바로가기</a></p>
+    <ul class="fine">
+      <li>라지 이상 온라인 주문 시 적용(매장/콜센터 제외)</li>
+      <li>타 할인과 중복 불가</li>
+      <li>하프&하프, 레귤러 제외</li>
+    </ul>
+  `,
+  card: `
+    <h3>카드사 포인트/청구 안내</h3>
+    <h4>현대카드 M포인트</h4>
+    <ul>
+      <li>최고 50% 차감 결제</li>
+      <li>잔여 포인트 부족 시 잔여 포인트까지만 사용(1,000 미만 사용 불가)</li>
+      <li>세트/박스/기타 쿠폰/제휴/인터넷 자동할인 등과 중복 불가</li>
+      <li>온라인, 콜센터, 매장 사용 가능</li>
+      <li>일부 매장 사용 불가 (Q&A 참고)</li>
+    </ul>
+    <h4>신한카드 마이신한 포인트</h4>
+    <ul>
+      <li>최고 100% 차감 결제</li>
+      <li>잔여 포인트까지만 사용</li>
+      <li>세트/박스/기타 쿠폰/제휴/인터넷 자동할인 등과 중복 불가</li>
+      <li>온라인, 콜센터, 매장 사용 가능</li>
+      <li>일부 매장 사용 불가 (Q&A 참고)</li>
+    </ul>
+    <h4>삼성카드 포인트</h4>
+    <ul>
+      <li>최고 100% 차감 결제</li>
+      <li>잔여 포인트까지만 사용</li>
+      <li>세트/박스/기타 쿠폰/제휴/인터넷 자동할인 등과 중복 불가</li>
+      <li>온라인, 콜센터, 매장 사용 가능</li>
+      <li>일부 매장 사용 불가 (Q&A 참고)</li>
+    </ul>
+    <h4>KB국민카드 포인트</h4>
+    <ul>
+      <li>최고 100% 청구 할인</li>
+      <li>국민 행복 세트 구매 시 중복 가능. 그 외(무료증정/제휴카드/쿠폰/세트/BOX 등) 중복 불가</li>
+      <li>카드사·제휴사 사정으로 변경/중단될 수 있음</li>
+      <li>잔여 포인트까지만 사용</li>
+      <li>온라인, 콜센터, 매장 사용 가능</li>
+      <li>일부 매장 사용 불가 (Q&A 참고)</li>
+    </ul>
+    <h4>블루 멤버스</h4>
+    <ul>
+      <li>최대 50%까지 차감 할인(100포인트 단위 사용)</li>
+      <li>포인트 부족 시 잔여 포인트만 사용</li>
+      <li>세트/박스/기타 쿠폰/제휴/인터넷 자동할인 등과 중복 불가</li>
+      <li>이용불가 매장: 한솔 오크밸리점, KT 위즈파크점, SSG 랜더스점, 평창 대관령점, 삼성 라이온즈 파크점, 곤지암 리조트점, 롯데마트 중계점, 기아 챔피언스 필드점, 롯데 사직구장점 등</li>
+    </ul>
+  `
+};
+const modal=document.getElementById('modal');
+const body=document.getElementById('modal-body');
+function openModal(html){ body.innerHTML=html; modal.classList.add('open'); modal.setAttribute('aria-hidden','false'); }
+function closeModal(){ modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); body.innerHTML=''; }
+document.querySelector('[data-close]')?.addEventListener('click',closeModal);
+modal.addEventListener('click',e=>{ if(e.target===modal) closeModal(); });
+
+document.querySelectorAll('[data-ev]').forEach(el=>{
+  el.addEventListener('click',()=> openModal(eventsCopy[el.dataset.ev]||'' ));
+});
+
+/* 2. 통신사 카드 이미지 → 해당 설명으로 스크롤 */
+document.querySelectorAll('[data-scroll]').forEach(el=>{
+  el.addEventListener('click',()=>{
+    document.querySelector('.tab[data-target="#pt"]').click();
+    document.querySelector(el.dataset.scroll).scrollIntoView({behavior:'smooth',block:'start'});
+  });
+});
+
+/* 3,4. 갤러리 팝업 */
+const crustImgs=[
+  'images/assets/etx/crust_1.jpeg',
+  'images/assets/etx/crust_2.jpeg',
+  'images/assets/etx/crust_3.jpeg',
+  'images/assets/etx/crust_4.jpeg'
 ];
-const grid=document.getElementById('partner-grid');
-function formatRate(r){return Math.round(r*100)+'%';}
-function cardTemplate(p){return`
-<div class="card">
-<div class="row">
-<img class="logo" src="${p.img}" alt="${p.name} 로고">
-<div><div><span class="tag">${formatRate(p.rate)}</span><strong>${p.name}</strong></div>
-<div class="muted">앱/멤버십 인증 시 적용</div></div></div>
-<div class="cta">
-<button class="btn-apply" data-rate="${p.rate}" data-name="${p.name}">이 할인 적용</button>
-<button class="btn-copy" data-code="${p.code}">코드 복사</button>
-<a href="bill.html" class="btn-bill">계산서로 이동</a></div>
-<div class="fine">코드: <code>${p.code}</code> · 일부 상품 제외 가능</div></div>`;}
-function render(){grid.innerHTML=PARTNERS.map(cardTemplate).join('');}
-function copyText(t){try{navigator.clipboard.writeText(t);alert('복사됨: '+t);}catch(e){prompt('아래 내용을 복사하세요',t);}}
-document.addEventListener('click',e=>{const a=e.target.closest('.btn-apply');if(a){const rate=a.dataset.rate;localStorage.setItem('memberRate',rate);localStorage.setItem('applyPromo','member');alert(`제휴율 ${Math.round(parseFloat(rate)*100)}% 적용. 계산서에서 확인하세요.`);}const c=e.target.closest('.btn-copy');if(c){copyText(c.dataset.code);}});
-render();
+function galleryHTML(start){
+  const thumbs = crustImgs.map((src,i)=>`<img src="${src}" data-i="${i}" class="${i===start?'active':''}">`).join('');
+  return `
+  <div class="gallery">
+    <button class="nav prev">〈</button>
+    <img id="g-main" src="${crustImgs[start]}">
+    <button class="nav next">〉</button>
+  </div>
+  <div class="thumb">${thumbs}</div>
+  `;
+}
+function openGallery(startIndex){
+  openModal(galleryHTML(startIndex||0));
+  let idx=startIndex||0;
+  const main=body.querySelector('#g-main');
+  const setIdx=(i)=>{
+    idx=(i+crustImgs.length)%crustImgs.length;
+    main.src=crustImgs[idx];
+    body.querySelectorAll('.thumb img').forEach((t,k)=>t.classList.toggle('active',k===idx));
+  };
+  body.querySelector('.prev').addEventListener('click',()=>setIdx(idx-1));
+  body.querySelector('.next').addEventListener('click',()=>setIdx(idx+1));
+  body.querySelectorAll('.thumb img').forEach(t=> t.addEventListener('click',()=> setIdx(parseInt(t.dataset.i,10)) ));
+}
+document.querySelectorAll('[data-gallery-start]').forEach(el=>{
+  el.addEventListener('click',()=> openGallery(parseInt(el.dataset.galleryStart,10)||0) );
+});
 </script>
 </body>
 </html>
