@@ -53,7 +53,6 @@ main{max-width:1200px;margin:16px auto;padding:0 16px}
     <li><a href="pizza.html">🍕 피자</a></li>
     <li><a href="sides.html">🍗 사이드</a></li>
     <li><a href="drinks_sauces.html">🥤 음료 & 소스</a></li>
-    <li><a href="discounts.html">💸 제휴 할인</a></li>
     <li><a href="bill.html">🧾 계산서</a></li>
   </ul>
 </nav>
@@ -148,7 +147,7 @@ function openImageModal(title, src){
   img.src = src;
   img.style.maxWidth = '100%';
   img.style.borderRadius = '10px';
-  img.onerror = ()=>{ modalBody.innerHTML = '<div class="muted">이미지를 불러올 수 없습니다. 경로/확장자를 확인하세요.'; };
+  img.onerror = ()=>{ modalBody.innerHTML = '<div class="muted">이미지를 불러올 수 없습니다. 경로/확장자를 확인하세요.</div>'; };
   modalBody.appendChild(img);
   const hint = document.createElement('div');
   hint.className = 'fine';
@@ -170,7 +169,7 @@ modalClose.addEventListener('click', closeModal);
 modal.addEventListener('click', e=>{ if(e.target===modal) closeModal(); });
 window.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModal(); });
 
-// 배너 팝업
+// 이벤트 팝업
 const eventsCopy = {
   online: `
     <div class="coupon">
@@ -182,7 +181,30 @@ const eventsCopy = {
       </div>
       <p><a href="https://pji.co.kr/w_main" target="_blank" rel="noopener" class="btn btn-dark">파파존스 공식 앱 바로가기</a></p>
     </div>`,
-  telecom:`<div class="coupon"><span class="badge">통신사 멤버십</span><p>SKT/KT/LGU+ 멤버십은 제휴 탭에서 상세 확인.</p></div>`,
+  telecom:`<div class="coupon">
+      <span class="badge">통신사 멤버십</span>
+      <div class="grid" style="margin-top:8px">
+        <div class="card ev-pt" data-pt="skt" style="text-align:center;cursor:pointer">
+          <img class="logo" src="assets/images/etx/btn_skt_check.jpeg" alt="SKT">
+          <div><strong>SKT</strong></div>
+          <div class="fine">15% 할인/적립</div>
+          <div class="fine">30% 할인/적립</div>
+        </div>
+        <div class="card ev-pt" data-pt="kt" style="text-align:center;cursor:pointer">
+          <img class="logo" src="assets/images/etx/btn_kt_check.jpeg" alt="KT">
+          <div><strong>KT</strong></div>
+          <div class="fine">15% 포인트 차감</div>
+          <div class="fine">30% 포인트 차감</div>
+        </div>
+        <div class="card ev-pt" data-pt="lgu" style="text-align:center;cursor:pointer">
+          <img class="logo" src="assets/images/etx/btn_lg_check.jpeg" alt="LG U+">
+          <div><strong>LG U+</strong></div>
+          <div class="fine">15% 포인트 차감</div>
+          <div class="fine">30% 포인트 차감</div>
+        </div>
+      </div>
+      <p class="fine">이미지를 누르면 각 제휴 요약으로 이동합니다.</p>
+    </div>`,
   friday: `
     <div class="coupon">
       <span class="badge">파파프라이데이</span>
@@ -206,7 +228,7 @@ const eventsCopy = {
       </p>
     </div>
 
-    <!-- 크러스트 변경 안내: 모달 콘텐츠 내부 -->
+    <!-- 크러스트 변경 안내: 모달 내부에 임베드 -->
     <section class="card" id="crust-in-friday" style="margin-top:12px">
       <h2>크러스트 변경 안내</h2>
       <div class="pill">✨ 크루아상 / 스파이시 갈릭 치즈롤 / 골드링 / 치즈롤 변경 가능 ✨</div>
@@ -252,9 +274,7 @@ const eventsCopy = {
       <p>"매달 8일, 18일, 28일 모든 피자 30% 할인"</p>
       <p>온라인 로그인 → 라지 이상 선택 → ‘사용 가능 쿠폰’에서 "Papa's Day 30% 할인" 선택.</p>
       <p><a href="https://pji.co.kr/w_main" target="_blank" rel="noopener" class="btn btn-dark">파파존스 공식 앱 바로가기</a></p>
-      <p class="fine">1) 라지 이상 온라인 주문 적용(매장/콜센터 제외)<br>
-      2) 타 할인과 중복 불가<br>
-      3) 하프&하프, 레귤러 제외</p>
+      <p class="fine">1) 라지 이상 온라인 주문 적용(매장/콜센터 제외)<br>2) 타 할인과 중복 불가<br>3) 하프&하프, 레귤러 제외</p>
     </div>`,
   card: `
     <div class="coupon">
@@ -306,6 +326,14 @@ const ptCopy = {
 };
 document.querySelectorAll('[data-pt]').forEach(el=>{
   el.addEventListener('click',()=> openModalHTML(ptCopy[el.dataset.pt]||''));
+});
+
+// 이벤트 모달 내부 통신사 카드 클릭 -> 제휴 요약
+document.addEventListener('click',(e)=>{
+  const x = e.target.closest('.ev-pt');
+  if(!x) return;
+  const key = x.getAttribute('data-pt');
+  if(key && ptCopy[key]) openModalHTML(ptCopy[key]);
 });
 
 // 이미지 모달 트리거
