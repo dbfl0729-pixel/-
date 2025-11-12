@@ -53,6 +53,7 @@ main{max-width:1200px;margin:16px auto;padding:0 16px}
     <li><a href="pizza.html">🍕 피자</a></li>
     <li><a href="sides.html">🍗 사이드</a></li>
     <li><a href="drinks_sauces.html">🥤 음료 & 소스</a></li>
+    <li><a href="discounts.html">💸 제휴 할인</a></li>
     <li><a href="bill.html">🧾 계산서</a></li>
   </ul>
 </nav>
@@ -78,7 +79,7 @@ main{max-width:1200px;margin:16px auto;padding:0 16px}
 
   <!-- 제휴 -->
   <section id="pt" class="section">
-    <div class="kicker"><span class="pill">중요</span> 1+1 / 파파스데이 / 제휴 중복 불가. 통신사 이미지를 누르면 팝업 요약.</div>
+
     <div class="grid">
       <div class="card center">
         <img class="logo clickable" data-pt="skt" src="assets/images/etx/btn_skt_check.jpeg" alt="SKT">
@@ -208,7 +209,9 @@ const eventsCopy = {
   friday: `
     <div class="coupon">
       <span class="badge">파파프라이데이</span>
+       <section class="card" id="crust-in-friday" style="margin-top:12px">
       <p>"매주 금요일 방문포장, 라지사이즈 베스트피자 7종 1+1"</p>
+      
       <ul>
         <li>수퍼 파파스 · L 28,500원</li>
         <li>치킨 바베큐 · L 27,500원</li>
@@ -218,13 +221,11 @@ const eventsCopy = {
         <li>존스 페이버릿 · L 29,500원</li>
         <li>스파이시 치킨랜치 · L 29,500원</li>
       </ul>
-      <p class="fine">주의사항<br>
-        1) 인기피자 7종 한정<br>
-        2) 오리지널 라지 대상. 골드링/치즈롤 변경 시 1판 4,000원(2판 8,000원) 추가<br>
-        3) 다른 혜택과 중복 불가<br>
-        4) 방문 및 온라인 포장 주문만 해당<br>
-        5) 하프&하프 불가<br>
-        6) 배달비는 별도
+      <p class="fine">⚠️ 주의사항 ⚠️<br>
+        1) 인기피자 라지사이즈 7종 한정<br>
+        2) 크러스트 변경 시 추가 요금 발생<br>
+        3) 다른 혜택과 중복 불가/방문 및 온라인 포장 주문만 해당<br>
+        4) 하프&하프 불가<br>
       </p>
     </div>
 
@@ -235,34 +236,30 @@ const eventsCopy = {
 
       <div class="grid" style="margin-top:12px">
         <div class="card">
-          <h3>🥐 크루아상</h3>
-          <p class="muted">‘크루아상’ 클릭 시 추천 조합 이미지 팝업</p>
+          <h3>🥐 = 크루아상</h3>
           <p>김겹이 쌓인 풍미 가득 버터향. 바삭함과 부드러움의 조화.</p>
-          <p class="price">🔔 1판당 6,000원 추가 · 2판 적용 시 12,000원</p>
+          <p class="price">💲 1판당 6,000원 추가 · 2판 적용 시 12,000원 💲</p>
           <button type="button" class="btn" data-modal="img" data-title="크루아상" data-src="assets/images/etx/crust_1.jpeg">이미지 보기</button>
         </div>
 
         <div class="card">
-          <h3>🧄+🧀 스파이시 갈릭 치즈롤</h3>
-          <p class="muted">‘스파이시 갈릭 치즈롤’ 클릭 시 추천 조합 이미지 팝업</p>
+          <h3>🧄+🧀 = 스파이시 갈릭 치즈롤</h3>
           <p>풍부한 갈릭 향, 투 블랜드 치즈, 레드페퍼로 완성한 진한 풍미.</p>
-          <p class="price">🔔 1판당 4,000원 추가 · 2판 적용 시 8,000원</p>
+          <p class="price">💲 1판당 4,000원 추가 · 2판 적용 시 8,000원 💲</p>
           <button type="button" class="btn" data-modal="img" data-title="스파이시 갈릭 치즈롤" data-src="assets/images/etx/crust_2.jpeg">이미지 보기</button>
         </div>
 
         <div class="card">
-          <h3>🍠+🧀 골드링</h3>
-          <p class="muted">‘골드링’ 클릭 시 추천 조합 이미지 팝업</p>
+          <h3>🍠+🧀 = 골드링</h3>
           <p>부드럽고 달콤한 고구마 무스와 스트링 치즈의 환상적 조합.</p>
-          <p class="price">🔔 1판당 4,000원 추가 · 2판 적용 시 8,000원</p>
+          <p class="price">💲 1판당 4,000원 추가 · 2판 적용 시 8,000원 💲</p>
           <button type="button" class="btn" data-modal="img" data-title="골드링" data-src="assets/images/etx/crust_3.jpeg">이미지 보기</button>
         </div>
 
         <div class="card">
-          <h3>🧀+🧀 치즈롤</h3>
-          <p class="muted">‘치즈롤’ 클릭 시 추천 조합 이미지 팝업</p>
+          <h3>🧀+🧀 = 치즈롤</h3>
           <p>짭조름한 체다치즈와 속 스트링 치즈의 조화.</p>
-          <p class="price">🔔 1판당 4,000원 추가 · 2판 적용 시 8,000원</p>
+          <p class="price">💲 1판당 4,000원 추가 · 2판 적용 시 8,000원 💲</p>
           <button type="button" class="btn" data-modal="img" data-title="치즈롤" data-src="assets/images/etx/crust_4.jpeg">이미지 보기</button>
         </div>
       </div>
@@ -271,7 +268,7 @@ const eventsCopy = {
   papas: `
     <div class="coupon">
       <span class="badge">파파스데이</span>
-      <p>"매달 8일, 18일, 28일 모든 피자 30% 할인"</p>
+      <p>"매달 8일, 18일, 28일 모든 라지사이즈 피자이상 30% 할인"</p>
       <p>온라인 로그인 → 라지 이상 선택 → ‘사용 가능 쿠폰’에서 "Papa's Day 30% 할인" 선택.</p>
       <p><a href="https://pji.co.kr/w_main" target="_blank" rel="noopener" class="btn btn-dark">파파존스 공식 앱 바로가기</a></p>
       <p class="fine">1) 라지 이상 온라인 주문 적용(매장/콜센터 제외)<br>2) 타 할인과 중복 불가<br>3) 하프&하프, 레귤러 제외</p>
