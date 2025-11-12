@@ -1,260 +1,304 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>🍕 시흥은행점 파파존스 · 크러스트/할인 안내</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>제휴 · 이벤트 · Q&A</title>
+<style>
+:root{--brand:#4a6c4c;--ink:#222;--muted:#666;--card:#fff;--pill:#ffcc00;--cute:#ffed9f}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Malgun Gothic','Arial',sans-serif;background:#f6f7f6;color:var(--ink)}
+header{background:var(--brand);color:#fff;padding:14px 0;text-align:center;font-weight:700}
+nav.top{background:#fff;border-bottom:1px solid #eee;position:sticky;top:0;z-index:9}
+nav.top ul{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;padding:0;margin:0;list-style:none}
+nav.top a{display:block;padding:10px 14px;text-decoration:none;color:var(--ink);font-weight:700}
+main{max-width:1200px;margin:16px auto;padding:0 16px}
+.tabs{display:flex;gap:8px;margin-bottom:12px}
+.tab{flex:1;background:#fff;border:1px solid #eee;border-radius:10px;padding:10px;text-align:center;cursor:pointer}
+.tab.active{outline:3px solid var(--pill)}
+.section{display:none} .section.active{display:block}
+.card{background:#fff;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.06);padding:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.banner img,.clickable{width:100%;height:auto;border-radius:12px;box-shadow:0 6px 14px rgba(0,0,0,.06);margin-bottom:10px;cursor:pointer}
+.logo{width:62px;height:62px;object-fit:cover;border:1px solid #eee;border-radius:10px;background:#fff}
+.kicker{background:#fff;border-left:4px solid var(--pill);padding:10px;border-radius:8px;margin-bottom:14px}
+.muted{color:var(--muted);font-size:.9rem}
+.btn{border:none;border-radius:8px;padding:9px 12px;cursor:pointer}
+.btn-dark{background:#222;color:#fff} .btn-brand{background:var(--brand);color:#fff}
+.pill{display:inline-block;background:var(--pill);padding:2px 8px;border-radius:999px;font-weight:700}
+.center{text-align:center;margin:14px 0}
+.fine{font-size:.85rem;color:#777}
+hr.sep{border:none;border-top:1px dashed #e5e5e5;margin:14px 0}
 
-  <!-- 인덱스와 톤을 맞춘 기본 스타일 -->
-  <style>
-    :root {
-      --main-color:#4a6c4c;     /* 올리브 */
-      --accent-color:#ffcc00;    /* 옐로우 */
-      --text-color:#333;
-      --white:#fff;
-      --line:#eee;
-    }
-    body{margin:0;font-family:'Malgun Gothic','Apple SD Gothic Neo',Arial,sans-serif;color:var(--text-color);background:#f8f8f8}
-    header{background:var(--main-color);color:var(--white);padding:20px 0;text-align:center;box-shadow:0 4px 6px rgba(0,0,0,.1)}
-    header h1{margin:0;font-size:1.5em;letter-spacing:2px}
-    nav{background:var(--white);border-bottom:1px solid #eee;box-shadow:0 2px 4px rgba(0,0,0,.05)}
-    nav ul{list-style:none;margin:0;padding:0;display:flex;justify-content:center;flex-wrap:wrap}
-    nav ul li a{display:block;color:var(--text-color);text-decoration:none;font-weight:bold;padding:15px 20px;transition:background .2s,color .2s}
-    nav ul li a:hover,nav ul li a.active{background:var(--accent-color);color:var(--text-color)}
-    .container{max-width:1000px;margin:0 auto;padding:32px 20px}
-    .card{background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 16px rgba(0,0,0,.06);padding:20px;margin-bottom:20px}
-    h2{margin:0 0 10px;font-size:1.35rem;color:var(--main-color)}
-    h3{margin:0 0 8px;font-size:1.05rem}
-    p{margin:6px 0}
-    .grid{display:grid;gap:16px}
-    .grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
-    @media (max-width:720px){.grid-2{grid-template-columns:1fr}}
-    .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:#eef6f0;color:#0f5132;font-weight:700}
-    .price{font-weight:700}
-    .muted{color:#667085}
-    .btn{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px;cursor:pointer}
-    .btn.cta{background:var(--accent-color);border-color:var(--accent-color)}
-    ol{margin:10px 0 0 20px}
-    ol li{margin:6px 0}
+/* cute coupon look inside modal */
+.coupon{background:linear-gradient(180deg,#fff 0,#fff 60%,#f9fafb 100%);border-radius:16px;padding:12px;border:2px solid #e5e7eb}
+.coupon .row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.coupon .badge{background:var(--cute);padding:4px 10px;border-radius:999px;font-weight:800}
+.coupon .tile{flex:1;min-width:180px;background:#fff;border:1px dashed #e5e5e5;border-radius:12px;padding:12px;text-align:center}
+.coupon h3{margin:6px 0 8px 0}
+.coupon .big{font-size:2rem;font-weight:900}
 
-    /* 팝업 모달 */
-    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.42);z-index:1000}
-    .modal[aria-hidden="false"]{display:flex}
-    .panel{background:#fff;max-width:min(92vw,720px);width:100%;border-radius:14px;overflow:hidden;border:1px solid var(--line)}
-    .panel-head{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid var(--line)}
-    .panel-title{font-weight:700}
-    .close{border:0;background:#eee;border-radius:8px;padding:6px 10px;cursor:pointer}
-    .panel-body img{display:block;width:100%;height:auto}
-    .panel-body .pad{padding:16px}
-    .kbd{font-family:ui-monospace,Menlo,monospace;background:#f2f4f7;border:1px solid #e5e7eb;border-bottom-width:3px;padding:1px 6px;border-radius:6px}
-  </style>
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;padding:16px}
+.modal.open{display:flex}
+.modal .box{background:#fff;max-width:920px;width:100%;max-height:90vh;overflow:auto;border-radius:12px;padding:16px;position:relative}
+.modal .close{position:absolute;right:10px;top:8px;border:none;background:#eee;border-radius:8px;padding:6px 10px;cursor:pointer}
+.modal .box img{width:100%;height:auto;border-radius:10px}
+
+/* gallery */
+.gallery{position:relative}
+.gallery img{width:100%;height:auto;border-radius:12px}
+.gallery .nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.5);color:#fff;border:none;border-radius:8px;padding:8px 12px;cursor:pointer}
+.gallery .prev{left:8px} .gallery .next{right:8px}
+.thumb{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.thumb img{width:80px;height:80px;object-fit:cover;border-radius:8px;border:2px solid transparent;cursor:pointer}
+.thumb img.active{border-color:#2563eb}
+
+/* link chips for crust words */
+.crust-line{font-size:1rem;line-height:1.9}
+.crust-line .chip{display:inline-block;background:#fff3c4;border:1px solid #f8d458;border-radius:999px;padding:2px 8px;margin:0 6px;cursor:pointer}
+</style>
 </head>
 <body>
-  <!-- 헤더/네비: index.html과 동일 구조. 이 페이지에서는 ‘제휴 할인’ 탭에 active -->
-  <header><h1>시흥은행점 파파존스 메뉴판</h1></header>
-  <nav>
-    <ul>
-      <li><a href="index.html">🏠 첫 화면</a></li>
-      <li><a href="menu.html">🍕 피자</a></li>
-      <li><a href="sides.html">🍗 사이드</a></li>
-      <li><a href="drinks_sauces.html">🥤 음료 & 소스</a></li>
-      <li><a href="discounts.html" class="active">💸 제휴 할인</a></li>
-      <li><a href="cart.html">🧾 계산서</a></li>
-    </ul>
-  </nav>
+<header>제휴 · 이벤트 · Q&A</header>
 
-  <main class="container">
+<nav class="top">
+  <ul>
+    <li><a href="index.html">🏠 첫 화면</a></li>
+    <li><a href="pizza.html">🍕 피자</a></li>
+    <li><a href="sides.html">🍗 사이드</a></li>
+    <li><a href="drinks_sauces.html">🥤 음료 & 소스</a></li>
+    <li><a href="bill.html">🧾 계산서</a></li>
+  </ul>
+</nav>
 
-    <!-- 크러스트 변경 안내 -->
-    <section class="card" id="crust">
-      <h2>🍕 크러스트 변경 안내</h2>
-      <div class="pill">✨ 크루아상 / 스파이시 갈릭 치즈롤 / 골드링 / 치즈롤 변경 가능 ✨</div>
-
-      <div class="grid grid-2" style="margin-top:12px">
-        <!-- 크루아상 -->
-        <div class="card">
-          <h3>🥐 크루아상</h3>
-          <p class="muted">‘크루아상’ 클릭 시 추천 조합 이미지 팝업</p>
-          <p>김겹이 쌓인 풍미 가득 버터향. 바삭함과 부드러움의 조화.</p>
-          <p class="price">💲 1판당 6,000원 추가 · 2판 적용 시 12,000원</p>
-          <button class="btn" data-modal="img" data-title="크루아상" data-src="assets/images/etx/crust_1.jpeg">이미지 보기</button>
-        </div>
-
-        <!-- 스파이시 갈릭 치즈롤 -->
-        <div class="card">
-          <h3>🧄🧀 스파이시 갈릭 치즈롤</h3>
-          <p class="muted">‘스파이시 갈릭 치즈롤’ 클릭 시 추천 조합 이미지 팝업</p>
-          <p>풍부한 갈릭 향, 투 블랜드 치즈, 레드페퍼로 완성한 진한 풍미.</p>
-          <button class="btn" data-modal="img" data-title="스파이시 갈릭 치즈롤" data-src="assets/images/etx/crust_2.jpg">이미지 보기</button>
-        </div>
-
-        <!-- 골드링 -->
-        <div class="card">
-          <h3>🍠🧀 골드링</h3>
-          <p class="muted">‘골드링’ 클릭 시 추천 조합 이미지 팝업</p>
-          <p>부드럽고 달콤한 고구마 무스와 스트링 치즈의 환상적 조합.</p>
-          <button class="btn" data-modal="img" data-title="골드링" data-src="assets/images/etx/crust_3.jpeg">이미지 보기</button>
-        </div>
-
-        <!-- 치즈롤 -->
-        <div class="card">
-          <h3>🧀🧀 치즈롤</h3>
-          <p class="muted">‘치즈롤’ 클릭 시 추천 조합 이미지 팝업</p>
-          <p>짭조름한 체다치즈와 속 스트링 치즈의 조화.</p>
-          <p class="price">💲 1판당 4,000원 추가 · 2판 적용 시 8,000원</p>
-          <button class="btn" data-modal="img" data-title="치즈롤" data-src="assets/images/etx/crust_4.jpeg">이미지 보기</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- 주의사항: 번호 기준 줄바꿈 완료 -->
-    <section class="card" id="rules">
-      <h2>⚠️ 주의사항</h2>
-      <ol>
-        <li>인기피자 7종(수퍼파파스, 아이리쉬 포테이토, 치킨 바비큐, 스파이시 치킨랜치, 더블 치즈버거, 프리미엄 직화불고기, 존스페이버릿)에만 적용 가능합니다.</li>
-        <li>해당 피자 오리지널 <b>라지</b> 사이즈 대상으로 진행되며, <b>골드링/치즈롤</b> 크러스트 변경 시 1판당 4,000원(2판 모두 적용 시 8,000원) 추가됩니다.</li>
-        <li>다른 혜택(무료증정, 할인/제휴카드, 쿠폰, 세트메뉴 등)과 중복 적용 불가합니다.</li>
-        <li>매장 방문 및 온라인 포장 주문 시에만 해당됩니다.</li>
-        <li>하프&하프 적용 불가합니다.</li>
-        <li>배달비는 할인 이벤트와 무관하게 적용됩니다.</li>
-      </ol>
-    </section>
-
-    <!-- 온라인 회원 기본 할인: 오른쪽 팝업 느낌 -->
-    <section class="card" id="member">
-      <h2>💚 온라인 회원 기본 할인</h2>
-      <p>온라인 회원 전용 혜택. 로그인 후 주문 시 자동 적용.</p>
-      <button class="btn cta"
-              data-modal="sheet"
-              data-title="온라인 회원 기본 할인"
-              data-content="
-                • 회원 로그인 상태에서 자동 할인 적용<br/>
-                • 일부 프로모션 기간 중 추가 혜택 공지<br/>
-                • 쿠폰과 중복 불가 표시 시 해당 기준 우선<br/>
-                • 적용 제외 메뉴나 사이즈는 별도 안내
-              ">안내 팝업 보기</button>
-      <p class="muted" style="margin-top:8px">라지 이상 제한 문구 삭제 반영됨.</p>
-    </section>
-
-    <!-- 카드사 할인: 간결 팝업 -->
-    <section class="card" id="cards">
-      <h2>💳 카드사 할인</h2>
-      <p class="muted">필요 정보만 간결하게 표시. 복잡한 로고 나열 제거.</p>
-      <div class="grid grid-2" style="margin-top:8px">
-        <div class="card">
-          <h3>신한카드</h3>
-          <button class="btn" data-modal="sheet" data-title="신한카드 할인" data-content="
-            • 즉시할인 최대 15%<br/>
-            • 1일 1회, 월 2회 한도<br/>
-            • 온라인/오프라인 공통 적용<br/>
-            • 타 쿠폰/세트와 중복 불가
-          ">자세히</button>
-        </div>
-        <div class="card">
-          <h3>현대카드</h3>
-          <button class="btn" data-modal="sheet" data-title="현대카드 할인" data-content="
-            • 청구할인 10%<br/>
-            • 전월 실적 기준 충족 시<br/>
-            • 오프라인 중심, 앱결제 제외 가능<br/>
-            • 타 할인과 중복 불가
-          ">자세히</button>
-        </div>
-        <div class="card">
-          <h3>국민카드</h3>
-          <button class="btn" data-modal="sheet" data-title="국민카드 할인" data-content="
-            • 즉시할인 5~10%<br/>
-            • 제휴 기간 상시/이벤트 공지<br/>
-            • 배달앱 결제 제외 가능<br/>
-            • 중복 적용 불가
-          ">자세히</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- 제휴사 할인: 카드 누르면 팝업 -->
-    <section class="card" id="partners">
-      <h2>🤝 제휴사 할인</h2>
-      <p class="muted">해당 제휴사 카드를 클릭하면 중요 내용만 팝업으로 표시.</p>
-      <div class="grid grid-2" style="margin-top:8px">
-        <div class="card">
-          <h3>네이버페이</h3>
-          <button class="btn" data-modal="sheet" data-title="네이버페이 제휴" data-content="
-            • 결제 포인트 적립 1~2%<br/>
-            • 이벤트 기간 추가 적립 공지<br/>
-            • 일부 할인과 중복 제한 가능
-          ">자세히</button>
-        </div>
-        <div class="card">
-          <h3>카카오페이</h3>
-          <button class="btn" data-modal="sheet" data-title="카카오페이 제휴" data-content="
-            • 즉시할인 또는 포인트백<br/>
-            • 월 한도 내 적용<br/>
-            • 타 쿠폰과 중복 제한 가능
-          ">자세히</button>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <!-- 공용 모달 -->
-  <div class="modal" id="modal" aria-hidden="true" aria-modal="true" role="dialog">
-    <div class="panel" role="document">
-      <div class="panel-head">
-        <div class="panel-title" id="modalTitle">안내</div>
-        <button class="close" id="modalClose" aria-label="닫기">닫기</button>
-      </div>
-      <div class="panel-body" id="modalBody"></div>
-    </div>
+<main>
+  <div class="tabs">
+    <div class="tab active" data-target="#ev">이벤트</div>
+    <div class="tab" data-target="#pt">제휴</div>
+    <div class="tab" data-target="#qa">Q&A</div>
   </div>
 
-  <script>
-    const modal = document.getElementById('modal');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalBody = document.getElementById('modalBody');
-    const modalClose = document.getElementById('modalClose');
+  <!-- 이벤트 -->
+  <section id="ev" class="section active">
+    <div class="kicker"><span class="pill">사실 기준</span> 배너 클릭 시 팝업.</div>
 
-    function openModal({type='sheet', title='안내', src='', html=''}) {
-      modalTitle.textContent = title;
-      modalBody.innerHTML = '';
-      if (type === 'img') {
-        const img = document.createElement('img');
-        img.alt = title;
-        img.src = src;
-        modalBody.appendChild(img);
-        const hint = document.createElement('div');
-        hint.className = 'pad muted';
-        hint.innerHTML = '상단 <span class="kbd">닫기</span> 버튼으로 닫습니다.';
-        modalBody.appendChild(hint);
-      } else {
-        const pad = document.createElement('div');
-        pad.className = 'pad';
-        pad.innerHTML = html;
-        modalBody.appendChild(pad);
-      }
-      modal.setAttribute('aria-hidden', 'false');
-      document.body.style.overflow = 'hidden';
-    }
-    function closeModal() {
-      modal.setAttribute('aria-hidden', 'true');
-      document.body.style.overflow = '';
-    }
-    modalClose.addEventListener('click', closeModal);
-    modal.addEventListener('click', (e)=>{ if(e.target===modal) closeModal(); });
-    window.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeModal(); });
+    <div class="banner">
+      <img class="clickable" data-ev="online"  src="assets/images/etx/online_order.jpeg"  alt="온라인 회원 기본 할인">
+      <img class="clickable" data-ev="telecom" src="assets/images/etx/telecom_30.jpeg"   alt="통신사 멤버십">
+      <img class="clickable" data-ev="friday"  src="assets/images/etx/friday_1plus1.jpeg" alt="파파프라이데이 1+1">
+      <img class="clickable" data-ev="papas"   src="assets/images/etx/papasday_30.jpeg"   alt="파파스데이 30%">
+      <img class="clickable" data-ev="card"    src="assets/images/etx/card.jpeg"          alt="카드사 포인트/청구">
+    </div>
 
-    document.addEventListener('click', (e)=>{
-      const btn = e.target.closest('button[data-modal]');
-      if(!btn) return;
-      const kind = btn.getAttribute('data-modal');
-      const title = btn.getAttribute('data-title') || '안내';
-      if (kind === 'img') {
-        const src = btn.getAttribute('data-src');
-        openModal({type:'img', title, src});
-      } else {
-        const content = btn.getAttribute('data-content') || '';
-        openModal({type:'sheet', title, html:content});
-      }
-    });
-  </script>
+    <!-- 크러스트 단어 클릭형 -->
+    <div class="card">
+      <div class="crust-line">
+        ✨크루아상 / 스파이시 갈릭 치즈롤 / 골드링 / 치즈롤 크러스트 변경 가능✨
+        <br>
+        <span class="chip" data-gallery-start="0">크루아상</span> :
+        김겹이 쌓인 풍미 가득 버터향. 바삭함과 부드러움을 동시에.
+        <div class="fine">💲 크러스트 변경 시 1판당 6,000원 추가 / 2판 모두 적용 시 12,000원 추가</div>
+        <br>
+        <span class="chip" data-gallery-start="1">스파이시 갈릭 치즈롤</span> :
+        풍부한 갈릭 향과 투 블랜드 치즈, 레드페퍼의 진한 풍미
+        <br>
+        <span class="chip" data-gallery-start="2">골드링</span> :
+        부드럽고 달콤한 고구마 무스와 스트링 치즈의 환상적인 만남
+        <br>
+        <span class="chip" data-gallery-start="3">치즈롤</span> :
+        짭조름한 체다치즈가 뿌려진 속 스트링 치즈의 만남
+        <div class="fine">💲 3가지 크러스트 중 변경 원할 시 1판당 4,000원 추가 / 2판 모두 적용 시 8,000원 추가</div>
+      </div>
+    </div>
+
+    <div class="center"><a class="btn btn-dark" href="bill.html">계산서에서 즉시 비교</a></div>
+  </section>
+
+  <!-- 제휴 -->
+  <section id="pt" class="section">
+    <div class="kicker"><span class="pill">중요</span> 1+1 / 파파스데이 / 제휴 중복 불가. 통신사 이미지를 누르면 팝업으로 요약 표시.</div>
+
+    <div class="grid">
+      <div class="card center">
+        <img class="logo clickable" data-pt="skt" src="assets/images/etx/btn_skt_check.jpeg" alt="SKT">
+        <div class="muted">SKT 멤버십</div>
+      </div>
+      <div class="card center">
+        <img class="logo clickable" data-pt="kt" src="assets/images/etx/btn_kt_check.jpeg" alt="KT">
+        <div class="muted">KT 멤버십</div>
+      </div>
+      <div class="card center">
+        <img class="logo clickable" data-pt="lgu" src="assets/images/etx/btn_lg_check.jpeg" alt="LGU+">
+        <div class="muted">LGU+ 멤버십</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Q&A -->
+  <section id="qa" class="section">
+    <div class="card">
+      <h3>자주 묻는 질문</h3>
+      <p><strong>파파스데이 적용</strong> · 온라인 채널에서 라지 사이즈 이상 선택 후, 사용 가능 쿠폰에서 "Papa's Day 30% 할인" 선택.</p>
+      <p><strong>중복</strong> · 1+1, 파파스데이, 제휴 중복 불가.</p>
+      <p><strong>대상</strong> · 라지 이상. 하프&하프, 레귤러 제외.</p>
+    </div>
+  </section>
+</main>
+
+<!-- 공통 모달 -->
+<div id="modal" class="modal" aria-hidden="true">
+  <div class="box">
+    <button class="close" data-close>닫기</button>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+/* 탭 */
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    t.classList.add('active');
+    document.querySelector(t.dataset.target).classList.add('active');
+  });
+});
+
+/* 모달 공통 */
+const modal=document.getElementById('modal'); const bodyEl=document.getElementById('modal-body');
+function openModal(html){ bodyEl.innerHTML=html; modal.classList.add('open'); modal.setAttribute('aria-hidden','false'); }
+function closeModal(){ modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); bodyEl.innerHTML=''; }
+document.querySelector('[data-close]')?.addEventListener('click',closeModal);
+modal.addEventListener('click',e=>{ if(e.target===modal) closeModal(); });
+
+/* 1) 배너 팝업: 귀여운 카드 스타일 */
+const eventsCopy={
+  online:`
+    <div class="coupon">
+      <div class="row"><span class="badge">온라인 회원 기본 할인</span></div>
+      <div class="row">
+        <div class="tile"><div class="big">20%</div><div>배달 할인</div><div class="fine">공식 온라인 주문</div></div>
+        <div class="tile"><div class="big">25%</div><div>신규 회원</div></div>
+        <div class="tile"><div class="big">30%</div><div>생일 회원</div></div>
+      </div>
+      <p><a href="https://pji.co.kr/w_main" target="_blank" rel="noopener" class="btn btn-dark">파파존스 공식 앱 바로가기</a></p>
+    </div>
+  `,
+  telecom:`<div class="coupon"><span class="badge">통신사 멤버십</span><p>SKT/KT/LGU+ 멤버십은 제휴 팝업에서 상세 확인.</p></div>`,
+  friday:`
+    <div class="coupon">
+      <span class="badge">파파프라이데이</span>
+      <p>"매주 금요일 방문포장, 라지사이즈 베스트피자 7종 1+1"</p>
+      <ul>
+        <li>수퍼 파파스 · L 28,500원</li>
+        <li>치킨 바베큐 · L 27,500원</li>
+        <li>더블 치즈버거 · L 29,500원</li>
+        <li>아이리쉬 포테이토 · L 27,500원</li>
+        <li>프리미엄 직화 불고기 · L 29,500원</li>
+        <li>존스 페이버릿 · L 29,500원</li>
+        <li>스파이시 치킨랜치 · L 29,500원</li>
+      </ul>
+      <p>✨크루아상 / 스파이시 갈릭 치즈롤 / 골드링 / 치즈롤 크러스트 변경 가능✨</p>
+      <p class="fine">주의사항<br>
+      1) 인기피자 7종 한정<br>
+      2) 오리지널 라지 대상. 골드링/치즈롤 변경 시 1판 4,000원(2판 8,000원) 추가<br>
+      3) 다른 혜택과 중복 불가<br>
+      4) 방문 및 온라인 포장 주문만 해당<br>
+      5) 하프&하프 불가<br>
+      6) 배달비는 별도</p>
+    </div>
+  `,
+  papas:`
+    <div class="coupon">
+      <span class="badge">파파스데이</span>
+      <p>"매달 8일, 18일, 28일 모든 피자 30% 할인"</p>
+      <p>온라인 로그인 → 라지 이상 선택 → ‘사용 가능 쿠폰’에서 "Papa's Day 30% 할인" 선택.</p>
+      <p><a href="https://pji.co.kr/w_main" target="_blank" rel="noopener" class="btn btn-dark">파파존스 공식 앱 바로가기</a></p>
+      <p class="fine">1) 라지 이상 온라인 주문 적용(매장/콜센터 제외)<br>
+      2) 타 할인과 중복 불가<br>
+      3) 하프&하프, 레귤러 제외</p>
+    </div>
+  `,
+  card:`
+    <div class="coupon">
+      <span class="badge">카드사 포인트/청구</span>
+      <div class="row">
+        <div class="tile"><strong>현대 M포인트</strong><div>최고 50% 차감</div><div class="fine">1,000 미만 사용 불가</div></div>
+        <div class="tile"><strong>신한 마이신한</strong><div>최고 100% 차감</div></div>
+        <div class="tile"><strong>삼성카드</strong><div>최고 100% 차감</div></div>
+        <div class="tile"><strong>KB국민 포인트</strong><div>최고 100% 청구</div><div class="fine">국민행복세트 중복 가능</div></div>
+      </div>
+      <p class="fine">공통: 잔여 포인트까지만 사용 가능. 세트/박스/쿠폰/제휴/인터넷 자동할인 등과 중복 불가. 온라인·콜센터·매장 사용 가능. 일부 매장 제외( Q&A 참고 ).</p>
+      <div class="tile" style="margin-top:10px"><strong>블루 멤버스</strong><div>최대 50% 차감(100p 단위)</div><div class="fine">일부 구장/리조트 등 이용 불가 매장 있음</div></div>
+    </div>
+  `
+};
+document.querySelectorAll('[data-ev]').forEach(el=>{
+  el.addEventListener('click',()=> openModal(eventsCopy[el.dataset.ev]||''));
+});
+
+/* 2) 통신사 로고 → 팝업 요약 */
+const ptCopy={
+  skt:`<div class="coupon"><span class="badge">SKT 멤버십</span>
+      <ul>
+        <li>구매금액 15% 또는 30%(VIP) 할인/적립</li>
+        <li>세트/쿠폰/제휴/인터넷 자동할인 등과 중복 불가</li>
+        <li>1일 1회 · 1일 최대 승인 20만원</li>
+        <li>사이드·음료 배달은 할인 후 18,000원 이상 시 적용</li>
+        <li>온라인/콜센터/매장 사용</li>
+        <li>일부 매장 제외 · 적립 예정 → 5일 후 전환</li>
+      </ul></div>`,
+  kt:`<div class="coupon"><span class="badge">KT 멤버십</span>
+      <ul>
+        <li>구매금액 15% 또는 30%(VIP) 할인</li>
+        <li>세트/쿠폰/제휴/인터넷 자동할인 등과 중복 불가</li>
+        <li>1일 1회 · 1일 최대 승인 20만원</li>
+        <li>사이드·음료 배달은 할인 후 18,000원 이상 시 적용</li>
+        <li>Show → KT 멤버십 변경 후 사용</li>
+        <li>온라인/콜센터/매장 사용 · 일부 매장 제외</li>
+      </ul></div>`,
+  lgu:`<div class="coupon"><span class="badge">LGU+ 멤버십</span>
+      <ul>
+        <li>포인트 15% 또는 20%(VIP) 차감 결제</li>
+        <li>세트/쿠폰/제휴/인터넷 자동할인 등과 중복 불가</li>
+        <li>1일 1회 · 포인트 부족 시 할인 불가</li>
+        <li>1일 최대 승인 20만원</li>
+        <li>사이드·음료 배달은 할인 후 18,000원 이상 시 적용</li>
+        <li>온라인/콜센터/매장 사용 · 일부 매장 제외</li>
+      </ul></div>`
+};
+document.querySelectorAll('[data-pt]').forEach(el=>{
+  el.addEventListener('click',()=> openModal(ptCopy[el.dataset.pt]||''));
+});
+
+/* 3) 크러스트 갤러리: 단어 칩 클릭 */
+const crustImgs=[
+  'assets/images/etx/crust_1.jpeg',
+  'assets/images/etx/crust_2.jpeg',
+  'assets/images/etx/crust_3.jpeg',
+  'assets/images/etx/crust_4.jpeg'
+];
+function galleryHTML(start){
+  const thumbs = crustImgs.map((src,i)=>`<img src="${src}" data-i="${i}" class="${i===start?'active':''}">`).join('');
+  return `<div class="gallery">
+    <button class="nav prev">〈</button>
+    <img id="g-main" src="${crustImgs[start]}">
+    <button class="nav next">〉</button>
+  </div><div class="thumb">${thumbs}</div>`;
+}
+function openGallery(startIndex){
+  openModal(galleryHTML(startIndex||0));
+  let idx=startIndex||0; const main=bodyEl.querySelector('#g-main');
+  const setIdx=(i)=>{ idx=(i+crustImgs.length)%crustImgs.length; main.src=crustImgs[idx];
+    bodyEl.querySelectorAll('.thumb img').forEach((t,k)=>t.classList.toggle('active',k===idx)); };
+  bodyEl.querySelector('.prev').addEventListener('click',()=>setIdx(idx-1));
+  bodyEl.querySelector('.next').addEventListener('click',()=>setIdx(idx+1));
+}
+document.querySelectorAll('[data-gallery-start]').forEach(el=>{
+  el.addEventListener('click',()=> openGallery(parseInt(el.dataset.galleryStart,10)||0));
+});
+</script>
 </body>
 </html>
+  bodyEl.querySelectorAll('.thumb img').forEach(t=> t.addEventListener('click',()=> setIdx(parseInt(t.dataset.i,10)) ));
