@@ -68,6 +68,7 @@ hr.sep{border:none;border-top:1px dashed #e5e5e5;margin:14px 0}
     <li><a href="pizza.html">🍕 피자</a></li>
     <li><a href="sides.html">🍗 사이드</a></li>
     <li><a href="drinks_sauces.html">🥤 음료 & 소스</a></li>
+    <li><a href="discounts.html">💸 제휴 할인</a></li>
     <li><a href="bill.html">🧾 계산서</a></li>
   </ul>
 </nav>
@@ -81,7 +82,6 @@ hr.sep{border:none;border-top:1px dashed #e5e5e5;margin:14px 0}
 
   <!-- 이벤트 -->
   <section id="ev" class="section active">
-    <div class="kicker"><span class="pill">사실 기준</span> 배너 클릭 시 팝업.</div>
 
     <div class="banner">
       <img class="clickable" data-ev="online"  src="assets/images/etx/online_order.jpeg"  alt="온라인 회원 기본 할인">
@@ -89,27 +89,6 @@ hr.sep{border:none;border-top:1px dashed #e5e5e5;margin:14px 0}
       <img class="clickable" data-ev="friday"  src="assets/images/etx/friday_1plus1.jpeg" alt="파파프라이데이 1+1">
       <img class="clickable" data-ev="papas"   src="assets/images/etx/papasday_30.jpeg"   alt="파파스데이 30%">
       <img class="clickable" data-ev="card"    src="assets/images/etx/card.jpeg"          alt="카드사 포인트/청구">
-    </div>
-
-    <!-- 크러스트 단어 클릭형 -->
-    <div class="card">
-      <div class="crust-line">
-        ✨크루아상 / 스파이시 갈릭 치즈롤 / 골드링 / 치즈롤 크러스트 변경 가능✨
-        <br>
-        <span class="chip" data-gallery-start="0">크루아상</span> :
-        김겹이 쌓인 풍미 가득 버터향. 바삭함과 부드러움을 동시에.
-        <div class="fine">💲 크러스트 변경 시 1판당 6,000원 추가 / 2판 모두 적용 시 12,000원 추가</div>
-        <br>
-        <span class="chip" data-gallery-start="1">스파이시 갈릭 치즈롤</span> :
-        풍부한 갈릭 향과 투 블랜드 치즈, 레드페퍼의 진한 풍미
-        <br>
-        <span class="chip" data-gallery-start="2">골드링</span> :
-        부드럽고 달콤한 고구마 무스와 스트링 치즈의 환상적인 만남
-        <br>
-        <span class="chip" data-gallery-start="3">치즈롤</span> :
-        짭조름한 체다치즈가 뿌려진 속 스트링 치즈의 만남
-        <div class="fine">💲 3가지 크러스트 중 변경 원할 시 1판당 4,000원 추가 / 2판 모두 적용 시 8,000원 추가</div>
-      </div>
     </div>
 
     <div class="center"><a class="btn btn-dark" href="bill.html">계산서에서 즉시 비교</a></div>
@@ -176,9 +155,9 @@ modal.addEventListener('click',e=>{ if(e.target===modal) closeModal(); });
 const eventsCopy={
   online:`
     <div class="coupon">
-      <div class="row"><span class="badge">온라인 회원 기본 할인</span></div>
+      <div class="row"><span class="badge">온라인 회원 기본 할인</span><div class="fine">공식 온라인 주문</div></div>
       <div class="row">
-        <div class="tile"><div class="big">20%</div><div>배달 할인</div><div class="fine">공식 온라인 주문</div></div>
+        <div class="tile"><div class="big">20%</div><div>배달 할인</div></div>
         <div class="tile"><div class="big">25%</div><div>신규 회원</div></div>
         <div class="tile"><div class="big">30%</div><div>생일 회원</div></div>
       </div>
@@ -199,7 +178,28 @@ const eventsCopy={
         <li>존스 페이버릿 · L 29,500원</li>
         <li>스파이시 치킨랜치 · L 29,500원</li>
       </ul>
-      <p>✨크루아상 / 스파이시 갈릭 치즈롤 / 골드링 / 치즈롤 크러스트 변경 가능✨</p>
+      
+      <!-- 크러스트 단어 클릭형 -->
+    <div class="card">
+      <div class="crust-line">
+        ✨크루아상 / 스파이시 갈릭 치즈롤 / 골드링 / 치즈롤 크러스트 변경 가능✨
+        <br>
+        <span class="chip" data-gallery-start="0">🥐크루아상</span> :
+        김겹이 쌓인 풍미 가득 버터향. 바삭함과 부드러움을 동시에.
+        <div class="fine">💲 크러스트 변경 시 1판당 6,000원 추가 / 2판 모두 적용 시 12,000원 추가</div>
+        <br>
+        <span class="chip" data-gallery-start="1">스파이시 갈릭 치즈롤</span> :
+        풍부한 갈릭 향과 투 블랜드 치즈, 레드페퍼의 진한 풍미
+        <br>
+        <span class="chip" data-gallery-start="2">골드링</span> :
+        부드럽고 달콤한 고구마 무스와 스트링 치즈의 환상적인 만남
+        <br>
+        <span class="chip" data-gallery-start="3">치즈롤</span> :
+        짭조름한 체다치즈가 뿌려진 속 스트링 치즈의 만남
+        <div class="fine">💲 3가지 크러스트 중 변경 원할 시 1판당 4,000원 추가 / 2판 모두 적용 시 8,000원 추가</div>
+      </div>
+      
+    </div>
       <p class="fine">주의사항<br>
       1) 인기피자 7종 한정<br>
       2) 오리지널 라지 대상. 골드링/치즈롤 변경 시 1판 4,000원(2판 8,000원) 추가<br>
