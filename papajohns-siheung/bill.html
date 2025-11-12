@@ -1,0 +1,308 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🧾 계산서 | 시흥은행점 파파존스</title>
+  <style>
+    :root {
+      --main-color: #4a6c4c;
+      --accent-color: #ffcc00;
+      --text-color: #333;
+      --white: #ffffff;
+      --danger-color: #d9534f;
+      --info-color: #46b8da;
+    }
+    *{box-sizing:border-box}
+    body{font-family:'Malgun Gothic','Arial',sans-serif;margin:0;background:#f8f8f8;color:var(--text-color)}
+    header{background:var(--main-color);color:#fff;padding:16px 0;text-align:center;box-shadow:0 4px 6px rgba(0,0,0,.08)}
+    header h1{margin:0;font-size:1.2rem;letter-spacing:1px}
+    nav{background:#fff;border-bottom:1px solid #eee;position:sticky;top:0;z-index:5}
+    nav ul{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;padding:0;margin:0;list-style:none}
+    nav a{display:block;padding:12px 14px;font-weight:700;color:var(--text-color);text-decoration:none}
+    nav a[href="bill.html"]{background:var(--accent-color)}
+    main{max-width:1200px;margin:20px auto;padding:0 16px;display:grid;grid-template-columns:2fr 1fr;gap:20px}
+    .card{background:#fff;border-radius:10px;box-shadow:0 4px 10px rgba(0,0,0,.05);padding:16px}
+    h2{margin:0 0 12px;font-size:1.2rem;color:var(--main-color)}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:10px;border-bottom:1px solid #eee;text-align:left;font-size:.95rem}
+    th{background:#fafafa}
+    .qty-wrap{display:flex;gap:6px;align-items:center}
+    .qty-btn{width:28px;height:28px;border:1px solid #ddd;background:#fff;border-radius:6px;cursor:pointer}
+    .remove-btn{border:none;background:#fff;color:#999;cursor:pointer}
+    .right{text-align:right}
+    .total{font-size:1.2rem;color:var(--danger-color);font-weight:800}
+    .muted{color:#666;font-size:.85rem}
+    .promo-pill{display:inline-block;padding:2px 8px;border-radius:999px;background:#eef7ff;color:#2563eb;font-size:.75rem;margin-left:6px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .radio-row{display:flex;align-items:center;gap:8px;margin:6px 0}
+    .best{border:2px solid #22c55e}
+    .note{background:#fff8e1;border-left:4px solid var(--accent-color);padding:10px;border-radius:6px;margin-top:8px}
+    .footer{margin-top:10px;font-size:.9rem;color:#666}
+    .btn-primary{display:inline-block;background:var(--main-color);color:#fff;padding:10px 14px;border:none;border-radius:8px;cursor:pointer;font-weight:700}
+    @media (max-width: 900px){ main{grid-template-columns:1fr} }
+  </style>
+</head>
+<body>
+  <header><h1>시흥은행점 파파존스 메뉴판</h1></header>
+  <nav>
+    <ul>
+      <li><a href="index.html">🏠 첫 화면</a></li>
+      <li><a href="pizza.html">🍕 피자</a></li>
+      <li><a href="sides.html">🍗 사이드</a></li>
+      <li><a href="drinks_sauces.html">🥤 음료 & 소스</a></li>
+      <li><a href="discounts.html">💸 제휴 할인</a></li>
+      <li><a href="bill.html">🧾 계산서</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <section class="card">
+      <h2>담은 메뉴<span id="applied-pill" class="promo-pill" style="display:none"></span></h2>
+      <table id="cart-table">
+        <thead>
+          <tr>
+            <th>메뉴</th>
+            <th>옵션</th>
+            <th class="right">단가</th>
+            <th>수량</th>
+            <th class="right">금액</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+        <tfoot>
+          <tr>
+            <td colspan="4" class="right">소계</td>
+            <td class="right" id="subtotal">0원</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td colspan="4" class="right">프로모션 할인</td>
+            <td class="right" id="promo-discount">-0원</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td colspan="4" class="right total">결제 예정 금액</td>
+            <td class="right total" id="grand-total">0원</td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+      <div class="footer">
+        <button class="btn-primary" id="clear-cart">장바구니 비우기</button>
+      </div>
+    </section>
+
+    <aside class="card best" id="promos-card">
+      <h2>프로모션 비교</h2>
+      <div class="grid">
+        <div>
+          <div class="radio-row">
+            <input type="radio" name="apply" id="apply-none" value="none" checked>
+            <label for="apply-none">적용 안 함</label>
+          </div>
+          <div class="radio-row">
+            <input type="radio" name="apply" id="apply-11" value="oneplusone">
+            <label for="apply-11">1+1 자동 적용 <span class="muted">(대상 피자 쌍 중 최저가 무료)</span></label>
+          </div>
+          <div class="radio-row">
+            <input type="radio" name="apply" id="apply-papas" value="papas">
+            <label for="apply-papas">파파스데이 30% <span class="muted">(매달 8/18/28, L 사이즈만)</span></label>
+          </div>
+          <div class="radio-row">
+            <input type="radio" name="apply" id="apply-member" value="member">
+            <label for="apply-member">제휴 멤버십 할인</label>
+          </div>
+        </div>
+        <div>
+          <div class="note">
+            <div><strong>오늘 날짜 기준:</strong> <span id="today-info"></span></div>
+            <div class="muted">중복 적용 불가. 가장 유리한 안을 선택해 결제하십시오.</div>
+          </div>
+          <div style="margin-top:10px">
+            <label for="member-rate">멤버십 할인율 선택:</label>
+            <select id="member-rate">
+              <option value="0.15">15%</option>
+              <option value="0.20">20% (LGU+ VIP)</option>
+              <option value="0.30">30% (VIP)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:14px">
+        <table>
+          <tbody>
+            <tr><td>기본 소계</td><td class="right" id="cmp-base">0원</td></tr>
+            <tr><td>1+1 적용</td><td class="right" id="cmp-11">0원</td></tr>
+            <tr><td>파파스데이 30%</td><td class="right" id="cmp-papas">0원</td></tr>
+            <tr><td>멤버십</td><td class="right" id="cmp-member">0원</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="card" style="max-width:1200px;margin:16px auto;">
+    <div>주소: 경기 시흥시 은행로 86 1층 106호 파파존스피자 · 영업시간: 매일 11:00–23:00 · 전화: 031-313-6995</div>
+  </footer>
+
+  <script>
+    // ---------- Utilities ----------
+    const fmt = n => (isNaN(n)?0:n).toLocaleString('ko-KR') + '원';
+    const KR_TZ_OFFSET = 9 * 60 * 60 * 1000;
+    function todayKST(){
+      const now = new Date();
+      return new Date(now.getTime() + (now.getTimezoneOffset()*60000) + KR_TZ_OFFSET);
+    }
+    function isPapasDay(d){
+      const day = d.getDate();
+      return day === 8 || day === 18 || day === 28;
+    }
+
+    // ---------- Cart I/O ----------
+    function loadCart(){
+      try {
+        const raw = localStorage.getItem('papaJohnsCart');
+        return raw ? JSON.parse(raw) : [];
+      } catch(e){ return []; }
+    }
+    function saveCart(cart){ localStorage.setItem('papaJohnsCart', JSON.stringify(cart)); }
+
+    // ---------- Promotion engines ----------
+    function subtotal(cart){
+      return cart.reduce((s,i)=> s + (i.unitPrice||0) * (i.quantity||1), 0);
+    }
+    function applyOnePlusOne(cart){
+      // 대상: eligibleOnePlusOne == true 인 피자 항목만. 개수 짝지어 최저가 무료 반복.
+      const others = cart.filter(i=>!i.eligibleOnePlusOne);
+      const targets = cart.filter(i=>i.eligibleOnePlusOne);
+      // 리스트로 풀기
+      const expanded = [];
+      targets.forEach(i => { for(let k=0;k<i.quantity;k++) expanded.push({...i, quantity:1}); });
+      // 가격 오름차순 정렬
+      expanded.sort((a,b)=> (a.unitPrice||0) - (b.unitPrice||0));
+      // 2개당 1개 무료
+      let discount = 0;
+      for(let idx=1; idx<=expanded.length; idx+=2){
+        if(idx < expanded.length){ // pair (idx-1, idx)
+          discount += expanded[idx-1].unitPrice || 0; // 더 싼 것 무료
+        }
+      }
+      const base = subtotal(cart);
+      return { total: base - discount, discount };
+    }
+    function applyPapasDay(cart){
+      // 조건: Large(L) 사이즈 피자만 30% 할인. 날짜는 8/18/28.
+      const d = todayKST();
+      if(!isPapasDay(d)) return { total: subtotal(cart), discount: 0, inactive:true };
+      let discount = 0;
+      cart.forEach(i => {
+        if(i.type==='pizza' && i.size==='L'){
+          discount += Math.floor((i.unitPrice||0) * (i.quantity||1) * 0.30);
+        }
+      });
+      return { total: subtotal(cart) - discount, discount };
+    }
+    function applyMember(cart, rate){
+      const base = subtotal(cart);
+      const discount = Math.floor(base * rate);
+      return { total: base - discount, discount };
+    }
+
+    // ---------- Render ----------
+    const tbody = document.querySelector('#cart-table tbody');
+    const elSubtotal = document.getElementById('subtotal');
+    const elPromo = document.getElementById('promo-discount');
+    const elGrand = document.getElementById('grand-total');
+    const cmpBase = document.getElementById('cmp-base');
+    const cmp11 = document.getElementById('cmp-11');
+    const cmpPapas = document.getElementById('cmp-papas');
+    const cmpMember = document.getElementById('cmp-member');
+    const pill = document.getElementById('applied-pill');
+
+    function render(){
+      let cart = loadCart();
+      tbody.innerHTML='';
+      cart.forEach((i,idx)=>{
+        const tr = document.createElement('tr');
+        const opts = [];
+        if(i.size) opts.push(i.size);
+        if(i.crust) opts.push(i.crust);
+        tr.innerHTML = `
+          <td>${i.name || i.menu || '메뉴'}</td>
+          <td>${opts.join(' / ') || '-'}</td>
+          <td class="right">${fmt(i.unitPrice||0)}</td>
+          <td>
+            <div class="qty-wrap">
+              <button class="qty-btn" data-idx="${idx}" data-op="-">-</button>
+              <span>${i.quantity||1}</span>
+              <button class="qty-btn" data-idx="${idx}" data-op="+">+</button>
+            </div>
+          </td>
+          <td class="right">${fmt((i.unitPrice||0)*(i.quantity||1))}</td>
+          <td><button class="remove-btn" data-idx="${idx}">삭제</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      const base = subtotal(cart);
+      // comparisons
+      const r11 = applyOnePlusOne(cart);
+      const rP = applyPapasDay(cart);
+      const rate = parseFloat(document.getElementById('member-rate').value || '0.15');
+      const rM = applyMember(cart, rate);
+
+      cmpBase.textContent = fmt(base);
+      cmp11.textContent = fmt(r11.total);
+      cmpPapas.textContent = fmt(rP.total);
+      cmpMember.textContent = fmt(rM.total);
+
+      // choose active radio
+      const chosen = document.querySelector('input[name="apply"]:checked')?.value || 'none';
+      let useTotal = base, discount = 0, label = '';
+      if(chosen==='oneplusone'){ useTotal = r11.total; discount = r11.discount; label='1+1 적용'; }
+      else if(chosen==='papas'){ useTotal = rP.total; discount = rP.discount; label='파파스데이 30%'; if(rP.inactive){ label+=' (비활성)'; } }
+      else if(chosen==='member'){ useTotal = rM.total; discount = rM.discount; label='멤버십'; }
+      else { label='적용 안 함'; }
+      elSubtotal.textContent = fmt(base);
+      elPromo.textContent = '-' + fmt(discount).replace('원','');
+      elGrand.textContent = fmt(useTotal);
+      if(chosen==='none'){ pill.style.display='none'; }
+      else { pill.style.display='inline-block'; pill.textContent=label; }
+    }
+
+    // ---------- Events ----------
+    document.getElementById('today-info').textContent = (function(){
+      const d = todayKST(); const y=d.getFullYear(), m=d.getMonth()+1, day=d.getDate();
+      return `${y}.${String(m).padStart(2,'0')}.${String(day).padStart(2,'0')} / ` + (isPapasDay(d)? '파파스데이 해당' : '일반일');
+    })();
+
+    document.addEventListener('click', (e)=>{
+      if(e.target.classList.contains('qty-btn')){
+        const idx = +e.target.dataset.idx;
+        const op = e.target.dataset.op;
+        const cart = loadCart();
+        if(!Number.isInteger(idx) || !cart[idx]) return;
+        cart[idx].quantity = Math.max(1, (cart[idx].quantity||1) + (op==='+'?1:-1));
+        saveCart(cart);
+        render();
+      }
+      if(e.target.classList.contains('remove-btn')){
+        const idx = +e.target.dataset.idx;
+        const cart = loadCart();
+        if(Number.isInteger(idx)){ cart.splice(idx,1); saveCart(cart); render(); }
+      }
+    });
+    document.getElementById('member-rate').addEventListener('change', render);
+    document.querySelectorAll('input[name="apply"]').forEach(r=> r.addEventListener('change', render));
+    document.getElementById('clear-cart').addEventListener('click', ()=>{ localStorage.removeItem('papaJohnsCart'); render(); });
+
+    window.addEventListener('storage', (e)=>{ if(e.key==='papaJohnsCart') render(); });
+
+    render();
+  </script>
+</body>
+</html>
