@@ -15,28 +15,31 @@
       overflow-x: hidden;
     }
 
-    /* ==== 전체 배경 레이어(bg-wall) ==== */
+    /* ★ index.jpeg를 전체 배경으로 사용 (index.html과 같은 폴더) */
     .bg-wall {
       position: fixed;
       inset: 0;
       width: 100%;
       height: 100%;
       background: url("index.jpeg") center/cover no-repeat;
-      opacity: 0.35;     /* 배경 투명도 */
-      z-index: -1;       /* 뒤로 보내기 */
+      opacity: 0.35;
+      z-index: -1;
     }
 
-    .page { min-height: 100vh; display: flex; flex-direction: column; }
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
-    /* 메인 hero 이미지는 필요 시 유지 */
+    /* 상단 hero도 같은 index.jpeg 사용 */
     .hero {
       position: relative;
       width: 100%;
       padding-top: 56.25%;
-      background: url("assets/images/etx/index.jpeg") center/cover no-repeat;
+      background: url("index.jpeg") center/cover no-repeat;
     }
 
-    /* 상단 버튼 세트 */
     .actions {
       display: flex;
       flex-direction: column;
@@ -44,10 +47,15 @@
       padding: 20px 16px 10px;
       align-items: center;
     }
-    .actions a { width: 100%; max-width: 360px; }
-    .actions img { width: 100%; display: block; }
+    .actions a {
+      width: 100%;
+      max-width: 360px;
+    }
+    .actions img {
+      width: 100%;
+      display: block;
+    }
 
-    /* 배너 슬라이드 */
     .banner-slider {
       margin-top: 20px;
       padding: 10px 0;
@@ -80,7 +88,6 @@
       100% { transform: translateX(-50%); }
     }
 
-    /* 팝업 */
     .overlay {
       position: fixed;
       inset: 0;
@@ -132,56 +139,55 @@
 </head>
 <body>
 
-<!-- ★ 전체 배경 레이어 -->
+<!-- 전체 배경 -->
 <div class="bg-wall"></div>
 
 <div class="page">
 
-  <!-- 첫 화면 상단 hero -->
+  <!-- 상단 메인 -->
   <div class="hero"></div>
 
-  <!-- 3개 버튼 -->
+  <!-- 버튼 3개 -->
   <div class="actions">
-    <a href="https://pji.co.kr/w_main" target="_blank">
+    <!-- 홈페이지 바로가기 -->
+    <a href="https://pji.co.kr/w_main" target="_blank" rel="noopener">
       <img src="assets/images/etx/home.jpeg" alt="홈페이지 바로가기">
     </a>
 
+    <!-- 콜센터 주문 -->
     <a href="tel:1577-8080">
       <img src="assets/images/etx/home_call.jpeg" alt="콜센터 주문">
     </a>
 
+    <!-- 시흥 은행점 주문연결 -->
     <a href="tel:031-313-6995">
-      <img src="assets/images/etx/call.jpeg" alt="시흥은행점 주문연결">
+      <img src="assets/images/etx/call.jpeg" alt="시흥 은행점 주문연결">
     </a>
   </div>
 
-  <!-- 티커 슬라이드 -->
+  <!-- 하단 배너 슬라이드 -->
   <div class="banner-slider">
     <div class="banner-track">
 
       <div class="banner-item" data-popup="friday">
-        <img src="assets/images/etx/friday_1plus1.jpeg" alt="1+1">
+        <img src="assets/images/etx/friday_1plus1.jpeg" alt="파파 프라이데이 1+1">
       </div>
-
-      <div class="banner-item" data-popup="card_pop">
-        <img src="assets/images/etx/card.jpeg" alt="카드 혜택">
+      <div class="banner-item" data-popup="card">
+        <img src="assets/images/etx/card.jpeg" alt="카드 결제 시 할인">
       </div>
-
       <div class="banner-item" data-popup="telecom">
-        <img src="assets/images/etx/telecom_30.jpeg" alt="통신사 혜택">
+        <img src="assets/images/etx/telecom_30.jpeg" alt="통신사 멤버십 할인">
       </div>
 
       <!-- 무한 루프용 복제 -->
       <div class="banner-item" data-popup="friday">
-        <img src="assets/images/etx/friday_1plus1.jpeg">
+        <img src="assets/images/etx/friday_1plus1.jpeg" alt="파파 프라이데이 1+1">
       </div>
-
       <div class="banner-item" data-popup="card">
-        <img src="assets/images/etx/card.jpeg">
+        <img src="assets/images/etx/card.jpeg" alt="카드 결제 시 할인">
       </div>
-
       <div class="banner-item" data-popup="telecom">
-        <img src="assets/images/etx/telecom_30.jpeg">
+        <img src="assets/images/etx/telecom_30.jpeg" alt="통신사 멤버십 할인">
       </div>
 
     </div>
@@ -195,16 +201,16 @@
     <button class="popup-close-btn" id="popupCloseBtn">
       <img src="assets/images/etx/close.png" alt="닫기">
     </button>
-    <img id="popupImage" class="popup-image" src="">
+    <img id="popupImage" class="popup-image" src="" alt="할인 안내">
   </div>
 </div>
 
 <script>
   const popupImages = {
-    notice: "assets/images/etx/up.jpeg",     // 첫 자동 팝업 (공지)
-    friday: "assets/images/etx/one.jpeg",
-    card: "assets/images/etx/card_pop.jpeg",
-    telecom: "assets/images/etx/phon.jpeg"
+    notice: "assets/images/etx/up.jpeg",     // 첫 자동 팝업
+    friday: "assets/images/etx/one.jpeg",    // 1+1 상세
+    card: "assets/images/etx/card_pop.jpeg", // 카드사 혜택
+    telecom: "assets/images/etx/phon.jpeg"   // 통신사 멤버십
   };
 
   const overlay = document.getElementById("popupOverlay");
@@ -212,19 +218,25 @@
   const closeBtn = document.getElementById("popupCloseBtn");
 
   function openPopup(key) {
-    popupImg.src = popupImages[key];
+    const src = popupImages[key];
+    if (!src) return;
+    popupImg.src = src;
     overlay.classList.add("show");
   }
 
-  // 홈페이지 열리면 자동으로 공지 팝업 표시
+  // 페이지 로드 시 안내 팝업 자동 오픈
   window.addEventListener("load", () => {
     openPopup("notice");
   });
 
-  closeBtn.addEventListener("click", () => overlay.classList.remove("show"));
+  closeBtn.addEventListener("click", () => {
+    overlay.classList.remove("show");
+  });
 
   overlay.addEventListener("click", (e) => {
-    if (e.target === overlay) overlay.classList.remove("show");
+    if (e.target === overlay) {
+      overlay.classList.remove("show");
+    }
   });
 
   document.querySelectorAll(".banner-item").forEach((item) => {
