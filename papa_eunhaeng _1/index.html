@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>시흥 은행점 파파존스</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+      color: #222;
+      position: relative;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* 전체 배경: index.jpeg (index.html과 같은 폴더) */
+    .bg-wall {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: url("index.jpeg") center / cover no-repeat;
+  opacity: 1; 
+  z-index: -1;
+}
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding-top: 20px;
+    }
+
+    /* 상단 버튼 3개 */
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 0 16px 10px;
+      align-items: center;
+    }
+    .actions a {
+      width: 100%;
+      max-width: 360px;
+    }
+    .actions img {
+      width: 100%;
+      display: block;
+    }
+
+    /* 하단 배너 슬라이드 */
+    .banner-wrapper {
+      margin-top: 24px;
+      padding: 0 0 24px;
+    }
+
+    .banner-slider {
+      padding: 10px 0;
+      background: #fff;
+      border-top: 1px solid #e0e0e0;
+      border-bottom: 1px solid #e0e0e0;
+      overflow: hidden;
+    }
+
+    .banner-track {
+      display: flex;
+      align-items: center;
+      animation: scrollBanners 30s linear infinite;
+    }
+
+    .banner-item {
+      flex: 0 0 auto;
+      margin: 0 12px;
+      cursor: pointer;
+    }
+    .banner-item img {
+      height: 90px;
+      display: block;
+      border-radius: 6px;
+    }
+
+    @keyframes scrollBanners {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* 팝업 오버레이 */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+    .overlay.show { display: flex; }
+
+    .popup-box {
+      position: relative;
+      max-width: 640px;
+      width: 92%;
+      max-height: 92vh;
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .popup-box img.popup-image {
+      width: 100%;
+      display: block;
+    }
+
+    .popup-close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 32px;
+      height: 32px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+    }
+    .popup-close-btn img {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    @media (min-width: 768px) {
+      .actions {
+        flex-direction: row;
+        justify-content: center;
+      }
+      .actions a {
+        max-width: 260px;
+      }
+      .banner-item img {
+        height: 110px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- 전체 배경 -->
+<div class="bg-wall"></div>
+
+<div class="page">
+
+  <!-- 버튼 3개 -->
+  <div class="actions">
+    <!-- 홈페이지 바로가기 -->
+    <a href="https://pji.co.kr/w_main" target="_blank" rel="noopener">
+      <img src="assets/images/etx/home.jpeg" alt="홈페이지 바로가기">
+    </a>
+
+    <!-- 콜센터 주문 -->
+    <a href="tel:1577-8080">
+      <img src="assets/images/etx/home_call.jpeg" alt="콜센터 주문">
+    </a>
+
+    <!-- 시흥 은행점 주문연결 -->
+    <a href="tel:031-313-6995">
+      <img src="assets/images/etx/call.jpeg" alt="시흥 은행점 주문연결">
+    </a>
+  </div>
+
+  <!-- 하단 자동 슬라이드 배너 -->
+  <div class="banner-wrapper">
+    <div class="banner-slider">
+      <div class="banner-track">
+
+        <!-- 첫 세트 -->
+        <div class="banner-item" data-popup="friday">
+          <img src="assets/images/etx/friday_1plus1.jpeg" alt="파파 프라이데이 1+1">
+        </div>
+        <div class="banner-item" data-popup="card_pop">
+          <img src="assets/images/etx/card.jpeg" alt="카드 결제 시 할인">
+        </div>
+        <div class="banner-item" data-popup="telecom">
+          <img src="assets/images/etx/telecom_30.jpeg" alt="통신사 멤버십 할인">
+        </div>
+
+        <!-- 무한 루프용 복제 세트 -->
+        <div class="banner-item" data-popup="friday">
+          <img src="assets/images/etx/friday_1plus1.jpeg" alt="파파 프라이데이 1+1">
+        </div>
+        <div class="banner-item" data-popup="card">
+          <img src="assets/images/etx/card.jpeg" alt="카드 결제 시 할인">
+        </div>
+        <div class="banner-item" data-popup="telecom">
+          <img src="assets/images/etx/telecom_30.jpeg" alt="통신사 멤버십 할인">
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- 팝업 오버레이 -->
+<div id="popupOverlay" class="overlay">
+  <div class="popup-box">
+    <button class="popup-close-btn" id="popupCloseBtn">
+      <img src="assets/images/etx/close.png" alt="닫기">
+    </button>
+    <img id="popupImage" class="popup-image" src="" alt="할인 안내">
+  </div>
+</div>
+
+<script>
+  // 팝업에 쓸 이미지 매핑
+  const popupImages = {
+    notice: "assets/images/etx/up.jpeg",     // 첫 자동 팝업
+    friday: "assets/images/etx/one.jpeg",    // 1+1 상세
+    card: "assets/images/etx/card_pop.jpeg", // 카드사 혜택
+    telecom: "assets/images/etx/phon.jpeg"   // 통신사 멤버십
+  };
+
+  const overlay  = document.getElementById("popupOverlay");
+  const popupImg = document.getElementById("popupImage");
+  const closeBtn = document.getElementById("popupCloseBtn");
+
+  function openPopup(key) {
+    const src = popupImages[key];
+    if (!src) return;
+    popupImg.src = src;
+    overlay.classList.add("show");
+  }
+
+  // 페이지 로드 시 안내 팝업 자동 오픈
+  window.addEventListener("load", () => {
+    openPopup("notice");
+  });
+
+  closeBtn.addEventListener("click", () => {
+    overlay.classList.remove("show");
+  });
+
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) {
+      overlay.classList.remove("show");
+    }
+  });
+
+  document.querySelectorAll(".banner-item").forEach((item) => {
+    item.addEventListener("click", function () {
+      const key = this.getAttribute("data-popup");
+      openPopup(key);
+    });
+  });
+</script>
+
+</body>
+</html>
