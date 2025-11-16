@@ -38,17 +38,20 @@
       position: fixed;
       left: 0;
       right: 0;
-      bottom: 210px;      /* 아이콘 줄의 세로 위치 */
+
+      /* ↓↓↓ 아이콘 줄 위치 / 높이 재조정 */
+      bottom: 140px;      /* 이전 210px -> 더 아래로 */
+      height: 80px;       /* 이전 90px -> 위쪽 텍스트 건드리지 않게 줄임 */
+
       display: flex;
       justify-content: center;
       gap: 6%;
-      z-index: 10;
-      height: 90px;       /* 클릭 영역 높이 */
+      z-index: 30;        /* 배너(20)보다 위에 놓아서 겹쳐도 아이콘이 우선 클릭됨 */
     }
     .hot-links a {
       flex: 0 0 18%;
       height: 100%;
-      /* 위치 확인용 가이드가 필요하면 주석 해제
+      /* 위치 확인용 박스가 필요하면 아래 주석 해제
       background: rgba(255,0,0,0.15);
       */
     }
@@ -63,7 +66,7 @@
     }
 
     .banner-slider {
-      padding: 8px 0;
+      padding: 6px 0; /* 살짝 낮게 */
       background: #fff;
       border-top: 1px solid #e0e0e0;
       box-shadow: 0 -4px 10px rgba(0,0,0,0.08);
@@ -78,11 +81,11 @@
 
     .banner-item {
       flex: 0 0 auto;
-      margin: 0 12px;
+      margin: 0 10px;
       cursor: pointer;
     }
     .banner-item img {
-      height: 110px;
+      height: 100px;      /* 이전 110px -> 조금 줄여서 아이콘과 간격 확보 */
       display: block;
       border-radius: 8px;
     }
@@ -143,15 +146,15 @@
 
     @media (min-width: 768px) {
       .hot-links {
-        bottom: 230px;
+        bottom: 150px;  /* 태블릿/PC에서는 약간만 위로 */
+        height: 85px;
         gap: 5%;
-        height: 100px;
       }
       .hot-links a {
         flex-basis: 14%;
       }
       .banner-item img {
-        height: 120px;
+        height: 105px;
       }
     }
   </style>
