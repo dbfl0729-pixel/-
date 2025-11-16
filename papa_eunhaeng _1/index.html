@@ -5,282 +5,198 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <style>
-/* 기본 */
-*{box-sizing:border-box;}
 body{
   margin:0;
-  padding:0;
-  background:#ffffff;
-  font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+  font-family:-apple-system,BlinkMacSystemFont,"Malgun Gothic",sans-serif;
+  background:#fff;
+  overflow-x:hidden;
 }
 
-/* -------------------------------------------------
-   1. 메인 배경(index.jpeg) + 아이콘 클릭 영역
-   - 실제 이미지 비율(3375x5177 ≒ 1 : 1.53)에 맞게 컨테이너 만들기
---------------------------------------------------*/
-.page-wrap{
-  max-width:480px;          /* QR로 보는 폰 기준 폭 */
+/* ===== 배경(index.jpeg) 영역 ===== */
+.main-wrap{
+  position:relative;
+  max-width:600px;          /* 필요하면 조정 */
   margin:0 auto;
 }
-
-.bg-wrap{
-  position:relative;
-  width:100%;
-}
-
-/* index.jpeg 전체 배경 이미지 */
-.bg-wrap img.bg-img{
+.main-wrap img.bg{
   width:100%;
   height:auto;
   display:block;
 }
 
-/* 아이콘 4개 클릭 영역 (실제 아이콘 위에 투명 박스만 올림) */
-.icon-bar{
-  position:absolute;
-  left:50%;
-  transform:translateX(-50%);
-  bottom:7%;                /* 아이콘 세로 위치 조절 (필요하면 6~9% 사이로만 살짝만 수정) */
-  width:78%;                /* 가로 폭 (아이콘 4개 전체 폭) */
-  height:13%;               /* 아이콘+텍스트가 들어가는 높이 */
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-/* 실제로 보이지 않는 클릭 박스 */
+/* ===== 아이콘 투명 클릭영역 ===== */
 .icon-hitbox{
-  flex:0 0 22%;             /* 각 아이콘 가로 폭(4개) */
-  height:100%;
+  position:absolute;
   display:block;
-  text-decoration:none;
-  /* 디버그용 배경
-  background:rgba(255,0,0,0.15);
-  */
-}
-
-/* -------------------------------------------------
-   2. 하단 슬라이드 배너 (현재 기능 유지)
---------------------------------------------------*/
-.banner-area{
-  width:100vw;              /* 화면 가로 전체 */
-  margin:1.5rem auto 2.5rem;
+  text-indent:-9999px;      /* 글자 숨김 */
   overflow:hidden;
+  z-index:5;
 }
 
-.slide-track{
-  display:flex;
-  width:300%;               /* 배너 3장 */
-  transition:transform 0.7s ease-in-out;
+/* 좌표는 %라 화면 크기 변해도 같이 움직임 */
+/* 아래 값은 대략 맞춰둔 것이고, 필요하면 top/left/width/height만 숫자 살짝씩 조정하면 돼 */
+
+/* 이벤트 보기 */
+.icon-event{
+  top:72%;
+  left:13%;
+  width:12%;
+  height:6%;
 }
 
-.slide-item{
-  width:100vw;
-  flex-shrink:0;
+/* 홈페이지 */
+.icon-home{
+  top:72%;
+  left:34%;
+  width:12%;
+  height:6%;
 }
 
-.slide-item img{
-  width:100%;
-  height:auto;
-  display:block;
+/* 콜센터 */
+.icon-call{
+  top:72%;
+  left:55%;
+  width:12%;
+  height:6%;
 }
 
-/* -------------------------------------------------
-   3. 안내 팝업 (첫 화면 up.jpeg) + 배너 팝업 공통 스타일
---------------------------------------------------*/
-.popup-backdrop{
+/* 매장 주문 */
+.icon-store{
+  top:72%;
+  left:76%;
+  width:12%;
+  height:6%;
+}
+
+/* ===== 팝업 공통 ===== */
+.popup-wrap{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,0.45);
-  display:none;             /* JS로 보이게 */
-  align-items:center;
+  background:rgba(0,0,0,0.55);
+  display:none;
   justify-content:center;
-  z-index:999;
+  align-items:center;
+  z-index:9999;
 }
-
-.popup{
+.popup-box{
   position:relative;
-  width:min(90vw,480px);    /* 화면에 꽉 차지 않게 */
-  border-radius:14px;
-  overflow:hidden;
-  background:#fff;
-  box-shadow:0 12px 30px rgba(0,0,0,0.35);
+  width:90%;
+  max-width:500px;
+}
+.popup-box img{
+  width:100%;
+  height:auto;
+  display:block;
+}
+.close-btn{
+  position:absolute;
+  top:10px;
+  right:10px;
+  width:38px;
+  height:38px;
+  z-index:20;
 }
 
-.popup-img{
+/* ===== 하단 자동 롤링 배너 ===== */
+.banner-container{
+  max-width:600px;
+  margin:20px auto 40px;
+  overflow:hidden;
+}
+.banner-track{
+  display:flex;
+  width:300%;
+  animation:slideBanner 12s linear infinite;
+}
+.banner-track img{
   width:100%;
   height:auto;
   display:block;
 }
 
-/* 닫기 버튼 (close.png 사용, 팝업 오른쪽 위) */
-.popup-close{
-  position:absolute;
-  top:6px;
-  right:6px;
-  width:32px;
-  height:32px;
-  padding:0;
-  border:none;
-  background:transparent;
-  cursor:pointer;
-}
-
-.popup-close img{
-  width:100%;
-  height:100%;
-  display:block;
-}
-
-/* -------------------------------------------------
-   4. 배너 아래 인디케이터 ●●● (기능은 그대로, 스타일만)
---------------------------------------------------*/
-.indicator-wrap{
-  margin-top:0.5rem;
-  text-align:center;
-}
-
-.indicator-dot{
-  display:inline-block;
-  width:7px;
-  height:7px;
-  margin:0 3px;
-  border-radius:50%;
-  background:#e0e0e0;
-}
-
-.indicator-dot.active{
-  background:#ffc400;
+@keyframes slideBanner{
+  0%   {transform:translateX(0);}
+  33%  {transform:translateX(-100%);}
+  66%  {transform:translateX(-200%);}
+  100% {transform:translateX(0);}
 }
 </style>
 </head>
 
 <body>
-<div class="page-wrap">
 
-  <!-- 1. 메인 배경 + 아이콘 클릭 영역 -->
-  <div class="bg-wrap">
-    <!-- 실제 전체 배경 이미지 (3375 x 5177) -->
-    <img src="index.jpeg" alt="시흥 은행점 파파존스 안내" class="bg-img">
+<!-- ===== 배경 이미지 + 아이콘 히트박스 ===== -->
+<div class="main-wrap">
+  <img src="assets/images/etx/index.jpeg" alt="시흥 은행점 파파존스" class="bg">
 
-    <!-- 아이콘 4개를 덮는 투명 클릭영역 -->
-    <div class="icon-bar">
-      <!-- 이벤트 보기 -->
-      <a class="icon-hitbox"
-         href="https://pji.co.kr/event/w_ongoingList"
-         aria-label="이벤트 보기"></a>
+  <!-- 이벤트 바로가기 -->
+  <a class="icon-hitbox icon-event"
+     href="https://pji.co.kr/event/w_ongoingList">이벤트보기</a>
 
-      <!-- 홈페이지 -->
-      <a class="icon-hitbox"
-         href="https://pji.co.kr/w_main"
-         aria-label="파파존스 홈페이지"></a>
+  <!-- 홈페이지 -->
+  <a class="icon-hitbox icon-home"
+     href="https://pji.co.kr/w_main">홈페이지</a>
 
-      <!-- 콜센터 -->
-      <a class="icon-hitbox"
-         href="tel:15778080"
-         aria-label="콜센터 전화걸기"></a>
+  <!-- 콜센터 -->
+  <a class="icon-hitbox icon-call"
+     href="tel:1577-8080">콜센터</a>
 
-      <!-- 매장 주문 -->
-      <a class="icon-hitbox"
-         href="tel:0313136995"
-         aria-label="시흥 은행점 매장 주문"></a>
-    </div>
-  </div>
+  <!-- 매장 주문 -->
+  <a class="icon-hitbox icon-store"
+     href="tel:031-313-6995">매장주문</a>
+</div>
 
-  <!-- 2. 하단 자동 슬라이드 배너 (현재 기능 유지) -->
-  <div class="banner-area">
-    <div class="slide-track" id="track">
-      <div class="slide-item"
-           onclick="openBannerPopup('assets/images/etx/friday_1plus1.jpeg')">
-        <img src="assets/images/etx/friday_1plus1.jpeg" alt="매주 금요일 1+1">
-      </div>
-      <div class="slide-item"
-           onclick="openBannerPopup('assets/images/etx/card.jpeg')">
-        <img src="assets/images/etx/card.jpeg" alt="카드 결제 할인">
-      </div>
-      <div class="slide-item"
-           onclick="openBannerPopup('assets/images/etx/telecom_30.jpeg')">
-        <img src="assets/images/etx/telecom_30.jpeg" alt="통신사 멤버십 30% 할인">
-      </div>
-    </div>
-
-    <!-- ●●● 인디케이터 -->
-    <div class="indicator-wrap">
-      <span class="indicator-dot active" id="dot0"></span>
-      <span class="indicator-dot" id="dot1"></span>
-      <span class="indicator-dot" id="dot2"></span>
-    </div>
-  </div>
-
-</div> <!-- /.page-wrap -->
-
-<!-- 3-1. 첫 화면 공지 팝업 (up.jpeg) -->
-<div class="popup-backdrop" id="noticePopup">
-  <div class="popup">
-    <button class="popup-close" onclick="closePopup('noticePopup')">
-      <img src="assets/images/etx/close.png" alt="닫기">
-    </button>
-    <img src="up.jpeg" alt="카드 결제 안내" class="popup-img">
+<!-- ===== 하단 자동 롤링 배너 ===== -->
+<div class="banner-container">
+  <div class="banner-track">
+    <img src="assets/images/etx/friday_1plus1.jpeg" alt="1+1 이벤트" onclick="openPopup('onePopup')">
+    <img src="assets/images/etx/card.jpeg" alt="카드결제 안내" onclick="openPopup('cardPopup')">
+    <img src="assets/images/etx/telecom_30.jpeg" alt="통신사 30% 할인" onclick="openPopup('phonPopup')">
   </div>
 </div>
 
-<!-- 3-2. 배너 클릭 시 크게 보는 팝업 -->
-<div class="popup-backdrop" id="bannerPopup">
-  <div class="popup">
-    <button class="popup-close" onclick="closePopup('bannerPopup')">
-      <img src="assets/images/etx/close.png" alt="닫기">
-    </button>
-    <img src="" alt="배너 상세" class="popup-img" id="bannerPopupImg">
+<!-- ===== 첫 화면 팝업(up.jpeg) ===== -->
+<div id="firstPopup" class="popup-wrap">
+  <div class="popup-box">
+    <img src="assets/images/etx/close.png" class="close-btn" onclick="closePopup('firstPopup')" alt="닫기">
+    <img src="assets/images/etx/up.jpeg" alt="첫 화면 안내">
+  </div>
+</div>
+
+<!-- ===== 개별 팝업들 ===== -->
+<div id="onePopup" class="popup-wrap">
+  <div class="popup-box">
+    <img src="assets/images/etx/close.png" class="close-btn" onclick="closePopup('onePopup')" alt="닫기">
+    <img src="assets/images/etx/one.jpeg" alt="1+1 상세 안내">
+  </div>
+</div>
+
+<div id="cardPopup" class="popup-wrap">
+  <div class="popup-box">
+    <img src="assets/images/etx/close.png" class="close-btn" onclick="closePopup('cardPopup')" alt="닫기">
+    <img src="assets/images/etx/card_pop.jpeg" alt="카드결제 상세 안내">
+  </div>
+</div>
+
+<div id="phonPopup" class="popup-wrap">
+  <div class="popup-box">
+    <img src="assets/images/etx/close.png" class="close-btn" onclick="closePopup('phonPopup')" alt="닫기">
+    <img src="assets/images/etx/phon.jpeg" alt="통신사 30% 상세 안내">
   </div>
 </div>
 
 <script>
-/* -------------------------------
-   1. 배너 자동 슬라이드 (기능 유지)
---------------------------------*/
-let index = 0;
-const track = document.getElementById("track");
-const dots  = [
-  document.getElementById("dot0"),
-  document.getElementById("dot1"),
-  document.getElementById("dot2")
-];
-
-function updateSlide() {
-  track.style.transform = `translateX(-${index * 100}vw)`;
-  dots.forEach((d, i) => {
-    d.classList.toggle("active", i === index);
-  });
+function openPopup(id){
+  document.getElementById(id).style.display = "flex";
 }
-
-setInterval(() => {
-  index = (index + 1) % 3;
-  updateSlide();
-}, 3500);
-
-/* -------------------------------
-   2. 첫 화면 공지 팝업 (up.jpeg)
---------------------------------*/
-function openNoticePopup() {
-  document.getElementById("noticePopup").style.display = "flex";
-}
-
-function closePopup(id) {
+function closePopup(id){
   document.getElementById(id).style.display = "none";
 }
 
-/* 페이지 로드 시 1번만 공지 팝업 띄우기 */
-window.addEventListener("load", openNoticePopup);
-
-/* -------------------------------
-   3. 배너 클릭 팝업
---------------------------------*/
-function openBannerPopup(src) {
-  const popup = document.getElementById("bannerPopup");
-  const img   = document.getElementById("bannerPopupImg");
-  img.src = src;
-  popup.style.display = "flex";
-}
+/* 첫 화면 들어오자마자 up.jpeg 팝업 띄우기 */
+window.onload = function(){
+  document.getElementById("firstPopup").style.display = "flex";
+};
 </script>
 
 </body>
