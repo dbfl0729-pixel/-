@@ -1,197 +1,185 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>시흥 은행점 파파존스</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
       font-family: 'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
-      color: #222;
-      position: relative;
-      min-height: 100vh;
-      overflow-x: hidden;
+      background:#ffffff;
+      color:#222;
     }
 
-    /* 전체 배경: index.jpeg */
-    .bg-wall {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      background: url("index.jpeg") top center / cover no-repeat;
-      opacity: 1;
-      z-index: -1;
+    /* ====== 전체 배경: index.jpeg 한 장 ====== */
+    .bg-wrap{
+      position:relative;
+      max-width:430px;          /* 모바일 기준 폭 */
+      margin:0 auto;
+    }
+    .bg-wrap img.bg-base{
+      width:100%;
+      height:auto;
+      display:block;
     }
 
-    .page {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
+    /* ====== 배경 속 아이콘 클릭 영역 ====== */
+    .icon-hot-links{
+      position:absolute;
+      left:0;
+      right:0;
+      /* 아이콘 줄이 있는 세로 위치 (이미지 높이 기준 %) */
+      top:78%;                 /* 필요하면 76~80% 사이로 미세조정 */
+
+      height:10%;              /* 아이콘 높이 대략 */
+      display:flex;
+      justify-content:center;
+      align-items:flex-start;
+      gap:6%;
+      pointer-events:none;     /* 전체에선 막고, a에서만 허용 */
     }
-
-    /* 아이콘(이벤트/홈/콜센터/매장주문) 클릭 영역 */
-    .hot-links {
-      position: fixed;
-      left: 0;
-      right: 0;
-
-      /* ↓↓↓ 아이콘 줄 위치 / 높이 재조정 */
-      bottom: 140px;      /* 이전 210px -> 더 아래로 */
-      height: 80px;       /* 이전 90px -> 위쪽 텍스트 건드리지 않게 줄임 */
-
-      display: flex;
-      justify-content: center;
-      gap: 6%;
-      z-index: 30;        /* 배너(20)보다 위에 놓아서 겹쳐도 아이콘이 우선 클릭됨 */
-    }
-    .hot-links a {
-      flex: 0 0 18%;
-      height: 100%;
-      /* 위치 확인용 박스가 필요하면 아래 주석 해제
-      background: rgba(255,0,0,0.15);
+    .icon-hot-links a{
+      flex:0 0 18%;
+      height:100%;
+      pointer-events:auto;
+      /* 디버그용: 클릭 영역 확인하고 싶을 때만 사용
+      background:rgba(255,0,0,0.15);
       */
     }
 
-    /* 하단 배너 */
-    .banner-wrapper {
-      width: 100%;
-      position: fixed;
-      left: 0;
-      bottom: 0;
-      z-index: 20;
+    /* ====== 하단 배너 영역 (아이콘 아래, 겹치지 않음) ====== */
+    .banner-wrapper{
+      max-width:430px;
+      margin:12px auto 24px;
+      overflow:hidden;
+      border-radius:10px;
+      box-shadow:0 -2px 8px rgba(0,0,0,0.08);
+      background:#fff;
     }
 
-    .banner-slider {
-      padding: 6px 0; /* 살짝 낮게 */
-      background: #fff;
-      border-top: 1px solid #e0e0e0;
-      box-shadow: 0 -4px 10px rgba(0,0,0,0.08);
-      overflow: hidden;
+    .banner-slider{
+      overflow:hidden;
+      background:#fff;
     }
 
-    .banner-track {
-      display: flex;
-      align-items: center;
-      animation: scrollBanners 28s linear infinite;
+    .banner-track{
+      display:flex;
+      align-items:center;
+      animation:scrollBanners 28s linear infinite;
     }
 
-    .banner-item {
-      flex: 0 0 auto;
-      margin: 0 10px;
-      cursor: pointer;
+    .banner-item{
+      flex:0 0 auto;
+      margin:0 10px;
+      cursor:pointer;
     }
-    .banner-item img {
-      height: 100px;      /* 이전 110px -> 조금 줄여서 아이콘과 간격 확보 */
-      display: block;
-      border-radius: 8px;
-    }
-
-    @keyframes scrollBanners {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
+    .banner-item img{
+      height:100px;
+      display:block;
+      border-radius:8px;
     }
 
-    /* 팝업 오버레이 */
-    .overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.55);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 999;
-    }
-    .overlay.show { display: flex; }
-
-    .popup-box {
-      position: relative;
-      max-width: 640px;
-      width: 92%;
-      max-height: 92vh;
-      background: #fff;
-      border-radius: 12px;
-      overflow: hidden;
+    @keyframes scrollBanners{
+      0%{ transform:translateX(0); }
+      100%{ transform:translateX(-50%); }
     }
 
-    .popup-box img.popup-image {
-      width: 100%;
-      display: block;
+    /* ====== 공통 팝업 오버레이 ====== */
+    .overlay{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.55);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:999;
+    }
+    .overlay.show{ display:flex; }
+
+    .popup-box{
+      position:relative;
+      max-width:640px;
+      width:92%;
+      max-height:92vh;
+      background:#fff;
+      border-radius:12px;
+      overflow:hidden;
+    }
+    .popup-image{
+      width:100%;
+      display:block;
     }
 
-    /* 닫기 버튼: 크게, 정사각형 */
-    .popup-close-btn {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      width: 48px;
-      height: 48px;
-      background: rgba(255,255,255,0.95);
-      border-radius: 10px;
-      border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 0 6px rgba(0,0,0,0.2);
+    /* 닫기 버튼 크게, 정사각형 */
+    .popup-close-btn{
+      position:absolute;
+      top:12px;
+      right:12px;
+      width:48px;
+      height:48px;
+      background:rgba(255,255,255,0.95);
+      border:none;
+      border-radius:10px;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:0 0 6px rgba(0,0,0,0.25);
     }
-    .popup-close-btn img {
-      width: 70%;
-      height: 70%;
-      display: block;
+    .popup-close-btn img{
+      width:70%;
+      height:70%;
+      display:block;
     }
 
-    @media (min-width: 768px) {
-      .hot-links {
-        bottom: 150px;  /* 태블릿/PC에서는 약간만 위로 */
-        height: 85px;
-        gap: 5%;
+    @media (min-width:768px){
+      .bg-wrap{
+        max-width:480px;
       }
-      .hot-links a {
-        flex-basis: 14%;
+      .banner-wrapper{
+        max-width:480px;
       }
-      .banner-item img {
-        height: 105px;
+      .banner-item img{
+        height:110px;
       }
     }
   </style>
 </head>
 <body>
 
-<!-- 전체 배경 -->
-<div class="bg-wall"></div>
+  <!-- 캡처 전체 화면을 그대로 쓰는 영역 -->
+  <div class="bg-wrap">
+    <img src="index.jpeg" alt="시흥 은행점 파파존스 안내" class="bg-base" />
 
-<div class="page">
+    <!-- 배경 속 아이콘(이벤트/홈/콜센터/매장주문)의 클릭 영역 -->
+    <div class="icon-hot-links">
+      <!-- 이벤트 보기 -->
+      <a href="https://pji.co.kr/event/w_ongoingList"
+         target="_blank"
+         aria-label="이벤트 보기"></a>
 
-  <!-- 배경 위 아이콘 클릭 영역 -->
-  <div class="hot-links">
-    <!-- 이벤트 보기 -->
-    <a href="https://pji.co.kr/event/w_ongoingList"
-       target="_blank"
-       aria-label="이벤트 보기"></a>
+      <!-- 홈페이지 -->
+      <a href="https://pji.co.kr/w_main"
+         target="_blank"
+         aria-label="홈페이지"></a>
 
-    <!-- 홈페이지 -->
-    <a href="https://pji.co.kr/w_main"
-       target="_blank"
-       aria-label="홈페이지"></a>
+      <!-- 콜센터 -->
+      <a href="tel:1577-8080"
+         aria-label="콜센터"></a>
 
-    <!-- 콜센터 -->
-    <a href="tel:1577-8080"
-       aria-label="콜센터"></a>
-
-    <!-- 매장 주문 -->
-    <a href="tel:031-313-6995"
-       aria-label="매장 주문"></a>
+      <!-- 매장 주문 -->
+      <a href="tel:031-313-6995"
+         aria-label="매장 주문"></a>
+    </div>
   </div>
 
-  <!-- 하단 자동 배너 -->
+  <!-- 하단 배너 (아이콘과 겹치지 않도록 bg-wrap 바깥에 위치) -->
   <div class="banner-wrapper">
     <div class="banner-slider">
       <div class="banner-track">
-
         <!-- 1세트 -->
         <div class="banner-item" data-popup="friday">
           <img src="assets/images/etx/friday_1plus1.jpeg" alt="파파 프라이데이 1+1">
@@ -203,7 +191,7 @@
           <img src="assets/images/etx/telecom_30.jpeg" alt="통신사 멤버십 할인">
         </div>
 
-        <!-- 무한 루프용 2세트 -->
+        <!-- 무한루프용 복사 -->
         <div class="banner-item" data-popup="friday">
           <img src="assets/images/etx/friday_1plus1.jpeg" alt="파파 프라이데이 1+1">
         </div>
@@ -213,66 +201,62 @@
         <div class="banner-item" data-popup="telecom">
           <img src="assets/images/etx/telecom_30.jpeg" alt="통신사 멤버십 할인">
         </div>
-
       </div>
     </div>
   </div>
 
-</div>
-
-<!-- 팝업 오버레이 -->
-<div id="popupOverlay" class="overlay">
-  <div class="popup-box">
-    <button class="popup-close-btn" id="popupCloseBtn">
-      <img src="assets/images/etx/close.png" alt="닫기">
-    </button>
-    <img id="popupImage" class="popup-image" src="" alt="할인 안내">
+  <!-- 공통 팝업 -->
+  <div id="popupOverlay" class="overlay">
+    <div class="popup-box">
+      <button id="popupCloseBtn" class="popup-close-btn">
+        <img src="assets/images/etx/close.png" alt="닫기">
+      </button>
+      <img id="popupImage" class="popup-image" src="" alt="팝업 안내">
+    </div>
   </div>
-</div>
 
-<script>
-  // 가로 배너 → 팝업 이미지 매핑 (실제 파일명 기준)
-  const popupImages = {
-    notice:  "assets/images/etx/up.jpeg",        // 첫 안내 팝업
-    friday:  "assets/images/etx/one.jpg",        // 1+1 팝업
-    card:    "assets/images/etx/card_pop.jpeg",  // 카드사 팝업
-    telecom: "assets/images/etx/phon.jpeg"       // 통신사 팝업
-  };
+  <script>
+    // 배너 → 팝업 이미지 매핑
+    const popupImages = {
+      notice:  "assets/images/etx/up.jpeg",        // 최초 안내 팝업
+      friday:  "assets/images/etx/one.jpg",        // 1+1 팝업
+      card:    "assets/images/etx/card_pop.jpeg",  // 카드사 팝업
+      telecom: "assets/images/etx/phon.jpeg"       // 통신사 팝업
+    };
 
-  const overlay  = document.getElementById("popupOverlay");
-  const popupImg = document.getElementById("popupImage");
-  const closeBtn = document.getElementById("popupCloseBtn");
+    const overlay  = document.getElementById('popupOverlay');
+    const popupImg = document.getElementById('popupImage');
+    const closeBtn = document.getElementById('popupCloseBtn');
 
-  function openPopup(key) {
-    const src = popupImages[key];
-    if (!src) return;
-    popupImg.src = src;
-    overlay.classList.add("show");
-  }
-
-  // 페이지 로드 시 안내 팝업 자동 표시
-  window.addEventListener("load", () => {
-    openPopup("notice");
-  });
-
-  closeBtn.addEventListener("click", () => {
-    overlay.classList.remove("show");
-  });
-
-  overlay.addEventListener("click", (e) => {
-    if (e.target === overlay) {
-      overlay.classList.remove("show");
+    function openPopup(key){
+      const src = popupImages[key];
+      if(!src) return;
+      popupImg.src = src;
+      overlay.classList.add('show');
     }
-  });
 
-  // 하단 배너 클릭 시 팝업
-  document.querySelectorAll(".banner-item").forEach((item) => {
-    item.addEventListener("click", function () {
-      const key = this.getAttribute("data-popup");
-      openPopup(key);
+    // 페이지 처음 열릴 때 안내 팝업
+    window.addEventListener('load', () => {
+      openPopup('notice');
     });
-  });
-</script>
 
+    closeBtn.addEventListener('click', () => {
+      overlay.classList.remove('show');
+    });
+
+    overlay.addEventListener('click', (e) => {
+      if(e.target === overlay){
+        overlay.classList.remove('show');
+      }
+    });
+
+    // 하단 배너 클릭 시 팝업
+    document.querySelectorAll('.banner-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const key = item.getAttribute('data-popup');
+        openPopup(key);
+      });
+    });
+  </script>
 </body>
 </html>
