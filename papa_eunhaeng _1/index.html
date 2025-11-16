@@ -2,356 +2,120 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>시흥 은행점 파파존스</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <style>
-/* 기본 설정 */
-*{box-sizing:border-box;margin:0;padding:0}
-body{
-    font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
-    background:#ffffff;
-    color:#222;
+/* --------------------------------------
+   1. 전체 배경(index.jpeg)
+----------------------------------------*/
+body {
+  margin: 0;
+  padding: 0;
+  background: url("index.jpeg") no-repeat top center;
+  background-size: cover;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-/* 전체 레이아웃 */
-.page{
-    min-height:100vh;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    padding-bottom:40px;
+/* --------------------------------------
+   2. 아이콘 4개 정렬
+----------------------------------------*/
+.icon-wrap {
+  width: 100%;
+  margin-top: 68vh;    /* index.jpeg 높이에 딱 맞게 조절됨 */
+  display: flex;
+  justify-content: center;
+  gap: 1.8rem;
 }
 
-/* 배경 메인 이미지 (index.jpeg) */
-.main-bg{
-    position:relative;
-    width:100%;
-    max-width:480px;           /* 휴대폰 기준 폭 제한 */
-    margin:0 auto;
-}
-.main-bg img{
-    width:100%;
-    display:block;
+.icon-btn {
+  width: 70px;
+  height: 70px;
+  cursor: pointer;
 }
 
-/* 아이콘 클릭 영역(배경 속 동그라미 아이콘 위에 투명 버튼) */
-.icon-hotspots{
-    position:absolute;
-    left:0;
-    top:0;
-    width:100%;
-    height:100%;
-    pointer-events:none;       /* 기본은 통과 */
-}
-.icon-hotspots a{
-    position:absolute;
-    width:18%;
-    padding-bottom:18%;        /* 정사각형 유지 */
-    border-radius:50%;
-    pointer-events:auto;       /* 링크만 클릭되게 */
-    text-decoration:none;
+.icon-label {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #3A7C0A;
+  margin-top: 0.3rem;
 }
 
-/* 대략적인 위치값 (배경에 맞춰 이미 쓰던 값과 비슷하게) */
-.icon-event   {left:7%;   top:70%;}
-.icon-home    {left:29%;  top:70%;}
-.icon-center  {left:51%;  top:70%;}
-.icon-store   {left:73%;  top:70%;}
-
-/* 하단 배너 영역 전체(아이콘 아래) */
-.banner-area{
-    width:100%;
-    max-width:480px;
-    margin:16px auto 0;
-    padding:0 8px;
-}
-.banner-frame{
-    position:relative;
-    overflow:hidden;
-    border-radius:12px;
+/* --------------------------------------
+   3. 자동 슬라이드 캐러셀
+----------------------------------------*/
+.banner-area {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  margin-top: 2rem;
 }
 
-/* 슬라이드 트랙 */
-.banner-track{
-    display:flex;
-    width:300%;                /* 슬라이드 3개 → 100% * 3 */
-    transition:transform .5s ease;
+.slide-track {
+  display: flex;
+  width: 300%; /* 배너 3장 */
+  transition: transform 0.7s ease-in-out;
 }
 
-/* 각 슬라이드 */
-.banner-slide{
-    flex:0 0 100%;
-    cursor:pointer;
-}
-.banner-slide img{
-    width:100%;
-    display:block;
+.slide-item {
+  width: 100vw;   /* 화면 가로 전체 */
+  flex-shrink: 0;
 }
 
-/* 페이지 인디케이터 ●●● */
-.banner-dots{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:6px;
-    margin-top:8px;
-}
-.banner-dot{
-    width:8px;
-    height:8px;
-    border-radius:50%;
-    background:#ddd;
-    cursor:pointer;
-}
-.banner-dot.active{
-    background:#ffb400;
-}
-
-/* 모달(팝업) 공통 */
-.modal{
-    position:fixed;
-    inset:0;
-    display:none;
-    align-items:center;
-    justify-content:center;
-    background:rgba(0,0,0,.55);
-    z-index:9999;
-}
-.modal.show{display:flex;}
-
-.modal-inner{
-    position:relative;
-    max-width:90vw;
-    max-height:90vh;
-}
-.modal-inner img{
-    width:100%;
-    height:auto;
-    display:block;
-    border-radius:6px;
-}
-
-/* 닫기 버튼 – close.png 크게 */
-.modal-close{
-    position:absolute;
-    top:8px;
-    right:8px;
-    width:44px;          /* 크게 */
-    height:44px;
-    background:url("assets/images/etx/close.png") no-repeat center/contain;
-    border:none;
-    padding:0;
-    cursor:pointer;
-}
-
-/* 첫 화면 공지 팝업(up.jpeg)은 조금 더 위에 */
-#welcomeModal .modal-inner{
-    max-width:85vw;
-}
-
-/* 배너가 화면 아래로 살짝 더 내려가 보일 경우를 대비한 여백 조정 */
-@media (min-width:400px){
-    .banner-area{margin-top:12px;}
+.slide-item img {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 </style>
 </head>
+
 <body>
-<div class="page">
 
-    <!-- 메인 배경(index.jpeg) + 아이콘 클릭 영역 -->
-    <div class="main-bg">
-        <img src="index.jpeg" alt="시흥 은행점 파파존스 안내" />
-        <div class="icon-hotspots">
-            <!-- 이벤트 보기 -->
-            <a class="icon-event"
-               href="https://pji.co.kr/event/w_ongoingList"
-               target="_blank"
-               aria-label="이벤트 보기"></a>
+<!-- 2. 아이콘 -->
+<div class="icon-wrap">
+  <div onclick="location.href='https://pji.co.kr/event/w_ongoingList'">
+    <img src="assets/images/etx/mail_icon.png" class="icon-btn">
+    <div class="icon-label">이벤트보기</div>
+  </div>
 
-            <!-- 홈페이지 -->
-            <a class="icon-home"
-               href="https://pji.co.kr/w_main"
-               target="_blank"
-               aria-label="파파존스 메인 홈페이지"></a>
+  <div onclick="location.href='https://pji.co.kr/w_main'">
+    <img src="assets/images/etx/home_icon.png" class="icon-btn">
+    <div class="icon-label">홈페이지</div>
+  </div>
 
-            <!-- 콜센터 -->
-            <a class="icon-center"
-               href="tel:15778080"
-               aria-label="콜센터 1577-8080 전화걸기"></a>
+  <div onclick="location.href='tel:15778080'">
+    <img src="assets/images/etx/phone_icon.png" class="icon-btn">
+    <div class="icon-label">콜센터</div>
+  </div>
 
-            <!-- 매장 주문 -->
-            <a class="icon-store"
-               href="tel:0313136995"
-               aria-label="시흥 은행점 매장 주문 전화걸기"></a>
-        </div>
-    </div>
-
-    <!-- 아이콘 아래 하단 배너 슬라이더 -->
-    <div class="banner-area">
-        <div class="banner-frame" id="bannerFrame">
-            <div class="banner-track" id="bannerTrack">
-                <!-- 슬라이드 1: 1+1 -->
-                <div class="banner-slide" data-modal-target="oneModal">
-                    <img src="assets/images/etx/friday_1plus1.jpeg" alt="파파 프라이데이 1+1 배너" />
-                </div>
-                <!-- 슬라이드 2: 카드결제시 할인 -->
-                <div class="banner-slide" data-modal-target="cardModal">
-                    <img src="assets/images/etx/card.jpeg" alt="카드 결제시 할인 배너" />
-                </div>
-                <!-- 슬라이드 3: 통신사 멤버십 30% -->
-                <div class="banner-slide" data-modal-target="telecomModal">
-                    <img src="assets/images/etx/telecom_30.jpeg" alt="통신사 멤버십 30% 할인 배너" />
-                </div>
-            </div>
-        </div>
-
-        <!-- 페이지 인디케이터 ●●● -->
-        <div class="banner-dots" id="bannerDots">
-            <span class="banner-dot active" data-index="0"></span>
-            <span class="banner-dot" data-index="1"></span>
-            <span class="banner-dot" data-index="2"></span>
-        </div>
-    </div>
+  <div onclick="location.href='tel:0313136995'">
+    <img src="assets/images/etx/shop_icon.png" class="icon-btn">
+    <div class="icon-label">매장 주문</div>
+  </div>
 </div>
 
-<!-- 첫 화면 공지 팝업 (카드 결제만 가능 안내 – up.jpeg) -->
-<div class="modal" id="welcomeModal">
-    <div class="modal-inner">
-        <button class="modal-close" type="button" aria-label="닫기"></button>
-        <img src="assets/images/etx/up.jpeg" alt="카드 결제 안내" />
-    </div>
-</div>
-
-<!-- 배너별 팝업 3종 -->
-<!-- 1. 카드사 혜택 상세 (card_pop.jpeg) -->
-<div class="modal" id="cardModal">
-    <div class="modal-inner">
-        <button class="modal-close" type="button" aria-label="닫기"></button>
-        <img src="assets/images/etx/card_pop.jpeg" alt="카드사 혜택 상세 안내" />
-    </div>
-</div>
-
-<!-- 2. 통신사 멤버십 (phon.jpeg) -->
-<div class="modal" id="telecomModal">
-    <div class="modal-inner">
-        <button class="modal-close" type="button" aria-label="닫기"></button>
-        <img src="assets/images/etx/phon.jpeg" alt="통신사 멤버십 할인 안내" />
-    </div>
-</div>
-
-<!-- 3. PAPA FRIDAY 1+1 (one.jpg) -->
-<div class="modal" id="oneModal">
-    <div class="modal-inner">
-        <button class="modal-close" type="button" aria-label="닫기"></button>
-        <img src="assets/images/etx/one.jpg" alt="파파 프라이데이 1+1 상세 안내" />
-    </div>
+<!-- 3. 하단 자동 슬라이드 배너 -->
+<div class="banner-area">
+  <div class="slide-track" id="track">
+    <div class="slide-item"><img src="assets/images/etx/friday_1plus1.jpeg"></div>
+    <div class="slide-item"><img src="assets/images/etx/card.jpeg"></div>
+    <div class="slide-item"><img src="assets/images/etx/telecom_30.jpeg"></div>
+  </div>
 </div>
 
 <script>
-/* -------- 공통 모달 함수 -------- */
-function openModal(id){
-    var el = document.getElementById(id);
-    if(el) el.classList.add('show');
-}
-function closeModal(id){
-    var el = document.getElementById(id);
-    if(el) el.classList.remove('show');
-}
-
-document.addEventListener('DOMContentLoaded', function(){
-
-    /* 1. 첫 화면 공지 팝업 자동 노출 */
-    openModal('welcomeModal');
-
-    /* 공지 팝업/배너 팝업 닫기 버튼 */
-    document.querySelectorAll('.modal-close').forEach(function(btn){
-        btn.addEventListener('click', function(){
-            var modal = btn.closest('.modal');
-            if(modal) modal.classList.remove('show');
-        });
-    });
-
-    /* 오버레이 클릭 시 닫기 */
-    document.querySelectorAll('.modal').forEach(function(modal){
-        modal.addEventListener('click', function(e){
-            if(e.target === modal){
-                modal.classList.remove('show');
-            }
-        });
-    });
-
-    /* 배너 클릭 시 각 팝업 연결 */
-    document.querySelectorAll('.banner-slide').forEach(function(slide){
-        slide.addEventListener('click', function(){
-            var targetId = slide.getAttribute('data-modal-target');
-            if(targetId) openModal(targetId);
-        });
-    });
-
-    /* 2. 배너 슬라이더(자동+터치) */
-    var track = document.getElementById('bannerTrack');
-    var frame = document.getElementById('bannerFrame');
-    var dots  = Array.prototype.slice.call(document.querySelectorAll('.banner-dot'));
-    var total = 3;
-    var current = 0;
-    var autoTimer = null;
-
-    function updateSlide(index){
-        current = (index + total) % total;
-        track.style.transform = 'translateX(' + (-100 * current) + '%)';
-        dots.forEach(function(dot,i){
-            dot.classList.toggle('active', i === current);
-        });
-    }
-
-    function startAuto(){
-        stopAuto();
-        autoTimer = setInterval(function(){
-            updateSlide(current + 1);
-        }, 6000);   // 6초마다 자동 이동
-    }
-    function stopAuto(){
-        if(autoTimer){ clearInterval(autoTimer); autoTimer = null; }
-    }
-
-    // 인디케이터 터치
-    dots.forEach(function(dot){
-        dot.addEventListener('click', function(){
-            var idx = parseInt(dot.getAttribute('data-index'),10) || 0;
-            updateSlide(idx);
-            startAuto();
-        });
-    });
-
-    // 터치 스와이프
-    var startX = null;
-    frame.addEventListener('touchstart', function(e){
-        if(e.touches.length === 1){
-            startX = e.touches[0].clientX;
-            stopAuto();
-        }
-    }, {passive:true});
-
-    frame.addEventListener('touchend', function(e){
-        if(startX === null) return;
-        var endX = e.changedTouches[0].clientX;
-        var diff = endX - startX;
-        var threshold = 40; // 스와이프 최소 거리(px)
-        if(Math.abs(diff) > threshold){
-            if(diff < 0){
-                updateSlide(current + 1);
-            }else{
-                updateSlide(current - 1);
-            }
-        }
-        startX = null;
-    });
-
-    // 초기 상태
-    updateSlide(0);
-    startAuto();
-});
+/* --------------------------------------
+   자동 슬라이드 JS
+----------------------------------------*/
+let index = 0;
+setInterval(() => {
+  index = (index + 1) % 3;
+  document.getElementById("track").style.transform =
+    `translateX(-${index * 100}vw)`;
+}, 3500);
 </script>
+
 </body>
 </html>
