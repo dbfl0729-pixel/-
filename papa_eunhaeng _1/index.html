@@ -5,31 +5,27 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <style>
-html, body{
+body{
   margin:0;
   padding:0;
-  height:100%;
-  overflow:hidden; /* 세로 스크롤 없음 */
+  overflow-x:hidden;
   font-family:'Malgun Gothic','Apple SD Gothic Neo',-apple-system,sans-serif;
   background:#ffffff;
 }
 
-/* ===== 메인(index.jpeg 한 화면 꽉) ===== */
+/* ===== 메인 이미지(index.jpeg) ===== */
 .main-wrap{
   position:relative;
-  width:100%;
   max-width:600px;
-  height:100vh;      /* 현재 보이는 화면 기준 */
   margin:0 auto;
 }
 .main-wrap img.main-bg{
   width:100%;
-  height:100%;
-  object-fit:cover;  /* 첫 스샷처럼 꽉 채우기 */
+  height:auto;
   display:block;
 }
 
-/* ===== 아이콘 히트박스 (위치는 지금 딱 좋다고 한 위치) ===== */
+/* ===== 아이콘 히트박스 ===== */
 .icon-hitbox{
   position:absolute;
   display:block;
@@ -38,10 +34,11 @@ html, body{
   z-index:10;
 }
 
-.icon-event{ top:70%; left:14%; width:13%; height:8%; }
-.icon-home { top:70%; left:35%; width:13%; height:8%; }
-.icon-call { top:70%; left:56%; width:13%; height:8%; }
-.icon-store{ top:70%; left:77%; width:13%; height:8%; }
+/* 아이콘 위치 – index.jpeg 비율 기준 (지금 위치가 딱 좋다고 한 값) */
+.icon-event{ top:73%; left:14%; width:13%; height:8%; }
+.icon-home { top:73%; left:35%; width:13%; height:8%; }
+.icon-call { top:73%; left:56%; width:13%; height:8%; }
+.icon-store{ top:73%; left:77%; width:13%; height:8%; }
 
 /* ===== 배너 슬라이드 (자동 X, 손가락 슬라이드 O) ===== */
 .banner-box{
