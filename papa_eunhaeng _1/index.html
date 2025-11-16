@@ -6,269 +6,343 @@
 <title>시흥 은행점 파파존스</title>
 
 <style>
-/* 기본 */
-* {
-    box-sizing: border-box;
-}
-html, body {
-    margin: 0;
-    padding: 0;
-    background: #f4f4f4;
-    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
-                 "Malgun Gothic", sans-serif;
+/* --------------------------------------
+   0. 기본 설정
+----------------------------------------*/
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 0;
+  background: url("index.jpeg") no-repeat top center;
+  background-size: cover;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
+    "Malgun Gothic", sans-serif;
 }
 
-/* 전체 페이지 = 배경 스크린샷 한 장 */
-.page-wrap {
-    position: relative;
-    max-width: 430px;         /* QR로 여는 폰 기준 폭 */
-    margin: 0 auto;
-}
-.page-bg {
-    width: 100%;
-    height: auto;
-    display: block;
-}
-
-/* 공통: 배경 위 클릭 핫스팟 */
-.hotspot {
-    position: absolute;
-    display: block;
-    /* 터치 실수 줄이려고 투명 배경을 약간 줘도 됨 (지금은 완전 투명) */
+/* --------------------------------------
+   1. 아이콘 영역 (배경 속 동그라미 위에 클릭영역 올리기)
+----------------------------------------*/
+.icon-wrap {
+  width: 100%;
+  margin-top: 68vh;          /* 필요하면 숫자만 살짝 조절해서 위치 맞추면 됨 */
+  display: flex;
+  justify-content: center;
+  gap: 2.2rem;
 }
 
-/* 아래 4개 아이콘(이벤트/홈/콜/매장) 클릭 영역
-   - index.jpeg (864×1536) 기준 대략 비율로 맞춤
-   - top 70%, height 12%: 아이콘 + 글씨 전체를 넉넉하게 덮도록 */
-.icon-area {
-    top: 70%;
-    height: 12%;
+.icon-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
 }
 
-/* 이벤트보기 (왼쪽 아이콘) */
-.icon-event {
-    left: 6%;
-    width: 18%;
-}
-/* 홈페이지 */
-.icon-home {
-    left: 29%;
-    width: 18%;
-}
-/* 콜센터 */
-.icon-call {
-    left: 52%;
-    width: 18%;
-}
-/* 매장 주문 */
-.icon-store {
-    left: 75%;
-    width: 18%;
+/* 실제로 클릭되는 원형 히트영역 (투명) */
+.icon-hit {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
 }
 
-/* 하단 3개 배너 전체 박스
-   - 배경 이미지 안쪽 맨 아래에 붙임 → 아이콘과 겹치지 않게 비율 조정 */
-.banner-row {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    height: 15%;           /* 배너 높이 비율 */
-    display: flex;
+/* 아이콘 아래 라벨 텍스트 */
+.icon-label {
+  margin-top: 0.35rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #3b7d0f;
 }
 
-/* 개별 배너: 가로 3분할 */
-.banner-link {
-    flex: 1 1 33.33%;
-    display: block;
-    background-size: cover;
-    background-position: center center;
+/* --------------------------------------
+   2. 하단 슬라이드 배너
+----------------------------------------*/
+.banner-area {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  margin-top: 1.8rem;
+  padding-bottom: 1.2rem;  /* 인디케이터와 간격 */
 }
 
-/* 실제 배너 이미지 연결 (경로는 전부 assets/images/etx/) */
-.banner-card {
-    background-image: url("assets/images/etx/card.jpeg");
-}
-.banner-telecom {
-    background-image: url("assets/images/etx/telecom_30.jpeg");
-}
-.banner-friday {
-    background-image: url("assets/images/etx/friday_1plus1.jpeg");
+/* 3장의 배너를 가로로 이어 붙인 트랙 */
+.slide-track {
+  display: flex;
+  width: 300%;          /* 배너 3장 */
+  transition: transform 0.7s ease-in-out;
 }
 
-/* 공통 팝업 오버레이 */
-.popup {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.55);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 999;
-}
-.popup.is-open {
-    display: flex;
-}
-.popup-inner {
-    position: relative;
-    max-width: 430px;
-    width: 86vw;
-    max-height: 90vh;
-    background: #fff;
-    border-radius: 16px;
-    overflow: hidden;
-}
-.popup-inner img {
-    width: 100%;
-    height: auto;
-    display: block;
+/* 하나의 슬라이드(한 장씩 화면 전체 사용) */
+.slide-item {
+  width: 100vw;         /* 기기 가로길이 전체 */
+  flex-shrink: 0;
 }
 
-/* 팝업 닫기 버튼 (정사각형 + 조금 크게) */
-.popup-close {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    width: 44px;
-    height: 44px;
-    padding: 0;
-    border: none;
-    background: transparent;
-}
-.popup-close img {
-    width: 100%;
-    height: 100%;
-    display: block;
+.slide-item img {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
-/* 첫 진입 안내 팝업 (up.jpeg)도 같은 스타일 사용 */
-#first-notice .popup-inner {
-    width: 82vw;
-    max-width: 380px;
-    border-radius: 18px;
+/* --------------------------------------
+   3. 배너 페이지 인디케이터(●●●)
+----------------------------------------*/
+.banner-dots {
+  position: absolute;
+  left: 50%;
+  bottom: 0.2rem;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.4rem;
+}
+
+.banner-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.18);
+  cursor: pointer;
+}
+
+.banner-dot.active {
+  width: 10px;
+  height: 10px;
+  background: #ffba00;
+}
+
+/* --------------------------------------
+   4. 배너 팝업 모달
+----------------------------------------*/
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none;                 /* JS로 flex로 바꿈 */
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-inner {
+  position: relative;
+  max-width: 480px;
+  width: 90vw;
+}
+
+.modal-inner img.popup-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 8px;
+}
+
+/* 닫기 버튼 (조금 크게 & 정사각형) */
+.modal-close {
+  position: absolute;
+  top: -14px;
+  right: -14px;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+}
+
+/* --------------------------------------
+   5. 작은 화면에서 여백 살짝 조절
+----------------------------------------*/
+@media (max-width: 480px) {
+  .icon-wrap {
+    margin-top: 66vh;
+    gap: 1.6rem;
+  }
+  .icon-hit {
+    width: 64px;
+    height: 64px;
+  }
+  .icon-label {
+    font-size: 0.85rem;
+  }
 }
 </style>
 </head>
+
 <body>
 
-<!-- 전체 페이지 배경 + 핫스팟 + 하단 배너 -->
-<div class="page-wrap">
-    <!-- 배경 스크린샷 -->
-    <img src="index.jpeg" alt="시흥 은행점 파파존스 안내" class="page-bg" />
+<!-- 1. 아이콘 4개 (배경 속 동그라미 위에 클릭 영역만 올린 구조) -->
+<div class="icon-wrap">
+  <div class="icon-box" onclick="location.href='https://pji.co.kr/event/w_ongoingList'">
+    <div class="icon-hit"></div>
+    <div class="icon-label">이벤트보기</div>
+  </div>
 
-    <!-- 아이콘 4개 클릭 영역 -->
-    <a
-      class="hotspot icon-area icon-event"
-      href="https://pji.co.kr/event/w_ongoingList"
-      target="_blank"
-      aria-label="이벤트 보기 바로가기"></a>
+  <div class="icon-box" onclick="location.href='https://pji.co.kr/w_main'">
+    <div class="icon-hit"></div>
+    <div class="icon-label">홈페이지</div>
+  </div>
 
-    <a
-      class="hotspot icon-area icon-home"
-      href="https://pji.co.kr/w_main"
-      target="_blank"
-      aria-label="파파존스 홈페이지"></a>
+  <div class="icon-box" onclick="location.href='tel:15778080'">
+    <div class="icon-hit"></div>
+    <div class="icon-label">콜센터</div>
+  </div>
 
-    <a
-      class="hotspot icon-area icon-call"
-      href="tel:15778080"
-      aria-label="콜센터 전화 연결"></a>
+  <div class="icon-box" onclick="location.href='tel:0313136995'">
+    <div class="icon-hit"></div>
+    <div class="icon-label">매장 주문</div>
+  </div>
+</div>
 
-    <a
-      class="hotspot icon-area icon-store"
-      href="tel:0313136995"
-      aria-label="시흥 은행점 매장 주문 전화 연결"></a>
-
-    <!-- 하단 3개 배너: 카드 / 통신사 / 1+1 -->
-    <div class="banner-row">
-        <a href="#"
-           class="banner-link banner-card"
-           data-popup-target="popup-card"
-           aria-label="카드사 혜택 자세히 보기"></a>
-
-        <a href="#"
-           class="banner-link banner-telecom"
-           data-popup-target="popup-telecom"
-           aria-label="통신사 멤버십 혜택 자세히 보기"></a>
-
-        <a href="#"
-           class="banner-link banner-friday"
-           data-popup-target="popup-friday"
-           aria-label="파파 프라이데이 1+1 자세히 보기"></a>
+<!-- 2. 하단 자동 슬라이드 배너 -->
+<div class="banner-area" id="bannerArea">
+  <div class="slide-track" id="bannerTrack">
+    <!-- 1+1 배너 -->
+    <div class="slide-item" onclick="openModal('popup-one')">
+      <img src="assets/images/etx/friday_1plus1.jpeg" alt="파파 프라이데이 1+1">
     </div>
-</div>
+    <!-- 카드사 배너 -->
+    <div class="slide-item" onclick="openModal('popup-card')">
+      <img src="assets/images/etx/card.jpeg" alt="카드 결제 시 할인">
+    </div>
+    <!-- 통신사 배너 -->
+    <div class="slide-item" onclick="openModal('popup-telecom')">
+      <img src="assets/images/etx/telecom_30.jpeg" alt="통신사 멤버십 30% 할인">
+    </div>
+  </div>
 
-<!-- 첫 진입 안내 팝업 (카드 결제만 가능) -->
-<div class="popup is-open" id="first-notice">
-  <div class="popup-inner">
-      <img src="assets/images/etx/up.jpeg" alt="본 매장은 카드 결제만 가능합니다. 현금 결제는 불가합니다." />
-      <button class="popup-close" type="button" data-popup-close>
-          <img src="assets/images/etx/close.png" alt="닫기" />
-      </button>
+  <!-- 페이지 인디케이터 ●●● -->
+  <div class="banner-dots" id="bannerDots">
+    <span class="banner-dot active" data-index="0"></span>
+    <span class="banner-dot" data-index="1"></span>
+    <span class="banner-dot" data-index="2"></span>
   </div>
 </div>
 
-<!-- 카드사 혜택 팝업 -->
-<div class="popup" id="popup-card">
-  <div class="popup-inner">
-      <img src="assets/images/etx/card_pop.jpeg" alt="카드사 혜택 안내" />
-      <button class="popup-close" type="button" data-popup-close>
-          <img src="assets/images/etx/close.png" alt="닫기" />
-      </button>
+<!-- 3. 배너별 팝업 모달 -->
+<!-- 1+1 팝업 -->
+<div class="modal" id="popup-one" onclick="closeModal('popup-one')">
+  <div class="modal-inner" onclick="event.stopPropagation()">
+    <img src="assets/images/etx/one.jpg" class="popup-img" alt="1+1 상세 안내">
+    <img src="assets/images/etx/close.png" class="modal-close"
+         alt="닫기" onclick="closeModal('popup-one')" />
   </div>
 </div>
 
-<!-- 통신사 멤버십 팝업 -->
-<div class="popup" id="popup-telecom">
-  <div class="popup-inner">
-      <img src="assets/images/etx/phon.jpeg" alt="통신사 멤버십 30% 할인 안내" />
-      <button class="popup-close" type="button" data-popup-close>
-          <img src="assets/images/etx/close.png" alt="닫기" />
-      </button>
+<!-- 카드사 팝업 -->
+<div class="modal" id="popup-card" onclick="closeModal('popup-card')">
+  <div class="modal-inner" onclick="event.stopPropagation()">
+    <img src="assets/images/etx/card_pop.jpeg" class="popup-img" alt="카드 혜택 안내">
+    <img src="assets/images/etx/close.png" class="modal-close"
+         alt="닫기" onclick="closeModal('popup-card')" />
   </div>
 </div>
 
-<!-- 파파 프라이데이 1+1 팝업 -->
-<div class="popup" id="popup-friday">
-  <div class="popup-inner">
-      <img src="assets/images/etx/one.jpg" alt="매주 금요일 1+1 이벤트 안내" />
-      <button class="popup-close" type="button" data-popup-close>
-          <img src="assets/images/etx/close.png" alt="닫기" />
-      </button>
+<!-- 통신사 팝업 -->
+<div class="modal" id="popup-telecom" onclick="closeModal('popup-telecom')">
+  <div class="modal-inner" onclick="event.stopPropagation()">
+    <img src="assets/images/etx/phon.jpeg" class="popup-img" alt="통신사 혜택 안내">
+    <img src="assets/images/etx/close.png" class="modal-close"
+         alt="닫기" onclick="closeModal('popup-telecom')" />
   </div>
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    // 배너 클릭 → 대응 팝업 열기
-    document.querySelectorAll('[data-popup-target]').forEach(function (el) {
-        el.addEventListener('click', function (e) {
-            e.preventDefault();
-            var id = el.getAttribute('data-popup-target');
-            var target = document.getElementById(id);
-            if (target) {
-                target.classList.add('is-open');
-            }
-        });
-    });
+/* --------------------------------------
+   A. 슬라이드/인디케이터 제어
+----------------------------------------*/
+const track = document.getElementById("bannerTrack");
+const dots  = document.querySelectorAll(".banner-dot");
+const BANNER_COUNT = 3;
 
-    // 닫기 버튼 공통 처리 (첫 안내 팝업 + 배너 팝업 모두)
-    document.querySelectorAll('[data-popup-close]').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-            var popup = btn.closest('.popup');
-            if (popup) popup.classList.remove('is-open');
-        });
-    });
+/* 슬라이드 속도(ms) - 여기 숫자만 바꾸면 됨 */
+const SLIDE_INTERVAL = 4000;
 
-    // 팝업 배경 클릭 시 닫기 (안쪽 이미지 누르면 안 닫히도록)
-    document.querySelectorAll('.popup').forEach(function (layer) {
-        layer.addEventListener('click', function (e) {
-            if (e.target === layer) {
-                layer.classList.remove('is-open');
-            }
-        });
-    });
+let currentIndex = 0;
+let timerId = null;
+
+function goToSlide(idx) {
+  currentIndex = (idx + BANNER_COUNT) % BANNER_COUNT;
+  track.style.transform = `translateX(-${currentIndex * 100}vw)`;
+
+  // 인디케이터 업데이트
+  dots.forEach((dot, i) => {
+    dot.classList.toggle("active", i === currentIndex);
+  });
+}
+
+function nextSlide() {
+  goToSlide(currentIndex + 1);
+}
+
+function prevSlide() {
+  goToSlide(currentIndex - 1);
+}
+
+function startAutoSlide() {
+  stopAutoSlide();
+  timerId = setInterval(nextSlide, SLIDE_INTERVAL);
+}
+
+function stopAutoSlide() {
+  if (timerId) {
+    clearInterval(timerId);
+    timerId = null;
+  }
+}
+
+/* 인디케이터 클릭으로 이동 */
+dots.forEach(dot => {
+  dot.addEventListener("click", () => {
+    const idx = Number(dot.dataset.index);
+    goToSlide(idx);
+    startAutoSlide();  // 클릭 후에도 자동 재생 유지
+  });
 });
+
+/* --------------------------------------
+   B. 터치 스와이프 기능
+----------------------------------------*/
+const bannerArea = document.getElementById("bannerArea");
+let startX = 0;
+let isDragging = false;
+
+bannerArea.addEventListener("touchstart", e => {
+  if (e.touches.length !== 1) return;
+  startX = e.touches[0].clientX;
+  isDragging = true;
+  stopAutoSlide();
+}, {passive: true});
+
+bannerArea.addEventListener("touchend", e => {
+  if (!isDragging) return;
+  const endX = e.changedTouches[0].clientX;
+  const diffX = endX - startX;
+
+  const SWIPE_THRESHOLD = 50; // 손가락 이동 최소거리(px)
+  if (Math.abs(diffX) > SWIPE_THRESHOLD) {
+    if (diffX < 0) nextSlide();   // 왼쪽 스와이프 → 다음 슬라이드
+    else          prevSlide();   // 오른쪽 스와이프 → 이전 슬라이드
+  }
+  isDragging = false;
+  startAutoSlide();
+}, {passive: true});
+
+/* --------------------------------------
+   C. 팝업 열기/닫기
+----------------------------------------*/
+function openModal(id) {
+  document.getElementById(id).style.display = "flex";
+  stopAutoSlide();   // 팝업이 열려 있을 땐 배너 멈춤
+}
+
+function closeModal(id) {
+  document.getElementById(id).style.display = "none";
+  startAutoSlide();
+}
+
+/* 초기 자동 슬라이드 시작 */
+goToSlide(0);
+startAutoSlide();
 </script>
 
 </body>
