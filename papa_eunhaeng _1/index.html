@@ -5,27 +5,31 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <style>
-body{
+html, body{
   margin:0;
   padding:0;
-  overflow-x:hidden;
+  height:100%;
+  overflow:hidden; /* 세로 스크롤 없음 */
   font-family:'Malgun Gothic','Apple SD Gothic Neo',-apple-system,sans-serif;
   background:#ffffff;
 }
 
-/* ===== 메인 이미지(index.jpeg) ===== */
+/* ===== 메인(index.jpeg 한 화면 꽉) ===== */
 .main-wrap{
   position:relative;
+  width:100%;
   max-width:600px;
+  height:100vh;      /* 현재 보이는 화면 기준 */
   margin:0 auto;
 }
 .main-wrap img.main-bg{
   width:100%;
-  height:auto;
+  height:100%;
+  object-fit:cover;  /* 첫 스샷처럼 꽉 채우기 */
   display:block;
 }
 
-/* ===== 아이콘 히트박스 ===== */
+/* ===== 아이콘 히트박스 (위치는 지금 딱 좋다고 한 위치) ===== */
 .icon-hitbox{
   position:absolute;
   display:block;
@@ -34,18 +38,17 @@ body{
   z-index:10;
 }
 
-/* 아이콘 위치 – index.jpeg 비율 기준 (지금 위치가 딱 좋다고 한 값) */
-.icon-event{ top:73%; left:14%; width:13%; height:8%; }
-.icon-home { top:73%; left:35%; width:13%; height:8%; }
-.icon-call { top:73%; left:56%; width:13%; height:8%; }
-.icon-store{ top:73%; left:77%; width:13%; height:8%; }
+.icon-event{ top:70%; left:14%; width:13%; height:8%; }
+.icon-home { top:70%; left:35%; width:13%; height:8%; }
+.icon-call { top:70%; left:56%; width:13%; height:8%; }
+.icon-store{ top:70%; left:77%; width:13%; height:8%; }
 
 /* ===== 배너 슬라이드 (자동 X, 손가락 슬라이드 O) ===== */
 .banner-box{
   position:absolute;
-  top:81%;      /* 아이콘 바로 아래; 필요하면 80~82% 사이로 미세 조정 가능 */
   left:0;
-  width:100%;
+  right:0;
+  bottom:4%;           /* 화면 하단에서 살짝 띄우기 */
   display:flex;
   flex-direction:column;
   align-items:center;
@@ -53,9 +56,10 @@ body{
 }
 
 .banner-inner{
-  width:92%;
+  width:94%;
   max-width:560px;
-  aspect-ratio:5/1;       /* 배너 세로 높이를 줄여서 부담스럽지 않게 */
+  /* 배너 원본 비율(1536 x 503)에 맞춤 → 전체 다 보이게 */
+  aspect-ratio:1536 / 503;
   border-radius:14px;
   overflow:hidden;
   background:#ffffff;
@@ -66,7 +70,7 @@ body{
   display:flex;
   width:300%;
   height:100%;
-  transition:transform 0.35s ease;
+  transition:transform 0.25s ease;
 }
 
 .banner-slide{
@@ -97,7 +101,7 @@ body{
   padding:0;
 }
 .banner-dots .dot.active{
-  background:#2f6b3a;      /* 진한 초록 포인트 */
+  background:#2f6b3a;
   border-color:#2f6b3a;
 }
 
@@ -143,10 +147,10 @@ body{
 <body>
 
 <div class="main-wrap">
-  <!-- 배경 이미지 -->
+  <!-- 배경 -->
   <img src="index.jpeg" alt="시흥 은행점 파파존스" class="main-bg">
 
-  <!-- 아이콘 클릭 영역 (투명) -->
+  <!-- 아이콘 클릭 영역 -->
   <a class="icon-hitbox icon-event"
      href="https://pji.co.kr/event/w_ongoingList">이벤트 보기</a>
 
@@ -159,7 +163,7 @@ body{
   <a class="icon-hitbox icon-store"
      href="tel:031-313-6995">매장 주문</a>
 
-  <!-- 배너 슬라이드 (손가락으로 넘기기 / 클릭 시 팝업) -->
+  <!-- 배너 슬라이드 -->
   <div class="banner-box">
     <div class="banner-inner" id="bannerInner">
       <div class="banner-track" id="bannerTrack">
@@ -178,7 +182,7 @@ body{
       </div>
     </div>
 
-    <!-- 인디케이터 -->
+    <!-- 점 네비게이션 -->
     <div class="banner-dots" id="bannerDots">
       <button class="dot active" data-index="0"></button>
       <button class="dot" data-index="1"></button>
@@ -187,7 +191,7 @@ body{
   </div>
 </div>
 
-<!-- ===== 첫 화면 팝업(up.jpeg) ===== -->
+<!-- 첫 화면 팝업(up.jpeg) -->
 <div id="firstPopup" class="popup-wrap">
   <div class="popup-box">
     <button class="popup-close" onclick="closePopup('firstPopup')">×</button>
@@ -195,7 +199,7 @@ body{
   </div>
 </div>
 
-<!-- ===== 1+1 팝업 ===== -->
+<!-- 1+1 팝업 -->
 <div id="onePopup" class="popup-wrap">
   <div class="popup-box">
     <button class="popup-close" onclick="closePopup('onePopup')">×</button>
@@ -203,7 +207,7 @@ body{
   </div>
 </div>
 
-<!-- ===== 카드사 팝업 ===== -->
+<!-- 카드사 팝업 -->
 <div id="cardPopup" class="popup-wrap">
   <div class="popup-box">
     <button class="popup-close" onclick="closePopup('cardPopup')">×</button>
@@ -211,7 +215,7 @@ body{
   </div>
 </div>
 
-<!-- ===== 통신사 팝업 ===== -->
+<!-- 통신사 팝업 -->
 <div id="phonPopup" class="popup-wrap">
   <div class="popup-box">
     <button class="popup-close" onclick="closePopup('phonPopup')">×</button>
@@ -230,7 +234,7 @@ function closePopup(id){
   if(el) el.style.display = "none";
 }
 
-/* 페이지 처음 들어오면 up.jpeg 팝업 자동 표시 */
+/* 첫 화면 진입 시 up.jpeg 자동 표시 */
 window.addEventListener('load', function(){
   openPopup('firstPopup');
 });
@@ -267,7 +271,7 @@ slides.forEach(slide => {
   });
 });
 
-/* 손가락 슬라이드 */
+/* 손가락 슬라이드 – 양쪽으로 잘 넘어가게 threshold 낮춤 */
 let startX = null;
 
 track.addEventListener('touchstart', (e) => {
@@ -280,9 +284,10 @@ track.addEventListener('touchend', (e) => {
   if(startX === null) return;
   const endX = e.changedTouches[0].clientX;
   const diff = endX - startX;
-  if(Math.abs(diff) > 50){
-    if(diff < 0) showSlide(currentSlide + 1); // 왼쪽으로 밀기 -> 다음
-    else        showSlide(currentSlide - 1); // 오른쪽으로 밀기 -> 이전
+  const threshold = 25;  // 민감도 ↑
+  if(Math.abs(diff) > threshold){
+    if(diff < 0) showSlide(currentSlide + 1); // 왼쪽으로 밀면 다음
+    else        showSlide(currentSlide - 1); // 오른쪽으로 밀면 이전
   }
   startX = null;
 }, {passive:true});
