@@ -17,50 +17,56 @@
 
     /* 전체 배경: index.jpeg (index.html과 같은 폴더) */
     .bg-wall {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  background: url("index.jpeg") center / cover no-repeat;
-  opacity: 1; 
-  z-index: -1;
-}
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      background: url("index.jpeg") center / cover no-repeat;
+      opacity: 1;        /* 흐리게 하지 않음 */
+      z-index: -1;
+    }
 
     .page {
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      padding-top: 20px;
+      justify-content: flex-end;  /* 맨 아래 배너가 하단에 오도록 */
     }
 
-    /* 상단 버튼 3개 */
-    .actions {
+    /* 배경 위에 덮는 투명 클릭 영역 (이벤트/홈/콜센터/매장주문) */
+    .hot-links {
+      position: fixed;
+      left: 0;
+      right: 0;
+      /* 아이콘 줄이 배경에서 보이는 높이 대략 맞춰서(bottom 값 조정 가능) */
+      bottom: 140px;
       display: flex;
-      flex-direction: column;
-      gap: 12px;
-      padding: 0 16px 10px;
-      align-items: center;
+      justify-content: space-between;
+      padding: 0 10%;
+      height: 120px;   /* 클릭 영역 높이 */
+      z-index: 10;
     }
-    .actions a {
-      width: 100%;
-      max-width: 360px;
-    }
-    .actions img {
-      width: 100%;
-      display: block;
+    .hot-links a {
+      flex: 1;
+      height: 100%;
+      /* 디버깅용 배경 색 필요하면 아래 주석 해제
+      background: rgba(255,0,0,0.1);
+      */
     }
 
-    /* 하단 배너 슬라이드 */
+    /* 하단 배너 슬라이드 (맨 아래) */
     .banner-wrapper {
-      margin-top: 24px;
-      padding: 0 0 24px;
+      width: 100%;
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      z-index: 20;
     }
 
     .banner-slider {
-      padding: 10px 0;
-      background: #fff;
+      padding: 8px 0;
+      background: #ffffff;
       border-top: 1px solid #e0e0e0;
-      border-bottom: 1px solid #e0e0e0;
       overflow: hidden;
     }
 
@@ -76,7 +82,7 @@
       cursor: pointer;
     }
     .banner-item img {
-      height: 90px;
+      height: 80px;
       display: block;
       border-radius: 6px;
     }
@@ -115,30 +121,33 @@
 
     .popup-close-btn {
       position: absolute;
-      top: 10px;
-      right: 10px;
-      width: 32px;
-      height: 32px;
-      background: transparent;
+      top: 12px;
+      right: 12px;
+      width: 48px;    /* 더 크고 정사각형 */
+      height: 48px;
+      background: rgba(255,255,255,0.9);
+      border-radius: 8px;
       border: none;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 6px rgba(0,0,0,0.15);
     }
     .popup-close-btn img {
-      width: 100%;
-      height: 100%;
+      width: 70%;
+      height: 70%;
       display: block;
     }
 
     @media (min-width: 768px) {
-      .actions {
-        flex-direction: row;
-        justify-content: center;
-      }
-      .actions a {
-        max-width: 260px;
+      .hot-links {
+        bottom: 160px;
+        padding: 0 20%;
+        height: 140px;
       }
       .banner-item img {
-        height: 110px;
+        height: 100px;
       }
     }
   </style>
@@ -150,25 +159,19 @@
 
 <div class="page">
 
-  <!-- 버튼 3개 -->
-  <div class="actions">
-    <!-- 홈페이지 바로가기 -->
-    <a href="https://pji.co.kr/w_main" target="_blank" rel="noopener">
-      <img src="assets/images/etx/home.jpeg" alt="홈페이지 바로가기">
-    </a>
-
-    <!-- 콜센터 주문 -->
-    <a href="tel:1577-8080">
-      <img src="assets/images/etx/home_call.jpeg" alt="콜센터 주문">
-    </a>
-
-    <!-- 시흥 은행점 주문연결 -->
-    <a href="tel:031-313-6995">
-      <img src="assets/images/etx/call.jpeg" alt="시흥 은행점 주문연결">
-    </a>
+  <!-- 배경 위에 덮는 투명 클릭 영역 (동그란 아이콘 4개 위치에 맞춤) -->
+  <div class="hot-links">
+    <!-- 이벤트 보기 -->
+    <a href="https://pji.co.kr/event/w_ongoingList" target="_blank" aria-label="이벤트 보기"></a>
+    <!-- 홈페이지 -->
+    <a href="https://pji.co.kr/w_main" target="_blank" aria-label="홈페이지"></a>
+    <!-- 콜센터 -->
+    <a href="tel:1577-8080" aria-label="콜센터"></a>
+    <!-- 매장 주문 -->
+    <a href="tel:031-313-6995" aria-label="매장 주문"></a>
   </div>
 
-  <!-- 하단 자동 슬라이드 배너 -->
+  <!-- 하단 자동 슬라이드 배너 (맨 아래) -->
   <div class="banner-wrapper">
     <div class="banner-slider">
       <div class="banner-track">
@@ -177,8 +180,9 @@
         <div class="banner-item" data-popup="friday">
           <img src="assets/images/etx/friday_1plus1.jpeg" alt="파파 프라이데이 1+1">
         </div>
-        <div class="banner-item" data-popup="card_pop">
-          <img src="assets/images/etx/card.jpeg" alt="카드 결제 시 할인">
+        <div class="banner-item" data-popup="card">
+          <!-- 배너 아이템 파일명: card_pop.jpeg -->
+          <img src="assets/images/etx/card_pop.jpeg" alt="카드사 혜택">
         </div>
         <div class="banner-item" data-popup="telecom">
           <img src="assets/images/etx/telecom_30.jpeg" alt="통신사 멤버십 할인">
@@ -189,7 +193,7 @@
           <img src="assets/images/etx/friday_1plus1.jpeg" alt="파파 프라이데이 1+1">
         </div>
         <div class="banner-item" data-popup="card">
-          <img src="assets/images/etx/card.jpeg" alt="카드 결제 시 할인">
+          <img src="assets/images/etx/card_pop.jpeg" alt="카드사 혜택">
         </div>
         <div class="banner-item" data-popup="telecom">
           <img src="assets/images/etx/telecom_30.jpeg" alt="통신사 멤버십 할인">
@@ -212,12 +216,12 @@
 </div>
 
 <script>
-  // 팝업에 쓸 이미지 매핑
+  // 팝업 이미지 매핑
   const popupImages = {
-    notice: "assets/images/etx/up.jpeg",     // 첫 자동 팝업
-    friday: "assets/images/etx/one.jpeg",    // 1+1 상세
-    card: "assets/images/etx/card_pop.jpeg", // 카드사 혜택
-    telecom: "assets/images/etx/phon.jpeg"   // 통신사 멤버십
+    notice: "assets/images/etx/up.jpeg",        // 첫 자동 팝업
+    friday: "assets/images/etx/one.jpeg",       // 1+1 상세
+    card:   "assets/images/etx/card_pop.jpeg",  // 카드사 혜택 상세
+    telecom:"assets/images/etx/phon.jpeg"       // 통신사 멤버십 상세
   };
 
   const overlay  = document.getElementById("popupOverlay");
