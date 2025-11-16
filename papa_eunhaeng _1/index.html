@@ -1,258 +1,272 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <title>시흥 은행점 파파존스</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>시흥 은행점 파파존스</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+    background:#ffffff;
+  }
+  .page{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
+    background:#ffffff;
+  }
 
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
-      color: #222;
-      position: relative;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
+  /* ===== 메인 배경 영역 ===== */
+  .bg-wrap{
+    position:relative;
+    width:100%;
+    max-width:480px;   /* 휴대폰 기준 폭 */
+    margin:0 auto;
+  }
+  .bg-wrap img.main-bg{
+    width:100%;
+    height:auto;
+    display:block;
+  }
 
-    /* 전체 배경: index.jpeg (index.html과 같은 폴더) */
-    .bg-wall {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  background: url("index.jpeg") center / cover no-repeat;
-  opacity: 1; 
-  z-index: -1;
-}
+  /* ===== 아이콘 클릭 영역 (이벤트/홈/콜/매장) ===== */
+  .icon-hotspot{
+    position:absolute;
+    width:19%;
+    aspect-ratio:1/1;
+    border-radius:50%;
+    /* 디버깅용 배경 (완성 후 주석 유지)
+    background:rgba(255,0,0,0.15);
+    */
+  }
+  /* 아이콘이 배경에서 보이는 위치에 맞춰서 top/left 조정 */
+  .icon-event{  top:74%; left:9%;  }
+  .icon-home{   top:74%; left:30.5%; }
+  .icon-call{   top:74%; left:52%; }
+  .icon-store{  top:74%; left:73.5%; }
 
-    .page {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      padding-top: 20px;
-    }
+  .icon-hotspot a{
+    display:block;
+    width:100%;
+    height:100%;
+  }
 
-    /* 상단 버튼 3개 */
-    .actions {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      padding: 0 16px 10px;
-      align-items: center;
-    }
-    .actions a {
-      width: 100%;
-      max-width: 360px;
-    }
-    .actions img {
-      width: 100%;
-      display: block;
-    }
+  /* ===== 하단 배너 ===== */
+  .banner-strip{
+    width:100%;
+    max-width:480px;
+    margin:10px auto 24px;
+    overflow:hidden;
+  }
+  
+  .banner-track{
+    display:flex;
+    width:max-content;
+    animation:banner-scroll 28s linear infinite;
+  }
+  
+  .banner-item{
+    flex:0 0 auto;
+    width:100%;
+    max-width:480px;
+    cursor:pointer;
+  }
+  .banner-item img{
+    width:100%;
+    height:auto;
+    display:block;
+  }
 
-    /* 하단 배너 슬라이드 */
-    .banner-wrapper {
-      margin-top: 24px;
-      padding: 0 0 24px;
-    }
+  @keyframes banner-scroll{
+    0%   { transform:translateX(0); }
+    100% { transform:translateX(-300%); } /* 배너 세 개 × 100% */
+  }
 
-    .banner-slider {
-      padding: 10px 0;
-      background: #fff;
-      border-top: 1px solid #e0e0e0;
-      border-bottom: 1px solid #e0e0e0;
-      overflow: hidden;
-    }
+  /* ===== 공통 팝업 오버레이 ===== */
+  .overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.55);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:50;
+  }
+  .overlay-inner{
+    position:relative;
+    width:90%;
+    max-width:480px;
+  }
+  .overlay-inner img.popup-img{
+    width:100%;
+    height:auto;
+    display:block;
+    border-radius:8px;
+    background:#fff;
+  }
+  .overlay-close{
+    position:absolute;
+    top:8px;
+    right:8px;
+    width:40px;
+    height:40px;
+    cursor:pointer;
+  }
+  .overlay-close img{
+    width:100%;
+    height:100%;
+    display:block;
+  }
 
-    .banner-track {
-      display: flex;
-      align-items: center;
-      animation: scrollBanners 30s linear infinite;
-    }
+  /* 초기 안내 팝업(up.jpeg) 전용 – 조금 위로 */
+  .overlay.notice .overlay-inner{
+    max-width:480px;
+  }
 
-    .banner-item {
-      flex: 0 0 auto;
-      margin: 0 12px;
-      cursor: pointer;
-    }
-    .banner-item img {
-      height: 90px;
-      display: block;
-      border-radius: 6px;
-    }
-
-    @keyframes scrollBanners {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
-
-    /* 팝업 오버레이 */
-    .overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.55);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 999;
-    }
-    .overlay.show { display: flex; }
-
-    .popup-box {
-      position: relative;
-      max-width: 640px;
-      width: 92%;
-      max-height: 92vh;
-      background: #fff;
-      border-radius: 12px;
-      overflow: hidden;
-    }
-
-    .popup-box img.popup-image {
-      width: 100%;
-      display: block;
-    }
-
-    .popup-close-btn {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      width: 32px;
-      height: 32px;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-    }
-    .popup-close-btn img {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-
-    @media (min-width: 768px) {
-      .actions {
-        flex-direction: row;
-        justify-content: center;
-      }
-      .actions a {
-        max-width: 260px;
-      }
-      .banner-item img {
-        height: 110px;
-      }
-    }
-  </style>
+</style>
 </head>
 <body>
-
-<!-- 전체 배경 -->
-<div class="bg-wall"></div>
-
 <div class="page">
 
-  <!-- 버튼 3개 -->
-  <div class="actions">
-    <!-- 홈페이지 바로가기 -->
-    <a href="https://pji.co.kr/w_main" target="_blank" rel="noopener">
-      <img src="assets/images/etx/home.jpeg" alt="홈페이지 바로가기">
-    </a>
+  <!-- ===== 메인 배경 (index.jpeg 한 장) ===== -->
+  <div class="bg-wrap">
+    <img src="index.jpeg" alt="시흥 은행점 파파존스 안내" class="main-bg" />
 
-    <!-- 콜센터 주문 -->
-    <a href="tel:1577-8080">
-      <img src="assets/images/etx/home_call.jpeg" alt="콜센터 주문">
-    </a>
+    <!-- 아이콘 클릭 핫스팟 (배경 아이콘과 위치 맞춤) -->
+    <!-- 이벤트보기 -->
+    <div class="icon-hotspot icon-event">
+      <a href="https://pji.co.kr/event/w_ongoingList" target="_blank" aria-label="이벤트 보기"></a>
+    </div>
 
-    <!-- 시흥 은행점 주문연결 -->
-    <a href="tel:031-313-6995">
-      <img src="assets/images/etx/call.jpeg" alt="시흥 은행점 주문연결">
-    </a>
+    <!-- 홈페이지 -->
+    <div class="icon-hotspot icon-home">
+      <a href="https://pji.co.kr/w_main" target="_blank" aria-label="홈페이지 바로가기"></a>
+    </div>
+
+    <!-- 콜센터 -->
+    <div class="icon-hotspot icon-call">
+      <a href="tel:1577-8080" aria-label="콜센터 주문"></a>
+    </div>
+
+    <!-- 매장 주문 -->
+    <div class="icon-hotspot icon-store">
+      <a href="tel:031-313-6995" aria-label="시흥 은행점 주문 연결"></a>
+    </div>
   </div>
 
-  <!-- 하단 자동 슬라이드 배너 -->
-  <div class="banner-wrapper">
-    <div class="banner-slider">
-      <div class="banner-track">
+  <!-- ===== 하단 자동 배너 (아이콘과 겹치지 않도록 배경 밖에 위치) ===== -->
+  <div class="banner-strip">
+    <div class="banner-track">
+      <!-- 1+1 배너 -->
+      <div class="banner-item" data-popup="one">
+        <img src="assets/images/etx/friday_1plus1.jpeg" alt="파파 프라이데이 1+1" />
+      </div>
+      <!-- 카드사 혜택 배너 -->
+      <div class="banner-item" data-popup="card">
+        <img src="assets/images/etx/card.jpeg" alt="카드 결제 시 할인" />
+      </div>
+      <!-- 통신사 멤버십 배너 -->
+      <div class="banner-item" data-popup="telecom">
+        <img src="assets/images/etx/telecom_30.jpeg" alt="통신사 멤버십 30% 할인" />
+      </div>
 
-        <!-- 첫 세트 -->
-        <div class="banner-item" data-popup="friday">
-          <img src="assets/images/etx/friday_1plus1.jpeg" alt="파파 프라이데이 1+1">
-        </div>
-        <div class="banner-item" data-popup="card_pop">
-          <img src="assets/images/etx/card.jpeg" alt="카드 결제 시 할인">
-        </div>
-        <div class="banner-item" data-popup="telecom">
-          <img src="assets/images/etx/telecom_30.jpeg" alt="통신사 멤버십 할인">
-        </div>
-
-        <!-- 무한 루프용 복제 세트 -->
-        <div class="banner-item" data-popup="friday">
-          <img src="assets/images/etx/friday_1plus1.jpeg" alt="파파 프라이데이 1+1">
-        </div>
-        <div class="banner-item" data-popup="card">
-          <img src="assets/images/etx/card.jpeg" alt="카드 결제 시 할인">
-        </div>
-        <div class="banner-item" data-popup="telecom">
-          <img src="assets/images/etx/telecom_30.jpeg" alt="통신사 멤버십 할인">
-        </div>
-
+      <!-- 자연스러운 무한 스크롤을 위해 동일한 세트 한 번 더 -->
+      <div class="banner-item" data-popup="one">
+        <img src="assets/images/etx/friday_1plus1.jpeg" alt="파파 프라이데이 1+1" />
+      </div>
+      <div class="banner-item" data-popup="card">
+        <img src="assets/images/etx/card.jpeg" alt="카드 결제 시 할인" />
+      </div>
+      <div class="banner-item" data-popup="telecom">
+        <img src="assets/images/etx/telecom_30.jpeg" alt="통신사 멤버십 30% 할인" />
       </div>
     </div>
   </div>
 
 </div>
 
-<!-- 팝업 오버레이 -->
-<div id="popupOverlay" class="overlay">
-  <div class="popup-box">
-    <button class="popup-close-btn" id="popupCloseBtn">
-      <img src="assets/images/etx/close.png" alt="닫기">
+<!-- ===== 최초 안내 팝업 (up.jpeg) ===== -->
+<div class="overlay notice" id="noticeOverlay" style="display:flex;">
+  <div class="overlay-inner">
+    <img src="assets/images/etx/up.jpeg" alt="카드 결제 안내" class="popup-img" />
+    <button class="overlay-close" type="button" data-close="notice">
+      <img src="assets/images/etx/close.png" alt="닫기" />
     </button>
-    <img id="popupImage" class="popup-image" src="" alt="할인 안내">
+  </div>
+</div>
+
+<!-- ===== 1+1 팝업(one.jpg) ===== -->
+<div class="overlay" id="popupOne">
+  <div class="overlay-inner">
+    <img src="assets/images/etx/one.jpg" alt="파파 프라이데이 1+1 상세" class="popup-img" />
+    <button class="overlay-close" type="button" data-close="one">
+      <img src="assets/images/etx/close.png" alt="닫기" />
+    </button>
+  </div>
+</div>
+
+<!-- ===== 카드사 혜택 팝업(card_pop.jpeg) ===== -->
+<div class="overlay" id="popupCard">
+  <div class="overlay-inner">
+    <img src="assets/images/etx/card_pop.jpeg" alt="카드사 혜택 상세" class="popup-img" />
+    <button class="overlay-close" type="button" data-close="card">
+      <img src="assets/images/etx/close.png" alt="닫기" />
+    </button>
+  </div>
+</div>
+
+<!-- ===== 통신사 멤버십 팝업(phon.jpeg) ===== -->
+<div class="overlay" id="popupTelecom">
+  <div class="overlay-inner">
+    <img src="assets/images/etx/phon.jpeg" alt="통신사 멤버십 상세" class="popup-img" />
+    <button class="overlay-close" type="button" data-close="telecom">
+      <img src="assets/images/etx/close.png" alt="닫기" />
+    </button>
   </div>
 </div>
 
 <script>
-  // 팝업에 쓸 이미지 매핑
-  const popupImages = {
-    notice: "assets/images/etx/up.jpeg",     // 첫 자동 팝업
-    friday: "assets/images/etx/one.jpeg",    // 1+1 상세
-    card: "assets/images/etx/card_pop.jpeg", // 카드사 혜택
-    telecom: "assets/images/etx/phon.jpeg"   // 통신사 멤버십
-  };
-
-  const overlay  = document.getElementById("popupOverlay");
-  const popupImg = document.getElementById("popupImage");
-  const closeBtn = document.getElementById("popupCloseBtn");
-
-  function openPopup(key) {
-    const src = popupImages[key];
-    if (!src) return;
-    popupImg.src = src;
-    overlay.classList.add("show");
-  }
-
-  // 페이지 로드 시 안내 팝업 자동 오픈
-  window.addEventListener("load", () => {
-    openPopup("notice");
+  // 배너 클릭 → 팝업 열기
+  document.querySelectorAll('.banner-item').forEach(function(item){
+    item.addEventListener('click', function(){
+      var type = this.getAttribute('data-popup');
+      if(type === 'one'){
+        document.getElementById('popupOne').style.display = 'flex';
+      }else if(type === 'card'){
+        document.getElementById('popupCard').style.display = 'flex';
+      }else if(type === 'telecom'){
+        document.getElementById('popupTelecom').style.display = 'flex';
+      }
+    });
   });
 
-  closeBtn.addEventListener("click", () => {
-    overlay.classList.remove("show");
+  // 팝업 닫기 (공통)
+  document.querySelectorAll('.overlay-close').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var target = this.getAttribute('data-close');
+      if(target === 'notice'){
+        document.getElementById('noticeOverlay').style.display = 'none';
+      }else if(target === 'one'){
+        document.getElementById('popupOne').style.display = 'none';
+      }else if(target === 'card'){
+        document.getElementById('popupCard').style.display = 'none';
+      }else if(target === 'telecom'){
+        document.getElementById('popupTelecom').style.display = 'none';
+      }
+    });
   });
 
-  overlay.addEventListener("click", (e) => {
-    if (e.target === overlay) {
-      overlay.classList.remove("show");
-    }
-  });
-
-  document.querySelectorAll(".banner-item").forEach((item) => {
-    item.addEventListener("click", function () {
-      const key = this.getAttribute("data-popup");
-      openPopup(key);
+  // 오버레이 바깥 클릭 시 닫기
+  document.querySelectorAll('.overlay').forEach(function(ov){
+    ov.addEventListener('click', function(e){
+      if(e.target === ov){
+        ov.style.display='none';
+      }
     });
   });
 </script>
-
 </body>
 </html>
