@@ -3,286 +3,340 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>시흥 은행점 파파존스</title>
 
 <style>
-body{
+/* 기본 세팅 – 스크롤 없음 */
+html, body{
   margin:0;
   padding:0;
-  font-family:'Malgun Gothic','Apple SD Gothic Neo',-apple-system,sans-serif;
-  background:#000;   /* 여백은 검정 */
+  height:100%;
+  overflow:hidden;
+  background:#000;
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
 }
 
-/* ===== index.jpeg 전체 페이지 (세로로 긴 원본) ===== */
+/* 전체 페이지 래퍼 */
+.page-wrap{
+  width:100%;
+  height:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+/* index.jpeg 배경 한 장 + 그 위에 클릭 영역 */
 .bg-wrap{
   position:relative;
-  max-width:600px;
+  width:100%;
+  max-width:600px;          /* 폰 기준 폭 */
   margin:0 auto;
 }
-.bg-wrap img.main-bg{
+
+.bg-wrap img.bg-img{
   width:100%;
   height:auto;
   display:block;
 }
 
-/* ===== 아이콘 클릭 영역 (index.jpeg 기준 위치) ===== */
-.icon-hitbox{
+/* 아이콘 클릭 영역 (투명) – 위치는 index.jpeg 비율 기준 */
+.icon-hit{
   position:absolute;
   display:block;
-  text-indent:-9999px;
-  overflow:hidden;
+  z-index:20;
+}
+
+/* 아이콘 위치 – 네가 "딱 좋다" 했던 값 기준 */
+.icon-event{ top:73%; left:14%; width:13%; height:8%; }
+.icon-home { top:73%; left:35%; width:13%; height:8%; }
+.icon-call { top:73%; left:56%; width:13%; height:8%; }
+.icon-store{ top:73%; left:77%; width:13%; height:8%; }
+
+/* ---------------------------------
+   하단 롤링 배너
+----------------------------------*/
+.banner-wrap{
+  position:absolute;
+  left:50%;
+  top:81%;                 /* 아이콘 바로 아래 */
+  transform:translateX(-50%);
+  width:92%;
   z-index:10;
 }
 
-/* 아이콘 위치 – 새 index.jpeg 기준 (두 번째·세 번째 스샷 위치) */
-.icon-event{ top:63%; left:16%; width:13%; height:7%; }
-.icon-home { top:63%; left:36%; width:13%; height:7%; }
-.icon-call { top:63%; left:56%; width:13%; height:7%; }
-.icon-store{ top:63%; left:76%; width:13%; height:7%; }
-
-/* ===== 배너 슬라이드 – 3번째 사진 위치/크기 ===== */
-.banner-box{
-  position:absolute;
-  top:74%;            /* 아이콘 바로 아래 */
-  left:3%;
-  width:94%;
-  z-index:5;
-}
-
-.banner-inner{
+.banner-frame{
+  position:relative;
   width:100%;
-  /* 배너 원본 비율(1536 x 503) */
-  aspect-ratio:1536 / 503;
-  border-radius:14px;
+  border-radius:18px;
   overflow:hidden;
-  background:#ffffff;
-  box-shadow:0 4px 10px rgba(0,0,0,0.15);
 }
 
+/* 슬라이드 트랙 */
 .banner-track{
   display:flex;
-  width:300%;
-  height:100%;
-  transition:transform 0.25s ease;
+  width:300%;              /* 슬라이드 3개 */
+  transition:transform .4s ease;
 }
 
-.banner-slide{
+/* 슬라이드 1장 */
+.banner-item{
   flex:0 0 100%;
-  height:100%;
   cursor:pointer;
 }
-.banner-slide img{
+
+/* 배너 이미지 – 원본 비율(1536x497) 유지, 안 잘리게 */
+.banner-img{
   width:100%;
-  height:100%;
+  aspect-ratio:1536 / 497;
   object-fit:cover;
   display:block;
 }
 
-/* ●●● 인디케이터 (배너 아래 중앙) */
-.banner-dots{
-  margin-top:6px;
-  display:flex;
-  gap:6px;
-  justify-content:center;
-}
-.banner-dots .dot{
-  width:8px;
-  height:8px;
+/* 좌우 화살표 */
+.banner-arrow{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  width:32px;
+  height:32px;
   border-radius:50%;
-  border:1px solid #bbb;
-  background:#fff;
-  padding:0;
-}
-.banner-dots .dot.active{
-  background:#2f6b3a;
-  border-color:#2f6b3a;
+  background:rgba(0,0,0,.55);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:20px;
+  font-weight:700;
+  cursor:pointer;
+  user-select:none;
+  z-index:30;
 }
 
-/* ===== 팝업 공통 ===== */
-.popup-wrap{
+.banner-arrow.prev{ left:4px; }
+.banner-arrow.next{ right:4px; }
+
+/* 인디케이터 점 3개 */
+.banner-dots{
+  margin-top:6px;
+  text-align:center;
+}
+.banner-dot{
+  display:inline-block;
+  width:6px;
+  height:6px;
+  margin:0 3px;
+  border-radius:50%;
+  background:#ddd;
+}
+.banner-dot.active{
+  background:#3d7c3d;
+}
+
+/* ---------------------------------
+   공통 팝업 모달
+----------------------------------*/
+.modal{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,0.55);
+  background:rgba(0,0,0,.55);
   display:none;
-  justify-content:center;
   align-items:center;
-  z-index:9999;
+  justify-content:center;
+  z-index:100;
 }
-.popup-box{
+.modal.show{ display:flex; }
+
+.modal-inner{
   position:relative;
-  width:90%;
-  max-width:480px;
+  max-width:640px;
+  width:92%;
+  max-height:92vh;
+  background:#fff;
+  border-radius:16px;
+  overflow:hidden;
 }
-.popup-box img{
+
+/* 팝업 안 이미지 – 전체 보이게 */
+.modal-inner img{
   width:100%;
   height:auto;
   display:block;
+  object-fit:contain;
 }
 
-/* 닫기 버튼 – 오른쪽 위 작게 */
-.popup-close{
+/* 닫기 버튼 – 우측 상단 */
+.modal-close{
   position:absolute;
   top:10px;
   right:10px;
-  width:26px;
-  height:26px;
-  border-radius:6px;
-  border:1px solid rgba(0,0,0,0.25);
-  background:#ffffff;
-  color:#222;
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  background:rgba(0,0,0,.65);
+  color:#fff;
+  border:none;
   font-size:18px;
-  line-height:24px;
-  text-align:center;
+  display:flex;
+  align-items:center;
+  justify-content:center;
   cursor:pointer;
+  z-index:200;
+}
+.modal-close:active{
+  transform:scale(.95);
+}
+
+/* 첫 화면 up.jpeg 전용 – 여백 줄이려고 약간 수정 */
+.modal-inner.welcome{
+  background:transparent;
+  box-shadow:none;
 }
 </style>
 </head>
 <body>
 
-<div class="bg-wrap">
-  <!-- 배경(index.jpeg – 3375 x 6000) -->
-  <img src="index.jpeg" alt="시흥 은행점 파파존스" class="main-bg">
+<div class="page-wrap">
+  <div class="bg-wrap">
+    <!-- 배경 이미지 -->
+    <img src="index.jpeg" alt="시흥 은행점 파파존스" class="bg-img" />
 
-  <!-- 아이콘 클릭 영역 -->
-  <a class="icon-hitbox icon-event"
-     href="https://pji.co.kr/event/w_ongoingList">이벤트 보기</a>
+    <!-- 아이콘 클릭 영역 (이미지는 index.jpeg 안에 있음) -->
+    <a class="icon-hit icon-event" href="https://pji.co.kr/event/w_ongoingList" aria-label="이벤트 보기"></a>
+    <a class="icon-hit icon-home"  href="https://pji.co.kr/w_main" aria-label="홈페이지"></a>
+    <a class="icon-hit icon-call"  href="tel:1577-8080" aria-label="콜센터"></a>
+    <a class="icon-hit icon-store" href="tel:031-313-6995" aria-label="매장 주문"></a>
 
-  <a class="icon-hitbox icon-home"
-     href="https://pji.co.kr/w_main">홈페이지</a>
-
-  <a class="icon-hitbox icon-call"
-     href="tel:1577-8080">콜센터</a>
-
-  <a class="icon-hitbox icon-store"
-     href="tel:031-313-6995">매장 주문</a>
-
-  <!-- 3가지 배너 슬라이드 (3번째 사진 위치/크기) -->
-  <div class="banner-box">
-    <div class="banner-inner" id="bannerInner">
-      <div class="banner-track" id="bannerTrack">
-        <!-- 1+1 배너 -->
-        <div class="banner-slide" data-popup="onePopup">
-          <img src="assets/images/etx/friday_1plus1.jpeg" alt="1+1 배너">
+    <!-- 하단 롤링 배너 -->
+    <div class="banner-wrap">
+      <div class="banner-frame">
+        <div class="banner-track" id="bannerTrack">
+          <!-- 1. 금요일 1+1 배너 -->
+          <div class="banner-item" data-popup="oneModal">
+            <img src="assets/images/etx/friday_1plus1.jpeg" alt="파파 프라이데이 1+1" class="banner-img" />
+          </div>
+          <!-- 2. 카드 결제 배너 -->
+          <div class="banner-item" data-popup="cardModal">
+            <img src="assets/images/etx/card.jpeg" alt="카드 결제 시 할인" class="banner-img" />
+          </div>
+          <!-- 3. 통신사 멤버십 배너 -->
+          <div class="banner-item" data-popup="telecomModal">
+            <img src="assets/images/etx/telecom_30.jpeg" alt="통신사 멤버십 30% 할인" class="banner-img" />
+          </div>
         </div>
-        <!-- 카드 배너 -->
-        <div class="banner-slide" data-popup="cardPopup">
-          <img src="assets/images/etx/card.jpeg" alt="카드 결제 배너">
-        </div>
-        <!-- 통신사 배너 -->
-        <div class="banner-slide" data-popup="phonPopup">
-          <img src="assets/images/etx/telecom_30.jpeg" alt="통신사 30% 배너">
-        </div>
+
+        <!-- 좌우 버튼 -->
+        <div class="banner-arrow prev" id="btnPrev">&#8249;</div>
+        <div class="banner-arrow next" id="btnNext">&#8250;</div>
+      </div>
+
+      <!-- 인디케이터 점 -->
+      <div class="banner-dots">
+        <span class="banner-dot active" data-idx="0"></span>
+        <span class="banner-dot" data-idx="1"></span>
+        <span class="banner-dot" data-idx="2"></span>
       </div>
     </div>
-
-    <!-- ●●● 인디케이터 -->
-    <div class="banner-dots" id="bannerDots">
-      <button class="dot active" data-index="0"></button>
-      <button class="dot" data-index="1"></button>
-      <button class="dot" data-index="2"></button>
-    </div>
   </div>
 </div>
 
-<!-- ===== 첫 화면 팝업(up.jpeg) ===== -->
-<div id="firstPopup" class="popup-wrap">
-  <div class="popup-box">
-    <button class="popup-close" onclick="closePopup('firstPopup')">×</button>
-    <img src="assets/images/etx/up.jpeg" alt="첫 화면 안내">
+<!-- 1) 첫 화면 팝업 (up.jpeg) -->
+<div class="modal show" id="welcomeModal">
+  <div class="modal-inner welcome">
+    <button class="modal-close" data-close="#welcomeModal">✕</button>
+    <img src="assets/images/etx/up.jpeg" alt="시흥 은행점 안내" />
   </div>
 </div>
 
-<!-- 1+1 팝업 -->
-<div id="onePopup" class="popup-wrap">
-  <div class="popup-box">
-    <button class="popup-close" onclick="closePopup('onePopup')">×</button>
-    <img src="assets/images/etx/one.jpg" alt="1+1 이벤트 안내">
+<!-- 2-1) 1+1 상세 팝업(one.jpg) -->
+<div class="modal" id="oneModal">
+  <div class="modal-inner">
+    <button class="modal-close" data-close="#oneModal">✕</button>
+    <img src="assets/images/etx/one.jpg" alt="파파 프라이데이 1+1 상세" />
   </div>
 </div>
 
-<!-- 카드사 팝업 -->
-<div id="cardPopup" class="popup-wrap">
-  <div class="popup-box">
-    <button class="popup-close" onclick="closePopup('cardPopup')">×</button>
-    <img src="assets/images/etx/card_pop.jpeg" alt="카드사 할인 안내">
+<!-- 2-2) 카드사 혜택 팝업(card_pop.jpeg) -->
+<div class="modal" id="cardModal">
+  <div class="modal-inner">
+    <button class="modal-close" data-close="#cardModal">✕</button>
+    <img src="assets/images/etx/card_pop.jpeg" alt="카드사 혜택 안내" />
   </div>
 </div>
 
-<!-- 통신사 팝업 -->
-<div id="phonPopup" class="popup-wrap">
-  <div class="popup-box">
-    <button class="popup-close" onclick="closePopup('phonPopup')">×</button>
-    <img src="assets/images/etx/phon.jpeg" alt="통신사 30% 할인 안내">
+<!-- 2-3) 통신사 멤버십 팝업(phon.jpeg) -->
+<div class="modal" id="telecomModal">
+  <div class="modal-inner">
+    <button class="modal-close" data-close="#telecomModal">✕</button>
+    <img src="assets/images/etx/phon.jpeg" alt="통신사 멤버십 안내" />
   </div>
 </div>
 
 <script>
-/* 팝업 열고 닫기 */
-function openPopup(id){
-  const el = document.getElementById(id);
-  if(el) el.style.display = "flex";
-}
-function closePopup(id){
-  const el = document.getElementById(id);
-  if(el) el.style.display = "none";
-}
-
-/* 첫 화면 들어오면 up.jpeg 자동으로 띄우기 */
-window.addEventListener('load', function(){
-  openPopup('firstPopup');
-});
-
-/* ===== 배너 슬라이드 (손가락 슬라이드 + ●●●) ===== */
-const track  = document.getElementById('bannerTrack');
-const slides = document.querySelectorAll('.banner-slide');
-const dots   = document.querySelectorAll('#bannerDots .dot');
-let currentSlide = 0;
-
-function showSlide(i){
-  if(i < 0) i = slides.length - 1;
-  if(i >= slides.length) i = 0;
-  currentSlide = i;
-  track.style.transform = `translateX(-${i * 100}%)`;
-  dots.forEach((dot, idx) => {
-    dot.classList.toggle('active', idx === i);
-  });
-}
-
-/* ●●● 클릭 */
-dots.forEach(dot => {
-  dot.addEventListener('click', () => {
-    const idx = Number(dot.dataset.index);
-    showSlide(idx);
+/* 공통 모달 닫기 */
+document.querySelectorAll('.modal-close').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    const target = btn.getAttribute('data-close');
+    if(target){
+      document.querySelector(target).classList.remove('show');
+    }else{
+      btn.closest('.modal').classList.remove('show');
+    }
   });
 });
 
-/* 배너 클릭 -> 해당 팝업 열기 */
-slides.forEach(slide => {
-  slide.addEventListener('click', () => {
-    const pid = slide.dataset.popup;
-    if(pid) openPopup(pid);
+/* 배너 클릭 → 각 팝업 열기 */
+document.querySelectorAll('.banner-item').forEach(function(item){
+  item.addEventListener('click', function(){
+    const id = item.getAttribute('data-popup');
+    const modal = document.getElementById(id.replace('#',''));
+    if(modal){ modal.classList.add('show'); }
   });
 });
 
-/* 손가락 슬라이드 – 민감도 높게 */
-let startX = null;
+/* 배너 슬라이더 – 오른쪽 → 왼쪽 자동 롤링 */
+const track = document.getElementById('bannerTrack');
+const slides = document.querySelectorAll('.banner-item');
+const dots   = document.querySelectorAll('.banner-dot');
+const total  = slides.length;
+let current  = 0;
+let autoTimer = null;
 
-track.addEventListener('touchstart', (e) => {
-  if(e.touches.length === 1){
-    startX = e.touches[0].clientX;
-  }
-}, {passive:true});
+function updateSlider(index){
+  current = (index + total) % total;
+  track.style.transform = 'translateX(' + (-100 * current) + '%)';
+  dots.forEach(function(dot,i){
+    dot.classList.toggle('active', i === current);
+  });
+}
 
-track.addEventListener('touchend', (e) => {
-  if(startX === null) return;
-  const endX = e.changedTouches[0].clientX;
-  const diff = endX - startX;
-  const threshold = 25;  // 조금만 움직여도 넘어가게
-  if(Math.abs(diff) > threshold){
-    if(diff < 0) showSlide(currentSlide + 1); // 왼쪽으로 밀면 다음
-    else        showSlide(currentSlide - 1); // 오른쪽으로 밀면 이전
-  }
-  startX = null;
-}, {passive:true});
+function nextSlide(){ updateSlider(current + 1); }
+function prevSlide(){ updateSlider(current - 1); }
+
+/* 자동 롤링 – 4초 간격 */
+function startAuto(){
+  if(autoTimer) clearInterval(autoTimer);
+  autoTimer = setInterval(nextSlide, 4000);
+}
+startAuto();
+
+/* 좌우 버튼 */
+document.getElementById('btnNext').addEventListener('click', function(){
+  nextSlide();
+  startAuto();
+});
+document.getElementById('btnPrev').addEventListener('click', function(){
+  prevSlide();
+  startAuto();
+});
+
+/* 점 클릭 */
+dots.forEach(function(dot){
+  dot.addEventListener('click', function(){
+    const idx = parseInt(dot.getAttribute('data-idx'),10);
+    updateSlider(idx);
+    startAuto();
+  });
+});
 </script>
 
 </body>
