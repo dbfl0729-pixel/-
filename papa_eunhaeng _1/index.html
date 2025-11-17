@@ -191,6 +191,79 @@ html, body{
   background:transparent;
   box-shadow:none;
 }
+
+/* 공통 팝업 레이어 */
+.popup {
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.5);
+  z-index:9999;
+}
+
+/* 팝업 박스 */
+.popup-content {
+  width:90%;
+  max-width:420px;
+  margin:40px auto;
+  background:#fff;
+  border-radius:14px;
+  position:relative;
+  overflow:hidden;
+}
+
+/* 닫기 버튼 */
+.popup .close {
+  position:absolute;
+  right:10px;
+  top:10px;
+  border:none;
+  background:transparent;
+  font-size:28px;
+  cursor:pointer;
+  z-index:20;
+}
+
+/* 이미지 기본 */
+.popup-content img{
+  width:100%;
+  display:block;
+  user-select:none;
+}
+
+/* 손가락으로 넘기는 슬라이더 */
+.swipe-slider{
+  display:flex;
+  width:100%;
+  overflow-x:scroll;
+  overflow-y:hidden;
+  scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;
+}
+
+/* 가로 한 장씩 꽉 채우기 */
+.slide{
+  flex:0 0 100%;
+  scroll-snap-align:start;
+}
+
+/* 하단 점 네비게이션 */
+.dots{
+  text-align:center;
+  padding:10px 0 14px;
+}
+.dot{
+  display:inline-block;
+  width:9px;
+  height:9px;
+  margin:0 4px;
+  border-radius:50%;
+  background:#ccc;
+}
+.dot.active{
+  background:#333;
+}
+
 </style>
 </head>
 <body>
@@ -247,27 +320,59 @@ html, body{
   </div>
 </div>
 
-<!-- 2-1) 1+1 상세 팝업(one.jpg) -->
-<div class="modal" id="oneModal">
-  <div class="modal-inner">
-    <button class="modal-close" data-close="#oneModal">✕</button>
-    <img src="assets/images/etx/one.jpg" alt="파파 프라이데이 1+1 상세" />
+<!-- 1) 카드사 혜택 팝업 -->
+<div id="cardPop" class="popup">
+  <div class="popup-content">
+    <button class="close" onclick="closePopup('cardPop')">×</button>
+
+    <div class="swipe-slider">
+      <div class="slide">
+        <img src="assets/images/etx/card_pop.jpeg" alt="카드사 혜택 1">
+      </div>
+      <div class="slide">
+        <img src="assets/images/etx/card_pops.jpeg" alt="카드사 혜택 2">
+      </div>
+    </div>
+
+    <div class="dots">
+      <span class="dot active" onclick="goSlide('cardPop',0)"></span>
+      <span class="dot" onclick="goSlide('cardPop',1)"></span>
+    </div>
   </div>
 </div>
 
-<!-- 2-2) 카드사 혜택 팝업(card_pop.jpeg) -->
-<div class="modal" id="cardModal">
-  <div class="modal-inner">
-    <button class="modal-close" data-close="#cardModal">✕</button>
-    <img src="assets/images/etx/card_pop.jpeg" alt="카드사 혜택 안내" />
+<!-- 2) 통신사 멤버십 팝업 -->
+<div id="telecomPop" class="popup">
+  <div class="popup-content">
+    <button class="close" onclick="closePopup('telecomPop')">×</button>
+
+    <div class="swipe-slider">
+      <div class="slide">
+        <img src="assets/images/etx/phon.jpeg" alt="통신사 멤버십">
+      </div>
+      <!-- 이후 페이지 더 만들면 slide 블럭만 추가하면 됨 -->
+    </div>
+
+    <div class="dots">
+      <span class="dot active" onclick="goSlide('telecomPop',0)"></span>
+    </div>
   </div>
 </div>
 
-<!-- 2-3) 통신사 멤버십 팝업(phon.jpeg) -->
-<div class="modal" id="telecomModal">
-  <div class="modal-inner">
-    <button class="modal-close" data-close="#telecomModal">✕</button>
-    <img src="assets/images/etx/phon.jpeg" alt="통신사 멤버십 안내" />
+<!-- 3) 1+1 금요일 이벤트 팝업 -->
+<div id="fridayPop" class="popup">
+  <div class="popup-content">
+    <button class="close" onclick="closePopup('fridayPop')">×</button>
+
+    <div class="swipe-slider">
+      <div class="slide">
+        <img src="assets/images/etx/one.jpg" alt="파파 프라이데이 1+1">
+      </div>
+    </div>
+
+    <div class="dots">
+      <span class="dot active" onclick="goSlide('fridayPop',0)"></span>
+    </div>
   </div>
 </div>
 
@@ -337,6 +442,45 @@ dots.forEach(function(dot){
     startAuto();
   });
 });
+
+<script>
+  /* 팝업 열기/닫기 */
+  function openPopup(id){
+    document.getElementById(id).style.display = 'block';
+  }
+  function closePopup(id){
+    document.getElementById(id).style.display = 'none';
+  }
+
+  /* 점 클릭해서 특정 페이지로 이동 */
+  function goSlide(popupId, n){
+    const slider = document.querySelector('#' + popupId + ' .swipe-slider');
+    const dots   = document.querySelectorAll('#' + popupId + ' .dot');
+    if(!slider) return;
+
+    slider.scrollTo({
+      left: slider.clientWidth * n,
+      behavior:'smooth'
+    });
+
+    dots.forEach((d,i)=>d.classList.toggle('active', i===n));
+  }
+
+  /* 스크롤(손가락 스와이프) 할 때 자동으로 점 상태 변경 */
+  function bindSlider(popupId){
+    const slider = document.querySelector('#' + popupId + ' .swipe-slider');
+    const dots   = document.querySelectorAll('#' + popupId + ' .dot');
+    if(!slider || dots.length === 0) return;
+
+    slider.addEventListener('scroll', () => {
+      const idx = Math.round(slider.scrollLeft / slider.clientWidth);
+      dots.forEach((d,i)=>d.classList.toggle('active', i===idx));
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    ['cardPop','telecomPop','fridayPop'].forEach(bindSlider);
+  }); 
 </script>
 
 </body>
