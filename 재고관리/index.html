@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>재고 관리</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    body { font-family: -apple-system, system-ui; margin: 16px; }
+    h1 { margin: 0 0 12px; }
+    .row { display:flex; gap:8px; flex-wrap:wrap; margin: 10px 0; }
+    input, button, select { padding: 10px; font-size: 16px; }
+    input { width: 160px; }
+    input[name="name"]{ width: 220px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+    th, td { border-bottom: 1px solid #ddd; padding: 10px; text-align: left; }
+    tr.low { background: #ffe8e8; }
+    tr.ok  { background: #e9ffe9; }
+    .right { text-align: right; }
+    .muted { color:#666; font-size: 13px; }
+    .actions button { margin-right: 6px; }
+    .topbar{display:flex;justify-content:space-between;align-items:end;gap:12px;flex-wrap:wrap;}
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div>
+      <h1>재고 관리</h1>
+      <div class="muted">iPad 단독 · 오프라인 저장(localStorage)</div>
+    </div>
+    <div class="row">
+      <button id="exportJsonBtn">내보내기(JSON)</button>
+      <button id="exportCsvBtn">내보내기(CSV)</button>
+      <label>
+        가져오기
+        <input id="importFile" type="file" accept=".json,.csv" />
+      </label>
+    </div>
+  </div>
+
+  <div class="row">
+    <input name="name" id="name" placeholder="품목명" />
+    <input name="stock" id="stock" type="number" inputmode="numeric" placeholder="재고" />
+    <input name="minStock" id="minStock" type="number" inputmode="numeric" placeholder="최소권장" />
+    <input name="price" id="price" type="number" inputmode="numeric" placeholder="단가" />
+    <button id="addBtn">추가</button>
+    <select id="filter">
+      <option value="all">전체</option>
+      <option value="low">부족만</option>
+    </select>
+    <button id="clearBtn">전체 삭제</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>품목</th>
+        <th class="right">재고</th>
+        <th class="right">최소권장</th>
+        <th class="right">단가</th>
+        <th class="right">총액</th>
+        <th>상태</th>
+        <th>작업</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+    <tfoot>
+      <tr>
+        <td colspan="4" class="right"><b>총 재고자산</b></td>
+        <td class="right"><b id="totalValue">0</b></td>
+        <td colspan="2"></td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    }
+  </script>
+</body>
+</html>
