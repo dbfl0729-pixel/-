@@ -1,0 +1,1111 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>병원 재고·발주·원가·보고 통합 관리</title>
+  <style>
+    :root{
+      --bg:#0b0c10; --panel:#11131a; --panel2:#0f1117; --text:#e8e8ea; --muted:#a7a7b0;
+      --line:#232634; --accent:#6aa6ff; --warn:#ffcc66; --bad:#ff6a6a; --good:#6affb3;
+    }
+    body{ margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Apple SD Gothic Neo,Noto Sans KR,sans-serif;
+      background:linear-gradient(180deg,var(--bg),#07080b); color:var(--text); }
+    header{ position:sticky; top:0; z-index:10; background:rgba(11,12,16,.92); backdrop-filter: blur(8px);
+      border-bottom:1px solid var(--line); }
+    .wrap{ max-width:1200px; margin:0 auto; padding:12px 12px; }
+    .row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+    .title{ font-weight:700; letter-spacing:.2px; }
+    .badge{ font-size:12px; color:var(--muted); border:1px solid var(--line); padding:4px 8px; border-radius:999px; }
+    .btn{ appearance:none; border:1px solid var(--line); background:var(--panel); color:var(--text);
+      padding:8px 10px; border-radius:10px; cursor:pointer; font-size:13px; }
+    .btn:hover{ border-color:#3a3f55; }
+    .btn.primary{ border-color:rgba(106,166,255,.45); background:rgba(106,166,255,.12); }
+    .tabs{ display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; }
+    .tab{ border:1px solid var(--line); background:var(--panel2); color:var(--muted);
+      padding:8px 10px; border-radius:10px; cursor:pointer; font-size:13px; }
+    .tab.active{ color:var(--text); border-color:rgba(106,166,255,.5); background:rgba(106,166,255,.12); }
+    main .panel{ margin-top:12px; border:1px solid var(--line); background:rgba(17,19,26,.75);
+      border-radius:14px; padding:12px; }
+    .grid{ display:grid; grid-template-columns:repeat(12,1fr); gap:10px; }
+    .card{ border:1px solid var(--line); background:rgba(15,17,23,.75); border-radius:14px; padding:12px; }
+    .card h3{ margin:0 0 8px 0; font-size:14px; color:var(--muted); font-weight:600; }
+    .kpi{ font-size:22px; font-weight:800; }
+    .kpi small{ font-size:12px; font-weight:600; color:var(--muted); }
+    .note{ color:var(--muted); font-size:12px; line-height:1.45; }
+    .sep{ height:1px; background:var(--line); margin:10px 0; }
+    table{ width:100%; border-collapse:separate; border-spacing:0; overflow:hidden; border:1px solid var(--line); border-radius:12px; }
+    thead th{ position:sticky; top:0; background:#0f1117; color:var(--muted); font-size:12px; text-align:left;
+      padding:10px 8px; border-bottom:1px solid var(--line); white-space:nowrap; }
+    tbody td{ padding:9px 8px; border-bottom:1px solid rgba(35,38,52,.7); font-size:13px; vertical-align:middle; }
+    tbody tr:last-child td{ border-bottom:none; }
+    td.num, th.num{ text-align:right; font-variant-numeric: tabular-nums; }
+    td.center{ text-align:center; }
+    .pill{ display:inline-flex; align-items:center; gap:6px; border:1px solid var(--line); padding:3px 8px; border-radius:999px; font-size:12px; color:var(--muted); }
+    .pill.good{ border-color:rgba(106,255,179,.35); color:var(--good); }
+    .pill.bad{ border-color:rgba(255,106,106,.35); color:var(--bad); }
+    .pill.warn{ border-color:rgba(255,204,102,.35); color:var(--warn); }
+    .input, select{ width:100%; box-sizing:border-box; border:1px solid var(--line); background:#0f1117; color:var(--text);
+      padding:8px 9px; border-radius:10px; font-size:13px; }
+    .mini{ font-size:12px; color:var(--muted); }
+    .dangerRow{ background:rgba(255,106,106,.08); }
+    .warnRow{ background:rgba(255,204,102,.07); }
+    .okRow{ background:rgba(106,255,179,.06); }
+    .two{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    @media (max-width:900px){ .two{ grid-template-columns:1fr; } thead th{ position:static; } }
+  </style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="row" style="justify-content:space-between;">
+      <div class="row">
+        <div class="title">병원 재고·발주·원가·보고 통합 관리</div>
+        <div id="dbBadge" class="badge">저장소: localStorage</div>
+      </div>
+      <div class="row">
+        <button class="btn" id="btnExport">데이터 내보내기(JSON)</button>
+        <button class="btn" id="btnImport">데이터 가져오기(JSON)</button>
+        <button class="btn" id="btnReset" title="모든 데이터 삭제 후 초기 48개 품목 재생성">초기화</button>
+      </div>
+    </div>
+    <div class="tabs" id="tabs"></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="panel" id="view"></div>
+</main>
+
+<script>
+/* ==============================
+   0) 저장/유틸
+================================ */
+const KEY = "HOSP_INV_APP_V1";
+const todayISO = () => new Date().toISOString().slice(0,10);
+const ymOf = (iso) => (iso||"").slice(0,7);
+const num = (v) => {
+  const n = Number(v);
+  return Number.isFinite(n) ? n : 0;
+};
+const ceil = (v) => Math.ceil(num(v));
+const fmt = (v) => {
+  const n = num(v);
+  return n.toLocaleString("ko-KR");
+};
+const deepClone = (x) => JSON.parse(JSON.stringify(x));
+
+function loadDB(){
+  const raw = localStorage.getItem(KEY);
+  if(!raw) return null;
+  try { return JSON.parse(raw); } catch { return null; }
+}
+function saveDB(db){
+  localStorage.setItem(KEY, JSON.stringify(db));
+}
+function uid(prefix){
+  return prefix + "_" + Math.random().toString(36).slice(2,9) + "_" + Date.now().toString(36);
+}
+
+/* ==============================
+   1) 초기 품목 48개 생성
+   - 요청의 A/B/C/D 등급을 ItemMaster.grade에 저장
+   - 시스템 계산은 A/B/C 중심. D는 C처럼 점검 재고 기준으로 취급(삭제X, 비활성 가능)
+================================ */
+function seedItems(){
+  const mk = (name, category, grade) => ({
+    item_id: uid("item"),
+    name,
+    category,
+    grade, // A/B/C/D
+    base_unit_cost: 0,
+    sale_price: 0,
+    order_unit: "개",
+    units_per_box: 1,
+    lead_time_days: 0,
+    target_stock: 0,
+    safety_mode: "A",   // A or B
+    min_stock: 0,
+    cost_basis: "원가",
+    is_prepaid: false,
+    status: "Active"
+  });
+
+  const items = [];
+
+  // A (일일)
+  ["수분팩","진정팩","겔시트팩","거즈팩","모델링팩","해면"]
+    .forEach(n => items.push(mk(n,"팩/소모품","A")));
+
+  // B (주간)
+  ["멸균 거즈","장갑","클렌징 밀크","클렌징 젤","토너","아토 크림","셀퓨전씨 로션","셀퓨전씨 크림",
+   "재생 크림","선크림","알로에 젤","진정 젤","초음파 겔","스킨솜","거즈","GA20","GA30","중화제"]
+    .forEach(n => items.push(mk(n,"주간 점검","B")));
+
+  // C (월간)
+  ["팩붓","스파출라","코메도 압출기","유리볼","카프리가스","니들 26G","면봉","비타민 앰플 P","비타민 앰플 V",
+   "2B Aladdin Peeling Powder","2B Bio Peeling Preparation Pro","2B Bio Aladdin Peel(수딩 마스크)"]
+    .forEach(n => items.push(mk(n,"월간 점검","C")));
+
+  // D (파우더/청소 소모품)
+  ["세제","섬유유연제","퐁퐁","아이깨끗해","세탁청소가루","칫솔","매직스펀지","수세미","세탁망","고무줄","파우더룸 휴지","웨건 휴지"]
+    .forEach(n => items.push(mk(n,"청소/파우더","D")));
+
+  return items;
+}
+
+function initDB(){
+  const db = {
+    meta: { created_at: new Date().toISOString(), version: 1 },
+    ItemMaster: seedItems(),
+    Inbound: [],
+    DailyStock_A: [],
+    PeriodicStock_BC: [],
+    PrepaidStock: []
+  };
+  saveDB(db);
+  return db;
+}
+
+/* ==============================
+   2) 계산 로직
+================================ */
+function getActiveItems(db){
+  return db.ItemMaster.filter(x => x.status === "Active");
+}
+
+function latestInboundUnitCost(db, item_id, date){
+  // 동일 날짜 Inbound 단가 우선
+  const rows = db.Inbound.filter(x => x.item_id===item_id && x.date===date);
+  if(rows.length===0) return null;
+  // 같은 날짜 여러 입고가 있을 수 있으니 가중평균(수량 가중)으로 산출
+  let sumCost=0, sumQty=0;
+  for(const r of rows){
+    const q = num(r.qty);
+    sumQty += q;
+    sumCost += q * num(r.unit_cost);
+  }
+  if(sumQty<=0) return null;
+  return sumCost / sumQty;
+}
+
+function inboundQtyOn(db, item_id, date){
+  return db.Inbound
+    .filter(x => x.item_id===item_id && x.date===date)
+    .reduce((a,b)=>a+num(b.qty),0);
+}
+
+function usage7Avg(db, item_id, asOfDate){
+  // asOfDate 포함 최근 7일(=7개 날짜) DailyStock_A 사용량 평균
+  // 날짜 파싱: ISO yyyy-mm-dd
+  const end = new Date(asOfDate+"T00:00:00");
+  const start = new Date(end);
+  start.setDate(start.getDate()-6);
+  let sum=0, cnt=0;
+  for(const r of db.DailyStock_A){
+    if(r.item_id!==item_id) continue;
+    const d = new Date(r.date+"T00:00:00");
+    if(d>=start && d<=end){
+      sum += num(r.prev_stock) + num(r.inbound_qty) - num(r.end_stock);
+      cnt += 1;
+    }
+  }
+  if(cnt===0) return 0;
+  return sum / 7; // "최근7일 평균사용량"을 엄격히 7로 나눔(기록 누락일은 0으로 간주)
+}
+
+function safetyStock(db, item, asOfDate){
+  if(item.safety_mode === "A"){
+    return num(item.min_stock);
+  }
+  // mode B
+  return num(item.lead_time_days) * usage7Avg(db, item.item_id, asOfDate);
+}
+
+function currentStock(db, item){
+  if(item.grade === "A"){
+    // DailyStock_A 가장 최근 end_stock
+    const rows = db.DailyStock_A.filter(r=>r.item_id===item.item_id);
+    if(rows.length===0) return 0;
+    rows.sort((a,b)=> (a.date<b.date?1:-1));
+    return num(rows[0].end_stock);
+  }
+  // B/C/D => PeriodicStock_BC 가장 최근 actual_stock
+  const rows = db.PeriodicStock_BC.filter(r=>r.item_id===item.item_id);
+  if(rows.length===0) return 0;
+  rows.sort((a,b)=> (a.check_date<b.check_date?1:-1));
+  return num(rows[0].actual_stock);
+}
+
+function daysToDeplete(db, item, asOfDate){
+  const avg = usage7Avg(db, item.item_id, asOfDate);
+  if(avg<=0) return Infinity;
+  const cs = currentStock(db, item);
+  return cs / avg;
+}
+
+function monthlyAgg(db, ym){
+  // DailyStock_A 기반 (요구사항)
+  const rows = db.DailyStock_A.filter(r=> ymOf(r.date)===ym);
+  const byItem = new Map();
+  for(const r of rows){
+    const use = num(r.prev_stock)+num(r.inbound_qty)-num(r.end_stock);
+    const cost = use * num(r.unit_cost_snapshot);
+    const key = r.item_id;
+    const cur = byItem.get(key) || { usage:0, cost:0 };
+    cur.usage += use;
+    cur.cost += cost;
+    byItem.set(key, cur);
+  }
+  return byItem;
+}
+
+function totalMonthlyCost(db, ym){
+  const m = monthlyAgg(db, ym);
+  let sum=0;
+  for(const v of m.values()) sum += v.cost;
+  return sum;
+}
+
+/* ==============================
+   3) UI 공통
+================================ */
+const TABS = [
+  { id:"home", name:"1 홈 대시보드" },
+  { id:"items", name:"2 품목 관리" },
+  { id:"dailyA", name:"3 A등급 일일 재고 기록" },
+  { id:"inbound", name:"4 입고 기록" },
+  { id:"checkBC", name:"5 B/C 재고 점검" },
+  { id:"prepaid", name:"6 선결제 재고 관리" },
+  { id:"purchase", name:"7 발주 추천" },
+  { id:"report", name:"8 월간 리포트" },
+];
+
+let db = loadDB() || initDB();
+let activeTab = "home";
+
+function el(html){
+  const t = document.createElement("template");
+  t.innerHTML = html.trim();
+  return t.content.firstElementChild;
+}
+function renderTabs(){
+  const root = document.getElementById("tabs");
+  root.innerHTML = "";
+  for(const t of TABS){
+    const b = el(`<button class="tab ${t.id===activeTab?"active":""}" data-tab="${t.id}">${t.name}</button>`);
+    b.onclick = () => { activeTab = t.id; render(); };
+    root.appendChild(b);
+  }
+}
+
+function itemOptions(items){
+  return items.map(i=> `<option value="${i.item_id}">${i.name} (${i.grade})</option>`).join("");
+}
+
+function warnPill(cond, goodText, badText){
+  if(cond) return `<span class="pill bad">${badText}</span>`;
+  return `<span class="pill good">${goodText}</span>`;
+}
+
+/* ==============================
+   4) 화면: 1 홈 대시보드
+================================ */
+function viewHome(){
+  const ym = ymOf(todayISO());
+  const prevYm = (() => {
+    const d = new Date(todayISO()+"T00:00:00");
+    d.setMonth(d.getMonth()-1);
+    return d.toISOString().slice(0,7);
+  })();
+
+  const thisCost = totalMonthlyCost(db, ym);
+  const prevCost = totalMonthlyCost(db, prevYm);
+  const change = (prevCost===0) ? null : ((thisCost - prevCost) / prevCost) * 100;
+
+  // 비용 TOP3 (월간)
+  const m = monthlyAgg(db, ym);
+  const top = [...m.entries()]
+    .map(([item_id,v]) => ({ item: db.ItemMaster.find(x=>x.item_id===item_id), cost:v.cost }))
+    .filter(x=>x.item)
+    .sort((a,b)=>b.cost-a.cost)
+    .slice(0,3);
+
+  // 안전재고 이하
+  const asOf = todayISO();
+  const low = getActiveItems(db).map(item=>{
+    const cs = currentStock(db,item);
+    const ss = safetyStock(db,item,asOf);
+    return { item, cs, ss, low: cs<=ss };
+  }).filter(x=>x.low).sort((a,b)=>(a.cs-a.ss)-(b.cs-b.ss)).slice(0,20);
+
+  // 소진 10일 이내
+  const soon = getActiveItems(db).map(item=>{
+    const d = daysToDeplete(db,item,asOf);
+    return { item, days:d };
+  }).filter(x=>x.days!==Infinity && x.days<=10).sort((a,b)=>a.days-b.days).slice(0,20);
+
+  return `
+  <div class="grid">
+    <div class="card" style="grid-column:span 4;">
+      <h3>이번달 총 재료비 (DailyStock_A 기반)</h3>
+      <div class="kpi">${fmt(thisCost)} <small>원</small></div>
+      <div class="mini">기준월: ${ym}</div>
+    </div>
+    <div class="card" style="grid-column:span 4;">
+      <h3>전월 대비 증감</h3>
+      <div class="kpi">${change===null ? "확인 불가" : (change>=0?"+":"") + change.toFixed(1) + "%"}
+        <small>${prevYm} 대비</small></div>
+      <div class="mini">전월 비용: ${fmt(prevCost)}원</div>
+    </div>
+    <div class="card" style="grid-column:span 4;">
+      <h3>비용 TOP3 품목</h3>
+      ${top.length===0 ? `<div class="note">이번달 DailyStock_A 기록이 없습니다.</div>` : `
+        <table>
+          <thead><tr><th>품목</th><th class="num">월 비용(원)</th></tr></thead>
+          <tbody>
+            ${top.map(x=>`<tr><td>${x.item.name}</td><td class="num">${fmt(x.cost)}</td></tr>`).join("")}
+          </tbody>
+        </table>
+      `}
+    </div>
+
+    <div class="card" style="grid-column:span 6;">
+      <h3>안전재고 이하 품목</h3>
+      ${low.length===0 ? `<div class="note">안전재고 이하 품목이 없습니다.</div>` : `
+        <table>
+          <thead><tr>
+            <th>품목</th><th class="center">등급</th><th class="num">현재</th><th class="num">안전재고</th>
+          </tr></thead>
+          <tbody>
+            ${low.map(x=>`
+              <tr class="warnRow">
+                <td>${x.item.name}</td>
+                <td class="center">${x.item.grade}</td>
+                <td class="num">${fmt(x.cs)}</td>
+                <td class="num">${fmt(x.ss)}</td>
+              </tr>`).join("")}
+          </tbody>
+        </table>
+      `}
+    </div>
+
+    <div class="card" style="grid-column:span 6;">
+      <h3>소진 예상 10일 이내 (최근7일 평균사용량 기반)</h3>
+      ${soon.length===0 ? `<div class="note">소진 10일 이내 품목이 없습니다 (또는 사용량 기록 부족).</div>` : `
+        <table>
+          <thead><tr>
+            <th>품목</th><th class="center">등급</th><th class="num">소진 예상(일)</th>
+          </tr></thead>
+          <tbody>
+            ${soon.map(x=>`
+              <tr class="dangerRow">
+                <td>${x.item.name}</td>
+                <td class="center">${x.item.grade}</td>
+                <td class="num">${x.days.toFixed(1)}</td>
+              </tr>`).join("")}
+          </tbody>
+        </table>
+      `}
+    </div>
+  </div>`;
+}
+
+/* ==============================
+   5) 화면: 2 품목 관리
+================================ */
+function viewItems(){
+  const items = db.ItemMaster.slice().sort((a,b)=> (a.status>b.status? -1:1) || (a.name>b.name?1:-1));
+  const rows = items.map(i=>{
+    const cs = currentStock(db,i);
+    const ss = safetyStock(db,i,todayISO());
+    const need = (cs<=ss);
+    return { i, cs, ss, need };
+  });
+
+  return `
+  <div class="two">
+    <div class="card">
+      <h3>품목 추가</h3>
+      <div class="grid">
+        <div style="grid-column:span 6;"><div class="mini">품목명</div><input id="newName" class="input" placeholder="예: 마스크팩" /></div>
+        <div style="grid-column:span 6;"><div class="mini">카테고리</div><input id="newCat" class="input" placeholder="예: 팩/소모품" /></div>
+
+        <div style="grid-column:span 3;"><div class="mini">등급</div>
+          <select id="newGrade" class="input">
+            <option value="A">A(일일)</option><option value="B">B(주간)</option><option value="C">C(월간)</option><option value="D">D(청소/파우더)</option>
+          </select>
+        </div>
+        <div style="grid-column:span 3;"><div class="mini">발주 단위</div><input id="newOrderUnit" class="input" value="개" /></div>
+        <div style="grid-column:span 3;"><div class="mini">박스당 수량</div><input id="newUPB" class="input" value="1" /></div>
+        <div style="grid-column:span 3;"><div class="mini">리드타임(일)</div><input id="newLead" class="input" value="0" /></div>
+
+        <div style="grid-column:span 4;"><div class="mini">기본 원가</div><input id="newCost" class="input" value="0" /></div>
+        <div style="grid-column:span 4;"><div class="mini">권장 재고(target)</div><input id="newTarget" class="input" value="0" /></div>
+        <div style="grid-column:span 4;"><div class="mini">최소 재고(min)</div><input id="newMin" class="input" value="0" /></div>
+
+        <div style="grid-column:span 4;"><div class="mini">안전재고 모드</div>
+          <select id="newSafetyMode" class="input"><option value="A">A(min_stock)</option><option value="B">B(lead_time×7일평균사용량)</option></select>
+        </div>
+        <div style="grid-column:span 4;"><div class="mini">선결제 품목</div>
+          <select id="newPrepaid" class="input"><option value="false">아니오</option><option value="true">예</option></select>
+        </div>
+        <div style="grid-column:span 4; display:flex; align-items:end;">
+          <button class="btn primary" id="btnAddItem" style="width:100%;">추가</button>
+        </div>
+      </div>
+      <div class="sep"></div>
+      <div class="note">
+        규칙: 삭제 불가. 사용 중지 시 Inactive로 전환(과거 기록 유지).
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>품목 목록 (스프레드시트형)</h3>
+      <div class="note">수치 우측 정렬. 상태/발주 필요 자동 강조.</div>
+      <div style="overflow:auto; max-height:70vh;">
+      <table>
+        <thead>
+          <tr>
+            <th>품목명</th><th>카테고리</th><th class="center">등급</th>
+            <th class="num">기본원가</th><th class="num">권장재고</th><th class="num">현재재고</th>
+            <th class="center">발주</th><th class="center">상태</th><th class="center">저장</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows.map(({i,cs,need})=>{
+            const trClass = i.status==="Inactive" ? "" : (need ? "warnRow" : "okRow");
+            return `
+            <tr class="${trClass}">
+              <td><input class="input" data-k="name" data-id="${i.item_id}" value="${i.name}"/></td>
+              <td><input class="input" data-k="category" data-id="${i.item_id}" value="${i.category}"/></td>
+              <td class="center">
+                <select class="input" data-k="grade" data-id="${i.item_id}">
+                  ${["A","B","C","D"].map(g=>`<option value="${g}" ${i.grade===g?"selected":""}>${g}</option>`).join("")}
+                </select>
+              </td>
+              <td class="num"><input class="input" data-k="base_unit_cost" data-id="${i.item_id}" value="${num(i.base_unit_cost)}"/></td>
+              <td class="num"><input class="input" data-k="target_stock" data-id="${i.item_id}" value="${num(i.target_stock)}"/></td>
+              <td class="num">${fmt(cs)}</td>
+              <td class="center">${need ? `<span class="pill warn">발주 필요</span>` : `<span class="pill good">정상</span>`}</td>
+              <td class="center">
+                <select class="input" data-k="status" data-id="${i.item_id}">
+                  <option value="Active" ${i.status==="Active"?"selected":""}>Active</option>
+                  <option value="Inactive" ${i.status==="Inactive"?"selected":""}>Inactive</option>
+                </select>
+              </td>
+              <td class="center"><button class="btn" data-save-item="${i.item_id}">저장</button></td>
+            </tr>`;
+          }).join("")}
+        </tbody>
+      </table>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ==============================
+   6) 화면: 3 A등급 일일 재고 기록
+   - 입력: end_stock(퇴근 실재고), staff_used_qty(직원 기록 사용량)
+   - 자동: prev_stock(전일 퇴근), inbound_qty(오늘 입고 합), usage, diff, cost
+   - unit_cost_snapshot: (1) 오늘 inbound 단가(가중평균) (2) 없으면 base_unit_cost
+   - 스냅샷 잠금: 생성 후 편집 불가(표시만)
+================================ */
+function viewDailyA(){
+  const itemsA = db.ItemMaster.filter(x=>x.grade==="A" && x.status==="Active");
+  const date = todayISO();
+
+  // 입력 폼
+  let html = `
+    <div class="card">
+      <h3>오늘(A등급) 기록 입력</h3>
+      <div class="grid">
+        <div style="grid-column:span 4;">
+          <div class="mini">날짜</div>
+          <input id="dsDate" class="input" value="${date}" />
+        </div>
+        <div style="grid-column:span 4;">
+          <div class="mini">품목(A등급)</div>
+          <select id="dsItem" class="input">${itemOptions(itemsA)}</select>
+        </div>
+        <div style="grid-column:span 2;">
+          <div class="mini">퇴근 실재고</div>
+          <input id="dsEnd" class="input" value="0" />
+        </div>
+        <div style="grid-column:span 2;">
+          <div class="mini">직원 기록 사용량</div>
+          <input id="dsStaffUsed" class="input" value="0" />
+        </div>
+        <div style="grid-column:span 12;">
+          <div class="mini">메모</div>
+          <input id="dsMemo" class="input" placeholder="선택" />
+        </div>
+        <div style="grid-column:span 12;">
+          <button class="btn primary" id="btnAddDailyA" style="width:100%;">저장(자동 계산 포함)</button>
+        </div>
+      </div>
+      <div class="note">단가 스냅샷 우선순위: (1) 동일 날짜 Inbound 단가(가중평균) (2) ItemMaster 기본원가. 저장 후 스냅샷은 수정되지 않습니다.</div>
+    </div>
+  `;
+
+  // 목록
+  const rows = db.DailyStock_A.slice().sort((a,b)=> (a.date<b.date?1:-1));
+  html += `
+    <div class="card">
+      <h3>일일 기록 (A등급)</h3>
+      <div style="overflow:auto; max-height:70vh;">
+      <table>
+        <thead>
+          <tr>
+            <th>날짜</th><th>품목</th>
+            <th class="num">전일재고</th><th class="num">오늘입고</th><th class="num">퇴근재고</th>
+            <th class="num">사용량(자동)</th><th class="num">직원기록</th><th class="num">오차</th>
+            <th class="num">단가스냅샷</th><th class="num">당일비용</th>
+            <th>메모</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows.map(r=>{
+            const item = db.ItemMaster.find(x=>x.item_id===r.item_id);
+            const usage = num(r.prev_stock)+num(r.inbound_qty)-num(r.end_stock);
+            const diff = usage - num(r.staff_used_qty);
+            const cost = usage * num(r.unit_cost_snapshot);
+            const trClass = (diff!==0) ? "warnRow" : "okRow";
+            return `
+              <tr class="${trClass}">
+                <td>${r.date}</td>
+                <td>${item?item.name:"(삭제됨-비정상)"} </td>
+                <td class="num">${fmt(r.prev_stock)}</td>
+                <td class="num">${fmt(r.inbound_qty)}</td>
+                <td class="num">${fmt(r.end_stock)}</td>
+                <td class="num">${fmt(usage)}</td>
+                <td class="num">${fmt(r.staff_used_qty)}</td>
+                <td class="num">${fmt(diff)}</td>
+                <td class="num">${fmt(r.unit_cost_snapshot)}</td>
+                <td class="num">${fmt(cost)}</td>
+                <td>${r.memo||""}</td>
+              </tr>`;
+          }).join("")}
+        </tbody>
+      </table>
+      </div>
+      <div class="note">경고: 오차(사용량-직원기록)가 0이 아니면 "재고 불일치"로 간주합니다.</div>
+    </div>
+  `;
+
+  return html;
+}
+
+/* ==============================
+   7) 화면: 4 입고 기록
+================================ */
+function viewInbound(){
+  const items = db.ItemMaster.filter(x=>x.status==="Active");
+  const date = todayISO();
+
+  let html = `
+    <div class="card">
+      <h3>입고 기록 입력</h3>
+      <div class="grid">
+        <div style="grid-column:span 4;"><div class="mini">날짜</div><input id="inDate" class="input" value="${date}" /></div>
+        <div style="grid-column:span 4;"><div class="mini">품목</div><select id="inItem" class="input">${itemOptions(items)}</select></div>
+        <div style="grid-column:span 2;"><div class="mini">수량</div><input id="inQty" class="input" value="0" /></div>
+        <div style="grid-column:span 2;"><div class="mini">단가</div><input id="inCost" class="input" value="0" /></div>
+        <div style="grid-column:span 12;"><div class="mini">메모</div><input id="inMemo" class="input" placeholder="선택" /></div>
+        <div style="grid-column:span 12;"><button class="btn primary" id="btnAddInbound" style="width:100%;">저장</button></div>
+      </div>
+      <div class="note">A등급 일일 재고 계산 시, 동일 날짜 입고 수량/단가가 자동 반영됩니다.</div>
+    </div>
+  `;
+
+  const rows = db.Inbound.slice().sort((a,b)=> (a.date<b.date?1:-1));
+  html += `
+    <div class="card">
+      <h3>입고 목록</h3>
+      <div style="overflow:auto; max-height:70vh;">
+      <table>
+        <thead><tr><th>날짜</th><th>품목</th><th class="num">수량</th><th class="num">단가</th><th class="num">금액</th><th>메모</th></tr></thead>
+        <tbody>
+          ${rows.map(r=>{
+            const item = db.ItemMaster.find(x=>x.item_id===r.item_id);
+            const amt = num(r.qty)*num(r.unit_cost);
+            return `<tr>
+              <td>${r.date}</td><td>${item?item.name:"(비정상)"}</td>
+              <td class="num">${fmt(r.qty)}</td><td class="num">${fmt(r.unit_cost)}</td><td class="num">${fmt(amt)}</td>
+              <td>${r.memo||""}</td></tr>`;
+          }).join("")}
+        </tbody>
+      </table>
+      </div>
+      <div class="note">삭제 기능은 구현하지 않았습니다(요구사항의 "품목 삭제 금지"와 별개로, 기록 삭제도 운영상 리스크가 커서 기본 비활성/추가 방식 권장).</div>
+    </div>
+  `;
+  return html;
+}
+
+/* ==============================
+   8) 화면: 5 B/C 재고 점검 (D 포함)
+   - 입력: actual_stock
+   - 자동: 부족수량, 주문필요여부(actual < target)
+================================ */
+function viewCheckBC(){
+  const items = db.ItemMaster.filter(x=>["B","C","D"].includes(x.grade) && x.status==="Active");
+  const date = todayISO();
+
+  let html = `
+    <div class="card">
+      <h3>B/C/D 재고 점검 입력</h3>
+      <div class="grid">
+        <div style="grid-column:span 4;"><div class="mini">점검일</div><input id="ckDate" class="input" value="${date}" /></div>
+        <div style="grid-column:span 6;"><div class="mini">품목(B/C/D)</div><select id="ckItem" class="input">${itemOptions(items)}</select></div>
+        <div style="grid-column:span 2;"><div class="mini">실재고</div><input id="ckStock" class="input" value="0" /></div>
+        <div style="grid-column:span 12;"><div class="mini">메모</div><input id="ckMemo" class="input" placeholder="선택" /></div>
+        <div style="grid-column:span 12;"><button class="btn primary" id="btnAddCheck" style="width:100%;">저장</button></div>
+      </div>
+      <div class="note">주문 필요 여부: actual_stock &lt; target_stock. 부족 수량: max(target-targetActual,0).</div>
+    </div>
+  `;
+
+  const rows = db.PeriodicStock_BC.slice().sort((a,b)=> (a.check_date<b.check_date?1:-1));
+  html += `
+    <div class="card">
+      <h3>점검 기록</h3>
+      <div style="overflow:auto; max-height:70vh;">
+      <table>
+        <thead><tr><th>점검일</th><th>품목</th><th class="num">실재고</th><th class="num">권장재고</th><th class="num">부족수량</th><th class="center">주문</th><th>메모</th></tr></thead>
+        <tbody>
+          ${rows.map(r=>{
+            const item = db.ItemMaster.find(x=>x.item_id===r.item_id);
+            const target = item?num(item.target_stock):0;
+            const actual = num(r.actual_stock);
+            const lack = Math.max(target-actual,0);
+            const need = actual<target;
+            const trClass = need ? "warnRow" : "okRow";
+            return `<tr class="${trClass}">
+              <td>${r.check_date}</td><td>${item?item.name:"(비정상)"}</td>
+              <td class="num">${fmt(actual)}</td><td class="num">${fmt(target)}</td><td class="num">${fmt(lack)}</td>
+              <td class="center">${need?`<span class="pill warn">발주 필요</span>`:`<span class="pill good">정상</span>`}</td>
+              <td>${r.memo||""}</td></tr>`;
+          }).join("")}
+        </tbody>
+      </table>
+      </div>
+    </div>
+  `;
+  return html;
+}
+
+/* ==============================
+   9) 화면: 6 선결제 재고
+   - 입력: hospital_stock, vendor_balance, hospital_safety_stock, vendor_min_balance
+   - 자동: total, dispatchNeed, repaidNeed
+================================ */
+function viewPrepaid(){
+  const items = db.ItemMaster.filter(x=>x.status==="Active");
+  const date = todayISO();
+
+  let html = `
+    <div class="card">
+      <h3>선결제 재고 입력</h3>
+      <div class="grid">
+        <div style="grid-column:span 3;"><div class="mini">날짜</div><input id="ppDate" class="input" value="${date}" /></div>
+        <div style="grid-column:span 5;"><div class="mini">품목</div><select id="ppItem" class="input">${itemOptions(items)}</select></div>
+        <div style="grid-column:span 2;"><div class="mini">병원 재고</div><input id="ppH" class="input" value="0" /></div>
+        <div style="grid-column:span 2;"><div class="mini">업체 잔고</div><input id="ppV" class="input" value="0" /></div>
+        <div style="grid-column:span 3;"><div class="mini">병원 안전재고</div><input id="ppHS" class="input" value="0" /></div>
+        <div style="grid-column:span 3;"><div class="mini">업체 최소잔고</div><input id="ppVM" class="input" value="0" /></div>
+        <div style="grid-column:span 6;"><div class="mini">메모</div><input id="ppMemo" class="input" placeholder="선택" /></div>
+        <div style="grid-column:span 12;"><button class="btn primary" id="btnAddPrepaid" style="width:100%;">저장</button></div>
+      </div>
+      <div class="note">총 가용 재고 = 병원 + 업체. 출고 필요 = 병원 ≤ 병원안전재고. 재선결제 필요 = 업체 ≤ 업체최소잔고.</div>
+    </div>
+  `;
+
+  const rows = db.PrepaidStock.slice().sort((a,b)=> (a.date<b.date?1:-1));
+  html += `
+    <div class="card">
+      <h3>선결제 재고 기록</h3>
+      <div style="overflow:auto; max-height:70vh;">
+      <table>
+        <thead>
+          <tr>
+            <th>날짜</th><th>품목</th>
+            <th class="num">병원</th><th class="num">업체</th><th class="num">총가용</th>
+            <th class="center">출고요청</th><th class="center">재선결제</th><th>메모</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows.map(r=>{
+            const item = db.ItemMaster.find(x=>x.item_id===r.item_id);
+            const total = num(r.hospital_stock)+num(r.vendor_balance);
+            const dispatchNeed = num(r.hospital_stock) <= num(r.hospital_safety_stock);
+            const repaidNeed = num(r.vendor_balance) <= num(r.vendor_min_balance);
+            const trClass = (dispatchNeed||repaidNeed) ? "warnRow" : "okRow";
+            return `<tr class="${trClass}">
+              <td>${r.date}</td><td>${item?item.name:"(비정상)"}</td>
+              <td class="num">${fmt(r.hospital_stock)}</td><td class="num">${fmt(r.vendor_balance)}</td><td class="num">${fmt(total)}</td>
+              <td class="center">${dispatchNeed?`<span class="pill warn">필요</span>`:`<span class="pill good">정상</span>`}</td>
+              <td class="center">${repaidNeed?`<span class="pill warn">필요</span>`:`<span class="pill good">정상</span>`}</td>
+              <td>${r.memo||""}</td>
+            </tr>`;
+          }).join("")}
+        </tbody>
+      </table>
+      </div>
+    </div>
+  `;
+
+  return html;
+}
+
+/* ==============================
+   10) 화면: 7 발주 추천
+   - 조건: current_stock ≤ safety_stock
+   - 발주 권장 수량:
+     a) 기본: max(target-current,0)
+     b) 리드타임 반영: max((target + lead_time*avg7) - current,0)
+   - 박스 발주: ceil(qty / units_per_box)
+================================ */
+function viewPurchase(){
+  const asOf = todayISO();
+  const items = getActiveItems(db);
+
+  const rows = items.map(item=>{
+    const cs = currentStock(db,item);
+    const ss = safetyStock(db,item,asOf);
+    const avg7 = usage7Avg(db,item.item_id,asOf);
+    const target = num(item.target_stock);
+    const lead = num(item.lead_time_days);
+    const qtyBase = Math.max(target - cs, 0);
+    const qtyLead = Math.max((target + lead*avg7) - cs, 0);
+    const qty = qtyLead; // 리드타임 반영을 기본 추천으로 사용
+    const box = (num(item.units_per_box) > 0) ? ceil(qty / num(item.units_per_box)) : 0;
+    const need = cs <= ss;
+    return { item, cs, ss, target, qty, box, need };
+  }).sort((a,b)=> (b.need-a.need) || (b.qty-a.qty));
+
+  return `
+    <div class="card">
+      <h3>발주 추천 (안전재고 이하 기준)</h3>
+      <div class="note">현재재고 기준은 A: 최근 퇴근실재고(end_stock), B/C/D: 최근 점검재고(actual_stock). 안전재고 모드 B는 "리드타임×최근7일 평균사용량".</div>
+      <div style="overflow:auto; max-height:75vh;">
+      <table>
+        <thead>
+          <tr>
+            <th>품목</th><th class="center">등급</th>
+            <th class="num">현재재고</th><th class="num">안전재고</th><th class="num">권장재고</th>
+            <th class="num">발주수량</th><th class="num">박스수</th><th class="center">상태</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows.map(r=>{
+            const trClass = r.need ? "warnRow" : "okRow";
+            return `<tr class="${trClass}">
+              <td>${r.item.name}</td>
+              <td class="center">${r.item.grade}</td>
+              <td class="num">${fmt(r.cs)}</td>
+              <td class="num">${fmt(r.ss)}</td>
+              <td class="num">${fmt(r.target)}</td>
+              <td class="num">${fmt(r.qty)}</td>
+              <td class="num">${fmt(r.box)}</td>
+              <td class="center">${r.need?`<span class="pill warn">발주 필요</span>`:`<span class="pill good">정상</span>`}</td>
+            </tr>`;
+          }).join("")}
+        </tbody>
+      </table>
+      </div>
+    </div>
+  `;
+}
+
+/* ==============================
+   11) 화면: 8 월간 리포트
+   - 품목별 월 사용량/월 비용 (DailyStock_A)
+   - 전월 대비 증감 (총 비용 기준)
+================================ */
+function viewReport(){
+  const ym = ymOf(todayISO());
+  const prevYm = (() => {
+    const d = new Date(todayISO()+"T00:00:00");
+    d.setMonth(d.getMonth()-1);
+    return d.toISOString().slice(0,7);
+  })();
+
+  const mapThis = monthlyAgg(db, ym);
+  const mapPrev = monthlyAgg(db, prevYm);
+  const items = db.ItemMaster;
+
+  const rows = items.map(it=>{
+    const cur = mapThis.get(it.item_id) || { usage:0, cost:0 };
+    const pre = mapPrev.get(it.item_id) || { usage:0, cost:0 };
+    const usageDiff = cur.usage - pre.usage;
+    const costDiff = cur.cost - pre.cost;
+    return { it, cur, pre, usageDiff, costDiff };
+  }).filter(x => (x.cur.usage!==0 || x.cur.cost!==0 || x.pre.usage!==0 || x.pre.cost!==0))
+    .sort((a,b)=> b.cur.cost - a.cur.cost);
+
+  const thisCost = totalMonthlyCost(db, ym);
+  const prevCost = totalMonthlyCost(db, prevYm);
+  const change = (prevCost===0) ? null : ((thisCost-prevCost)/prevCost)*100;
+
+  return `
+    <div class="card">
+      <h3>월간 리포트</h3>
+      <div class="grid">
+        <div class="card" style="grid-column:span 4;">
+          <h3>총 재료비</h3>
+          <div class="kpi">${fmt(thisCost)} <small>원</small></div>
+          <div class="mini">기준월: ${ym}</div>
+        </div>
+        <div class="card" style="grid-column:span 4;">
+          <h3>전월 대비(총비용)</h3>
+          <div class="kpi">${change===null ? "확인 불가" : (change>=0?"+":"") + change.toFixed(1) + "%"}
+            <small>${prevYm} 대비</small></div>
+          <div class="mini">전월 비용: ${fmt(prevCost)}원</div>
+        </div>
+        <div class="card" style="grid-column:span 4;">
+          <h3>최근7일 평균 사용량</h3>
+          <div class="note">A등급만 DailyStock_A 사용량이 존재합니다. B/C/D는 점검 재고 중심 구조로 운영합니다.</div>
+        </div>
+      </div>
+
+      <div class="sep"></div>
+      <div style="overflow:auto; max-height:70vh;">
+      <table>
+        <thead>
+          <tr>
+            <th>품목</th><th class="center">등급</th>
+            <th class="num">월 사용량</th><th class="num">월 비용(원)</th>
+            <th class="num">전월 사용량</th><th class="num">전월 비용(원)</th>
+            <th class="num">사용량 증감</th><th class="num">비용 증감(원)</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows.length===0 ? `<tr><td colspan="8" class="note">해당 월/전월에 DailyStock_A 기록이 없습니다.</td></tr>` : rows.map(r=>{
+            const trClass = (r.costDiff>0) ? "warnRow" : "okRow";
+            return `<tr class="${trClass}">
+              <td>${r.it.name}</td>
+              <td class="center">${r.it.grade}</td>
+              <td class="num">${fmt(r.cur.usage)}</td>
+              <td class="num">${fmt(r.cur.cost)}</td>
+              <td class="num">${fmt(r.pre.usage)}</td>
+              <td class="num">${fmt(r.pre.cost)}</td>
+              <td class="num">${fmt(r.usageDiff)}</td>
+              <td class="num">${fmt(r.costDiff)}</td>
+            </tr>`;
+          }).join("")}
+        </tbody>
+      </table>
+      </div>
+    </div>
+  `;
+}
+
+/* ==============================
+   12) 렌더/이벤트 바인딩
+================================ */
+function render(){
+  renderTabs();
+  const root = document.getElementById("view");
+  if(activeTab==="home") root.innerHTML = viewHome();
+  if(activeTab==="items") root.innerHTML = viewItems();
+  if(activeTab==="dailyA") root.innerHTML = viewDailyA();
+  if(activeTab==="inbound") root.innerHTML = viewInbound();
+  if(activeTab==="checkBC") root.innerHTML = viewCheckBC();
+  if(activeTab==="prepaid") root.innerHTML = viewPrepaid();
+  if(activeTab==="purchase") root.innerHTML = viewPurchase();
+  if(activeTab==="report") root.innerHTML = viewReport();
+
+  bindHandlers();
+}
+
+function bindHandlers(){
+  // 2) 품목 추가
+  const add = document.getElementById("btnAddItem");
+  if(add){
+    add.onclick = () => {
+      const name = document.getElementById("newName").value.trim();
+      if(!name){ alert("품목명을 입력하세요."); return; }
+      db.ItemMaster.push({
+        item_id: uid("item"),
+        name,
+        category: document.getElementById("newCat").value.trim(),
+        grade: document.getElementById("newGrade").value,
+        base_unit_cost: num(document.getElementById("newCost").value),
+        sale_price: 0,
+        order_unit: document.getElementById("newOrderUnit").value.trim() || "개",
+        units_per_box: num(document.getElementById("newUPB").value) || 1,
+        lead_time_days: num(document.getElementById("newLead").value),
+        target_stock: num(document.getElementById("newTarget").value),
+        safety_mode: document.getElementById("newSafetyMode").value,
+        min_stock: num(document.getElementById("newMin").value),
+        cost_basis: "원가",
+        is_prepaid: document.getElementById("newPrepaid").value==="true",
+        status: "Active"
+      });
+      saveDB(db);
+      render();
+    };
+  }
+
+  // 2) 품목 저장
+  document.querySelectorAll("[data-save-item]").forEach(btn=>{
+    btn.onclick = () => {
+      const id = btn.getAttribute("data-save-item");
+      const item = db.ItemMaster.find(x=>x.item_id===id);
+      if(!item) return;
+      const fields = document.querySelectorAll(`[data-id="${id}"]`);
+      fields.forEach(f=>{
+        const k = f.getAttribute("data-k");
+        let v = f.value;
+        if(["base_unit_cost","target_stock"].includes(k)) v = num(v);
+        item[k] = v;
+      });
+      saveDB(db);
+      render();
+    };
+  });
+
+  // 3) DailyStock_A 저장
+  const addDaily = document.getElementById("btnAddDailyA");
+  if(addDaily){
+    addDaily.onclick = () => {
+      const date = document.getElementById("dsDate").value;
+      const item_id = document.getElementById("dsItem").value;
+      const end_stock = num(document.getElementById("dsEnd").value);
+      const staff_used_qty = num(document.getElementById("dsStaffUsed").value);
+      const memo = document.getElementById("dsMemo").value.trim();
+
+      const item = db.ItemMaster.find(x=>x.item_id===item_id);
+      if(!item){ alert("품목이 유효하지 않습니다."); return; }
+
+      // prev_stock: 전일(가장 최근) end_stock
+      const prevRows = db.DailyStock_A.filter(r=>r.item_id===item_id && r.date < date).sort((a,b)=> (a.date<b.date?1:-1));
+      const prev_stock = prevRows.length ? num(prevRows[0].end_stock) : 0;
+
+      const inbound_qty = inboundQtyOn(db, item_id, date);
+
+      // unit_cost_snapshot 결정
+      const inboundCost = latestInboundUnitCost(db, item_id, date);
+      const unit_cost_snapshot = (inboundCost!==null) ? inboundCost : num(item.base_unit_cost);
+
+      db.DailyStock_A.push({
+        date, item_id,
+        prev_stock,
+        inbound_qty,
+        end_stock,
+        staff_used_qty,
+        unit_cost_snapshot, // 잠금(저장 후 수정 UI 제공 안 함)
+        memo
+      });
+      saveDB(db);
+      render();
+    };
+  }
+
+  // 4) Inbound 저장
+  const addIn = document.getElementById("btnAddInbound");
+  if(addIn){
+    addIn.onclick = () => {
+      db.Inbound.push({
+        inbound_id: uid("in"),
+        date: document.getElementById("inDate").value,
+        item_id: document.getElementById("inItem").value,
+        qty: num(document.getElementById("inQty").value),
+        unit_cost: num(document.getElementById("inCost").value),
+        memo: document.getElementById("inMemo").value.trim()
+      });
+      saveDB(db);
+      render();
+    };
+  }
+
+  // 5) PeriodicStock 저장
+  const addCk = document.getElementById("btnAddCheck");
+  if(addCk){
+    addCk.onclick = () => {
+      db.PeriodicStock_BC.push({
+        check_date: document.getElementById("ckDate").value,
+        item_id: document.getElementById("ckItem").value,
+        actual_stock: num(document.getElementById("ckStock").value),
+        memo: document.getElementById("ckMemo").value.trim()
+      });
+      saveDB(db);
+      render();
+    };
+  }
+
+  // 6) Prepaid 저장
+  const addPp = document.getElementById("btnAddPrepaid");
+  if(addPp){
+    addPp.onclick = () => {
+      db.PrepaidStock.push({
+        date: document.getElementById("ppDate").value,
+        item_id: document.getElementById("ppItem").value,
+        hospital_stock: num(document.getElementById("ppH").value),
+        vendor_balance: num(document.getElementById("ppV").value),
+        hospital_safety_stock: num(document.getElementById("ppHS").value),
+        vendor_min_balance: num(document.getElementById("ppVM").value),
+        memo: document.getElementById("ppMemo").value.trim()
+      });
+      saveDB(db);
+      render();
+    };
+  }
+}
+
+/* ==============================
+   13) 상단 유틸 버튼
+================================ */
+document.getElementById("btnReset").onclick = () => {
+  if(!confirm("모든 데이터를 삭제하고 초기 48개 품목으로 재생성합니다. 계속합니까?")) return;
+  localStorage.removeItem(KEY);
+  db = initDB();
+  activeTab = "home";
+  render();
+};
+
+document.getElementById("btnExport").onclick = () => {
+  const data = JSON.stringify(db, null, 2);
+  const blob = new Blob([data], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "inventory_app_export.json";
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+document.getElementById("btnImport").onclick = async () => {
+  const inp = document.createElement("input");
+  inp.type = "file";
+  inp.accept = "application/json";
+  inp.onchange = async () => {
+    const file = inp.files[0];
+    if(!file) return;
+    const text = await file.text();
+    try{
+      const obj = JSON.parse(text);
+      // 최소 구조 검증
+      if(!obj.ItemMaster || !obj.Inbound || !obj.DailyStock_A || !obj.PeriodicStock_BC || !obj.PrepaidStock){
+        alert("형식이 올바르지 않습니다.");
+        return;
+      }
+      db = obj;
+      saveDB(db);
+      render();
+    }catch{
+      alert("JSON 파싱 실패");
+    }
+  };
+  inp.click();
+};
+
+/* ==============================
+   14) 시작
+================================ */
+renderTabs();
+render();
+</script>
+</body>
+</html>
