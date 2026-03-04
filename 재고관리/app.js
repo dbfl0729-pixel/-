@@ -1,4 +1,3 @@
-/* 피부과 재고 관리 (v2) - localStorage 기반 */
 const STORAGE_KEY = "derm_inventory_v2";
 
 const $ = (id) => document.getElementById(id);
@@ -502,6 +501,12 @@ function adjustStock(itemId) {
 function renderItems() {
   const gradeF = $("it-filter-grade").value;
   const activeF = $("it-filter-active").value;
+  // 탭 상태 동기화
+  const map = {active:"it-tab-active", inactive:"it-tab-inactive", all:"it-tab-all"};
+  for (const k of Object.keys(map)){
+    const el = document.getElementById(map[k]);
+    if (el) el.classList.toggle("on", k===activeF);
+  }
   const orderF = $("it-filter-order").value;
 
   const list = db.items
@@ -535,7 +540,7 @@ function renderItems() {
       <td class="actions">
         <button data-act="stock" data-id="${it.id}">재고입력</button>
         <button data-act="edit" data-id="${it.id}">수정</button>
-        <button data-act="toggle" data-id="${it.id}">${it.active ? "비활성" : "활성"}</button>
+        <button data-act="toggle" data-id="${it.id}">${it.active ? "비활성" : "복구"}</button>
       </td>
     `;
     tbody.appendChild(tr);
@@ -550,9 +555,30 @@ function renderItems() {
 
 $("it-save-btn").addEventListener("click", upsertItemFromInputs);
 $("it-cancel-btn").addEventListener("click", clearItemInputs);
+
+function setItemsActiveTab(val){
+  const sel = $("it-filter-active");
+  sel.value = val;
+  // visual
+  const map = {active:"it-tab-active", inactive:"it-tab-inactive", all:"it-tab-all"};
+  for (const k of Object.keys(map)){
+    const el = document.getElementById(map[k]);
+    if (el) el.classList.toggle("on", k===val);
+  }
+  renderItems();
+}
+
 $("it-filter-grade").addEventListener("change", renderItems);
 $("it-filter-active").addEventListener("change", renderItems);
 $("it-filter-order").addEventListener("change", renderItems);
+
+// 상태 탭 (Active / Inactive / 전체)
+const tabActive = document.getElementById("it-tab-active");
+const tabInactive = document.getElementById("it-tab-inactive");
+const tabAll = document.getElementById("it-tab-all");
+if (tabActive) tabActive.addEventListener("click", () => setItemsActiveTab("active"));
+if (tabInactive) tabInactive.addEventListener("click", () => setItemsActiveTab("inactive"));
+if (tabAll) tabAll.addEventListener("click", () => setItemsActiveTab("all"));
 
 $("it-tbody").addEventListener("click", (e) => {
   const btn = e.target.closest("button[data-act]");
