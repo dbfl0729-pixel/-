@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>다채움 - 가격안내 · 피부팀 재고</title>
+  <link rel="stylesheet" href="./shell.css" />
+</head>
+<body>
+  <header class="shell-top">
+    <div class="brand">
+      <div class="brand-title">다채움</div>
+      <div class="brand-sub">가격안내 · 피부팀 재고 (통합)</div>
+    </div>
+
+    <nav class="nav">
+      <button class="navbtn" data-route="consult" type="button">가격안내</button>
+      <button class="navbtn" data-route="inventory" type="button">피부팀 재고</button>
+    </nav>
+  </header>
+
+  <main class="shell-main">
+    <iframe id="frame-consult" class="appframe" src="./apps/consult/index.html" title="가격안내"></iframe>
+    <iframe id="frame-inventory" class="appframe" src="./apps/inventory/index.html" title="피부팀 재고"></iframe>
+  </main>
+
+  <script src="./shell.js"></script>
+</body>
+</html>
