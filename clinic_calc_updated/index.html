@@ -164,6 +164,9 @@ kbd{border:1px solid var(--border);border-radius:8px;padding:2px 6px;color:var(-
   .input{width:100%;max-width:100%}
   .twoCol{grid-template-columns:1fr}
 }
+
+/* calc active state */
+.btn.isActive{border-color:rgba(110,168,255,.55);background:rgba(110,168,255,.18)}
 </style>
 </head>
 <body>
@@ -259,19 +262,39 @@ kbd{border:1px solid var(--border);border-radius:8px;padding:2px 6px;color:var(-
           <div class="muted">현재 장바구니 합계</div>
           <div class="big"><span id="calcCartSum">0</span>원</div>
         </div>
+
         <div class="kpi">
-          <div class="muted">할인/추가 입력</div>
-          <input id="adjInput" class="input" style="width:100%;max-width:100%" placeholder="예: -50000 (할인) / 30000 (추가)"/>
-          <div class="muted" style="margin-top:8px">최종 = 합계 + 입력값</div>
+          <div class="muted">+ / - 금액 입력</div>
+          <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
+            <button class="btn" id="modePlus" type="button">+</button>
+            <button class="btn" id="modeMinus" type="button">-</button>
+            <input id="adjInput" class="input" style="width:100%;max-width:100%" placeholder="예: 50000" inputmode="numeric"/>
+          </div>
+          <div class="muted" style="margin-top:8px">선택한 모드에 따라 추가(+)/할인(-)이 적용됩니다.</div>
         </div>
       </div>
+
       <hr class="sep"/>
+
+      <div class="kpi">
+        <div class="muted">할인률 선택</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+          <button class="btn" id="rate0" type="button">없음</button>
+          <button class="btn" id="rate10" type="button">10%</button>
+          <button class="btn" id="rate15" type="button">15%</button>
+          <button class="btn" id="rate20" type="button">20%</button>
+        </div>
+        <div class="muted" style="margin-top:8px">할인률은 장바구니 합계에 적용됩니다.</div>
+      </div>
+
+      <hr class="sep"/>
+
       <div class="kpi">
         <div class="muted">최종 금액</div>
         <div class="big"><span id="finalAmount">0</span>원</div>
-      </div>
-      <div class="muted" style="margin-top:10px;line-height:1.5">
-        팁: 할인은 음수로 입력 (예: -100000).
+        <div class="muted" style="margin-top:8px">
+          최종 = 합계 - (합계×할인률) + (모드×입력금액)
+        </div>
       </div>
     </div>
   </div>
@@ -731,8 +754,17 @@ function clearCart(){
 ========================= */
 function updateFinal(){
   const total = cart.reduce((a,c)=>a+(c.price*c.qty),0);
-  const adj = Number((qs('#adjInput').value||'0').replace(/,/g,'').trim() || 0);
-  qs('#finalAmount').textContent = fmt(total + adj);
+
+  // 입력 금액(숫자만) + 모드(+/-)
+  const raw = (qs('#adjInput').value||'').replace(/,/g,'').trim();
+  const amt = Math.max(0, Number(raw || 0)); // 음수 입력 방지(모드로 처리)
+  const signedAdj = (window.__calcMode || 1) * amt;
+
+  // 할인률
+  const rate = (window.__discountRate || 0);
+  const discount = Math.round(total * (rate/100));
+
+  qs('#finalAmount').textContent = fmt(total - discount + signedAdj);
 }
 
 /* =========================
@@ -795,6 +827,37 @@ qs('#copyQuote').onclick = ()=>{
 };
 
 qs('#adjInput').addEventListener('input', updateFinal);
+
+// 계산기 상태
+window.__calcMode = 1;         // +1(추가) / -1(할인)
+window.__discountRate = 0;     // 0/10/15/20
+
+function setCalcMode(mode){
+  window.__calcMode = mode;
+  qs('#modePlus').classList.toggle('isActive', mode===1);
+  qs('#modeMinus').classList.toggle('isActive', mode===-1);
+  updateFinal();
+}
+function setDiscountRate(rate){
+  window.__discountRate = rate;
+  qs('#rate0').classList.toggle('isActive', rate===0);
+  qs('#rate10').classList.toggle('isActive', rate===10);
+  qs('#rate15').classList.toggle('isActive', rate===15);
+  qs('#rate20').classList.toggle('isActive', rate===20);
+  updateFinal();
+}
+
+// 버튼 바인딩(존재할 때만)
+qs('#modePlus')?.addEventListener('click', ()=>setCalcMode(1));
+qs('#modeMinus')?.addEventListener('click', ()=>setCalcMode(-1));
+qs('#rate0')?.addEventListener('click', ()=>setDiscountRate(0));
+qs('#rate10')?.addEventListener('click', ()=>setDiscountRate(10));
+qs('#rate15')?.addEventListener('click', ()=>setDiscountRate(15));
+qs('#rate20')?.addEventListener('click', ()=>setDiscountRate(20));
+
+// 초기 선택 상태
+setCalcMode(1);
+setDiscountRate(0);
 
 qs('#searchInput').addEventListener('input', ()=>{ renderLeft(); });
 
