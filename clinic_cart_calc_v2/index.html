@@ -239,6 +239,14 @@ kbd{border:1px solid var(--border);border-radius:8px;padding:2px 6px;color:var(-
     <div class="muted">합계</div>
     <div class="price"><span id="cartTotal">0</span>원</div>
   </div>
+  <div class="totalBox" style="margin-top:10px">
+    <div class="muted">할인/추가</div>
+    <div class="price"><span id="cartAdj">0</span>원</div>
+  </div>
+  <div class="totalBox" style="margin-top:10px;border-color:rgba(110,168,255,.25)">
+    <div class="muted">결제 금액</div>
+    <div class="price"><span id="cartPay">0</span>원</div>
+  </div>
   <div class="drawerFooter">
     <button class="btn" id="clearCart">비우기</button>
     <button class="btn primary" id="copyQuote">견적 복사</button>
@@ -276,11 +284,19 @@ kbd{border:1px solid var(--border);border-radius:8px;padding:2px 6px;color:var(-
       </div>
       <hr class="sep"/>
       <div class="kpi">
+        <div class="cardRow">
+          <div class="muted">할인 기록</div>
+          <button class="smallBtn" id="clearDiscountLog">기록 초기화</button>
+        </div>
+        <div id="discountLog" style="margin-top:6px"></div>
+      </div>
+      <hr class="sep"/>
+      <div class="kpi">
         <div class="muted">최종 금액</div>
         <div class="big"><span id="finalAmount">0</span>원</div>
       </div>
       <div class="muted" style="margin-top:10px;line-height:1.5">
-        팁: 할인은 음수로 입력 (예: -100000).
+        팁: 금액 할인은 <b>-</b> 버튼을 사용하면 됩니다.
       </div>
     </div>
   </div>
@@ -350,6 +366,11 @@ let view = 'price';            // price | single | admin
 let activeSectionKey = 'lifting';
 let selectedItem = null;       // {type:'program'|'single', ...}
 let cart = [];                 // {id,name,price,qty}
+
+// calculator / discount log
+let adjValue = 0;              // current adjustment applied to cart sum (negative=discount)
+let discountLog = [];          // {ts:number,label:string,amount:number,base:number}
+let __lastAdjInput = '0';
 
 /* =========================
    렌더
@@ -616,6 +637,13 @@ function renderCart(){
   const total = cart.reduce((a,c)=>a+(c.price*c.qty),0);
   qs('#cartTotal').textContent = fmt(total);
   qs('#calcCartSum').textContent = fmt(total);
+
+  // cart drawer summary (linked with calculator)
+  const adjEl = qs('#cartAdj');
+  const payEl = qs('#cartPay');
+  if(adjEl) adjEl.textContent = fmt(adjValue);
+  if(payEl) payEl.textContent = fmt(total + adjValue);
+
   updateFinal();
 }
 
@@ -651,8 +679,48 @@ function clearCart(){
 ========================= */
 function updateFinal(){
   const total = cart.reduce((a,c)=>a+(c.price*c.qty),0);
+  // keep adjValue synced with input
   const adj = Number((qs('#adjInput').value||'0').replace(/,/g,'').trim() || 0);
-  qs('#finalAmount').textContent = fmt(total + adj);
+  if(Number.isFinite(adj)) adjValue = Math.trunc(adj);
+  qs('#finalAmount').textContent = fmt(total + adjValue);
+  const adjEl = qs('#cartAdj');
+  const payEl = qs('#cartPay');
+  if(adjEl) adjEl.textContent = fmt(adjValue);
+  if(payEl) payEl.textContent = fmt(total + adjValue);
+  renderDiscountLog();
+}
+
+function logDiscount(label, amount, base){
+  discountLog.unshift({ ts: Date.now(), label, amount: Math.trunc(amount||0), base: Math.trunc(base||0) });
+  if(discountLog.length>12) discountLog = discountLog.slice(0,12);
+}
+
+function renderDiscountLog(){
+  const box = qs('#discountLog');
+  if(!box) return;
+  if(discountLog.length===0){
+    box.innerHTML = `<div class="muted">기록 없음</div>`;
+    return;
+  }
+  const rows = discountLog.slice(0,6).map(r=>{
+    const dt = new Date(r.ts);
+    const hh = String(dt.getHours()).padStart(2,'0');
+    const mm = String(dt.getMinutes()).padStart(2,'0');
+    const sign = r.amount>=0?'+':'';
+    return `
+      <tr>
+        <td class="muted">${hh}:${mm}</td>
+        <td><b>${escapeHtml(r.label)}</b></td>
+        <td style="text-align:right">${sign}${fmt(r.amount)}원</td>
+      </tr>
+    `;
+  }).join('');
+  box.innerHTML = `
+    <table class="table" style="margin-top:6px">
+      <thead><tr><th>시간</th><th>항목</th><th style="text-align:right">금액</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
 }
 
 /* =========================
@@ -671,6 +739,7 @@ function closeCart(){
 function openCalc(){
   qs('#modalBackdrop').style.display = 'grid';
   qs('#adjAmount')?.focus();
+  __lastAdjInput = (qs('#adjInput').value||'0').trim();
   updateFinal();
 }
 function closeCalc(){
@@ -690,6 +759,16 @@ function buildQuoteText(){
   const total = cart.reduce((a,c)=>a+(c.price*c.qty),0);
   lines.push('----------------');
   lines.push(`합계: ${fmt(total)}원`);
+  if(adjValue!==0) lines.push(`할인/추가: ${adjValue>=0?'+':''}${fmt(adjValue)}원`);
+  lines.push(`결제 금액: ${fmt(total + adjValue)}원`);
+  if(discountLog.length){
+    lines.push('----------------');
+    lines.push('할인 기록(최근)');
+    discountLog.slice(0,3).forEach(r=>{
+      const sign = r.amount>=0?'+':'';
+      lines.push(`- ${r.label}: ${sign}${fmt(r.amount)}원`);
+    });
+  }
   // VAT notice: 이벤트 제외 규칙은 '가격표 섹션'에만 적용.
   lines.push(VAT_NOTICE);
   return lines.join('\n');
@@ -731,24 +810,58 @@ function cartSum(){
 qs('#adjPlusBtn').onclick = ()=>{
   const amt = Math.abs(parseMoney(qs('#adjAmount').value));
   if(!amt) return;
+  logDiscount('금액 추가', amt, cartSum());
   setAdj(amt);
 };
 qs('#adjMinusBtn').onclick = ()=>{
   const amt = Math.abs(parseMoney(qs('#adjAmount').value));
   if(!amt) return;
+  logDiscount('금액 할인', -amt, cartSum());
   setAdj(-amt);
 };
 qs('#disc10').onclick = ()=>{
   const total = cartSum();
-  setAdj(-Math.round(total * 0.10));
+  const v = -Math.round(total * 0.10);
+  logDiscount('10% 할인', v, total);
+  setAdj(v);
 };
 qs('#disc15').onclick = ()=>{
   const total = cartSum();
-  setAdj(-Math.round(total * 0.15));
+  const v = -Math.round(total * 0.15);
+  logDiscount('15% 할인', v, total);
+  setAdj(v);
 };
 qs('#disc20').onclick = ()=>{
   const total = cartSum();
-  setAdj(-Math.round(total * 0.20));
+  const v = -Math.round(total * 0.20);
+  logDiscount('20% 할인', v, total);
+  setAdj(v);
+};
+
+// manual input logging (enter / blur)
+qs('#adjInput').addEventListener('keydown', (e)=>{
+  if(e.key==='Enter'){
+    const now = (qs('#adjInput').value||'0').trim();
+    if(now!==__lastAdjInput){
+      logDiscount('직접 입력', parseMoney(now), cartSum());
+      __lastAdjInput = now;
+    }
+    updateFinal();
+  }
+});
+qs('#adjInput').addEventListener('blur', ()=>{
+  const now = (qs('#adjInput').value||'0').trim();
+  if(now!==__lastAdjInput){
+    logDiscount('직접 입력', parseMoney(now), cartSum());
+    __lastAdjInput = now;
+  }
+  updateFinal();
+});
+
+qs('#clearDiscountLog').onclick = ()=>{
+  discountLog = [];
+  renderDiscountLog();
+  toast('기록 초기화');
 };
 
 qs('#searchInput').addEventListener('input', ()=>{ renderLeft(); });
