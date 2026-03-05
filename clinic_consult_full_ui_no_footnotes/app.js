@@ -485,7 +485,7 @@ function renderLeft(){
 
     left.appendChild(list);
 
-    // VAT notice (이벤트 제외)
+    // VAT notice (VAT 이벤트 제외)
     if(!sec.isEvent){
       const notice = document.createElement('div');
       notice.className='notice';
