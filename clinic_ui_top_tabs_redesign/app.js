@@ -398,7 +398,6 @@ function renderAll(){
   renderRecent();
   renderLeft();
   renderDetail();
-  logAction('수량 변경');
   renderCart();
   renderBottomBar();
 }
@@ -414,17 +413,7 @@ function renderHeader(){
 function renderBottomBar(){
   const bar = qs('#bottomBar');
   if(!bar) return;
-  const count = cart.reduce((a,c)=>a+(c.qty||0),0);
-  const total = cart.reduce((a,c)=>a+(c.price*c.qty),0);
-  const pay = total + (adjValue||0);
-
-  const cEl = qs('#bbCount');
-  const pEl = qs('#bbPay');
-  if(cEl) cEl.textContent = String(count);
-  if(pEl) pEl.textContent = fmt(pay);
-
-  // hide when empty
-  bar.style.display = count>0 ? 'flex' : 'none';
+  bar.style.display = 'none';
 }
 
 function renderLeft(){
@@ -436,10 +425,10 @@ function renderLeft(){
   if(view==='price'){
     // section tabs
     const tabs = document.createElement('div');
-    tabs.className='tags';
+    tabs.className='categoryTabs';
     programSections.forEach(sec=>{
       const btn = document.createElement('button');
-      btn.className='btn';
+      btn.className='btn categoryTabBtn';
       btn.style.padding='8px 10px';
       btn.textContent = sec.title + (sec.isEvent ? ' (이벤트)' : '');
       btn.onclick = ()=>{ activeSectionKey = sec.key; renderLeft(); renderDetail(); };
@@ -464,11 +453,11 @@ function renderLeft(){
       left.appendChild(docLabel);
 
       const docRow = document.createElement('div');
-      docRow.className = 'tags';
+      docRow.className = 'optionTabs';
       docRow.style.marginTop = '8px';
       liftingDoctors.forEach(dk=>{
         const b = document.createElement('button');
-        b.className = 'btn';
+        b.className = 'btn optionTabBtn';
         b.style.padding='8px 10px';
         b.textContent = dk.label;
         if(dk.key===activeLiftingDoctor) b.classList.add('primary');
@@ -487,11 +476,11 @@ function renderLeft(){
       left.appendChild(catLabel);
 
       const catRow = document.createElement('div');
-      catRow.className = 'tags';
+      catRow.className = 'optionTabs';
       catRow.style.marginTop = '8px';
       liftingCategories.forEach(ca=>{
         const b = document.createElement('button');
-        b.className = 'btn';
+        b.className = 'btn optionTabBtn';
         b.style.padding='8px 10px';
         b.textContent = ca.label;
         if(ca.key===activeLiftingCat) b.classList.add('primary');
@@ -864,6 +853,7 @@ function clearCart(){
   cart = [];
   logAction('장바구니 비우기');
   renderCart();
+  renderBottomBar();
   toast('비움');
 }
 
@@ -1118,6 +1108,8 @@ qs('#clearDiscountLog').onclick = ()=>{
 };
 
 qs('#searchInput').addEventListener('input', ()=>{ renderLeft(); });
+const __bottomCartBtn = qs('#bottomCartBtn'); if(__bottomCartBtn) __bottomCartBtn.onclick = ()=> openCart();
+const __bottomCalcBtn = qs('#bottomCalcBtn'); if(__bottomCalcBtn) __bottomCalcBtn.onclick = ()=> openCalc();
 
 /* 단축키 */
 document.addEventListener('keydown', (e)=>{
@@ -1161,6 +1153,8 @@ function isSidebarCollapsed(){
   const layout = document.querySelector('.layout');
   return layout ? layout.classList.contains('sidebar-collapsed') : false;
 }
+
+function initSidebarSwipe(){ initSidebarToggle(); }
 
 function initSidebarToggle(){
   const handleBtn = document.querySelector('#sidebarHandle');
