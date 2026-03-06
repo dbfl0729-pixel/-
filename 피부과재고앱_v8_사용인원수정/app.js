@@ -1,4 +1,4 @@
-const STORAGE_KEY = 'derm_inventory_operational_v6';
+const STORAGE_KEY = 'derm_inventory_operational_v7';
 const money = (n) => new Intl.NumberFormat('ko-KR').format(Math.round(Number(n || 0)));
 const todayISO = () => new Date().toISOString().slice(0, 10);
 const monthISO = (d = new Date()) => d.toISOString().slice(0, 7);
@@ -67,7 +67,7 @@ const CYCLE_OPTIONS = ['일일', '주간', '월간', '입고전용', '쿠팡', '
 
 const KEEP_CONFIG = {
   sheetmask: {
-    name: '(더마소드) 겔시트팩(선결제)',
+    name: '겔시트팩(선결제)',
     unit: '장',
     defaultShipQty: 10,
     tiers: [
@@ -77,7 +77,7 @@ const KEEP_CONFIG = {
     mapToItemName: '(더마소드) 겔시트팩',
   },
   modeling: {
-    name: '(하라셀) 모델링팩(선결제)',
+    name: '모델링팩(선결제)',
     unit: 'kg',
     defaultShipQty: 1,
     tiers: [{ tier: '100kg', total_qty: 100, unit_cost: 10000 }],
@@ -110,7 +110,7 @@ const TAB_DEFS = [
   { key: 'monthlycheck', label: '월간 점검' },
   { key: 'inbound', label: '입고' },
   { key: 'coupang', label: '쿠팡' },
-  { key: 'prepaid', label: '선결제건' },
+  { key: 'prepaid', label: '선결제(킵)' },
   { key: 'report', label: '월간 보고' },
   { key: 'items', label: '품목' },
 ];
@@ -142,7 +142,7 @@ function buildSeedItems() {
 function seed() {
   const now = new Date().toISOString();
   return {
-    version: 6,
+    version: 7,
     created_at: now,
     updated_at: now,
     items: buildSeedItems(),
@@ -180,7 +180,7 @@ function save() {
 function migrate(data) {
   if (!data || !data.items) return seed();
   const next = { ...seed(), ...data };
-  next.version = 6;
+  next.version = 7;
   next.items = Array.isArray(data.items) ? data.items.map((it, idx) => ({
     id: it.id || idx + 1,
     name: it.name || `품목${idx + 1}`,
@@ -217,7 +217,11 @@ function convertOldDaily(oldDaily) {
   for (const [date, rows] of Object.entries(oldDaily)) {
     out[date] = {};
     for (const [itemId, v] of Object.entries(rows || {})) {
-      out[date][itemId] = { qty: v.close_qty ?? '', memo: v.memo || '' };
+      out[date][itemId] = {
+        qty: v.close_qty ?? '',
+        use_qty: v.manual_use ?? '',
+        memo: v.memo || '',
+      };
     }
   }
   return out;
@@ -375,12 +379,13 @@ function buildSavedDateSelect(recordMap, currentDate) {
   return sel;
 }
 
+
 function renderDaily() {
   const card = el('div', { class: 'card' });
   card.appendChild(el('h2', { html: '일일 재고' }));
 
   const dateInput = el('input', { type: 'date', value: todayISO() });
-  const savedSel = buildSavedDateSelect(db.dailyRecords, dateInput.value);
+  let savedSel = buildSavedDateSelect(db.dailyRecords, dateInput.value);
   const patientInput = el('input', { type: 'number', value: String(toNum(db.patients[dateInput.value])) });
   const saveBtn = el('button', { class: 'btn primary', type: 'button' });
   saveBtn.textContent = '재고 저장하기';
@@ -388,7 +393,7 @@ function renderDaily() {
   card.appendChild(el('div', { class: 'row' }, [
     el('label', {}, [document.createTextNode('날짜'), dateInput]),
     el('label', {}, [document.createTextNode('저장된 날짜 목록'), savedSel]),
-    el('label', {}, [document.createTextNode('당일 환자수'), patientInput]),
+    el('label', {}, [document.createTextNode('당일 총 환자수'), patientInput]),
     el('div', { class: 'right', style: 'margin-left:auto' }, [saveBtn]),
   ]));
 
@@ -402,15 +407,35 @@ function renderDaily() {
         <th class="num">전일 재고</th>
         <th class="num">당일 입고</th>
         <th class="num">퇴근 재고(입력)</th>
-        <th class="num">당일 사용량(자동)</th>
-        <th class="num">환자대비 사용량</th>
-        <th>메모</th>
+        <th class="num">실제 사용량(자동)</th>
+        <th class="num">사용 인원</th>
+        <th>상태</th>
       </tr>
     </thead>
     <tbody></tbody>`;
   wrap.appendChild(table);
   card.appendChild(wrap);
   const tbody = table.querySelector('tbody');
+
+  function getDailyComputed(date, itemId) {
+    const prev = latestQty(db.dailyRecords, itemId, prevDateISO(date));
+    const inbound = sumInbound(itemId, date);
+    const stored = db.dailyRecords[date]?.[String(itemId)] || {};
+    const close = stored.qty === '' || stored.qty === undefined || stored.qty === null ? 0 : toNum(stored.qty);
+    const actualUse = Math.max(prev + inbound - close, 0);
+    return { prev, inbound, close, actualUse, stored };
+  }
+
+  function statusHtml(itemName, actualUse, usePeopleRaw) {
+    if (!PER_PATIENT_TARGETS.has(itemName)) return '-';
+    if (usePeopleRaw === '' || usePeopleRaw === undefined || usePeopleRaw === null) {
+      return '<span class="chip">미입력</span>';
+    }
+    const usePeople = toNum(usePeopleRaw);
+    return actualUse === usePeople
+      ? '<span class="chip ok">일치</span>'
+      : '<span class="chip bad">일치하지않음</span>';
+  }
 
   function renderRows() {
     const d = dateInput.value;
@@ -422,16 +447,13 @@ function renderDaily() {
       tbody.appendChild(tr);
       return;
     }
+
     items.forEach((it) => {
-      const prev = latestQty(db.dailyRecords, it.id, prevDateISO(d));
-      const inbound = sumInbound(it.id, d);
-      const stored = db.dailyRecords[d]?.[String(it.id)] || {};
+      const { prev, inbound, actualUse, stored } = getDailyComputed(d, it.id);
       const qtyInput = el('input', { type: 'number', value: stored.qty ?? '' });
-      const memoInput = el('input', { type: 'text', value: stored.memo || '', style: 'min-width:180px' });
-      const closeQty = toNum(stored.qty);
-      const use = Math.max(prev + inbound - closeQty, 0);
-      const patients = toNum(patientInput.value);
-      const perPatient = PER_PATIENT_TARGETS.has(it.name) && patients > 0 ? (use / patients).toFixed(3) : '-';
+      const isTarget = PER_PATIENT_TARGETS.has(it.name);
+      const useInput = isTarget ? el('input', { type: 'number', value: stored.use_qty ?? '' }) : null;
+
       const tr = el('tr');
       tr.innerHTML = `
         <td>${it.name}</td>
@@ -439,27 +461,30 @@ function renderDaily() {
         <td class="num">${money(prev)}</td>
         <td class="num">${money(inbound)}</td>
         <td></td>
-        <td class="num">${money(use)}</td>
-        <td class="num">${perPatient}</td>
+        <td class="num">${money(actualUse)}</td>
+        <td></td>
         <td></td>`;
+
       tr.children[4].appendChild(qtyInput);
-      tr.children[7].appendChild(memoInput);
-      qtyInput.oninput = renderRows;
+      if (isTarget) {
+        tr.children[6].appendChild(useInput);
+      } else {
+        tr.children[6].textContent = '-';
+      }
+
+      const syncRow = () => {
+        const closeVal = qtyInput.value;
+        const closeNum = closeVal === '' ? 0 : toNum(closeVal);
+        const nextActualUse = Math.max(prev + inbound - closeNum, 0);
+        tr.children[5].textContent = money(nextActualUse);
+        tr.children[7].innerHTML = statusHtml(it.name, nextActualUse, isTarget ? useInput.value : '');
+      };
+
+      qtyInput.oninput = syncRow;
+      if (useInput) useInput.oninput = syncRow;
+      syncRow();
       tbody.appendChild(tr);
     });
-  }
-
-  function refreshSavedDates() {
-    const replacement = buildSavedDateSelect(db.dailyRecords, dateInput.value);
-    savedSel.replaceWith(replacement);
-    replacement.onchange = () => {
-      if (replacement.value) {
-        dateInput.value = replacement.value;
-        patientInput.value = String(toNum(db.patients[replacement.value]));
-        renderRows();
-      }
-    };
-    savedSel = replacement;
   }
 
   saveBtn.onclick = () => {
@@ -470,8 +495,13 @@ function renderDaily() {
     items.forEach((it, idx) => {
       const tr = rows[idx];
       const qty = tr.children[4].querySelector('input').value;
-      const memo = tr.children[7].querySelector('input').value;
-      db.dailyRecords[d][String(it.id)] = { qty: qty === '' ? '' : toNum(qty), memo };
+      const useCell = tr.children[6];
+      const useInput = useCell.querySelector('input');
+      const useQty = useInput ? useInput.value : '';
+      db.dailyRecords[d][String(it.id)] = {
+        qty: qty === '' ? '' : toNum(qty),
+        use_qty: useQty === '' ? '' : toNum(useQty),
+      };
     });
     db.patients[d] = toNum(patientInput.value);
     save();
@@ -479,20 +509,31 @@ function renderDaily() {
     render();
   };
 
+  function bindSavedSelect(node) {
+    node.onchange = () => {
+      if (node.value) {
+        dateInput.value = node.value;
+        patientInput.value = String(toNum(db.patients[node.value]));
+        renderRows();
+      }
+    };
+  }
+
+  function refreshSavedDates() {
+    const replacement = buildSavedDateSelect(db.dailyRecords, dateInput.value);
+    savedSel.replaceWith(replacement);
+    savedSel = replacement;
+    bindSavedSelect(savedSel);
+  }
+
   dateInput.onchange = () => {
     patientInput.value = String(toNum(db.patients[dateInput.value]));
+    refreshSavedDates();
     renderRows();
   };
-  savedSel.onchange = () => {
-    if (savedSel.value) {
-      dateInput.value = savedSel.value;
-      patientInput.value = String(toNum(db.patients[savedSel.value]));
-      renderRows();
-    }
-  };
-  patientInput.oninput = renderRows;
+  bindSavedSelect(savedSel);
   renderRows();
-  card.appendChild(el('div', { class: 'mini', html: '환자 대비 사용량 계산은 시트팩/겔시트팩/리바이브팩 3개 품목만 적용됩니다.' }));
+  card.appendChild(el('div', { class: 'mini', html: '당일 총 환자수는 전체 관리 환자 수입니다. 사용 인원은 시트팩·겔시트팩·리바이브팩을 실제 사용한 사람 수만 입력합니다. 상태는 실제 사용량(전일 재고 + 당일 입고 - 퇴근 재고)과 사용 인원을 비교해 표시합니다.' }));
   return card;
 }
 
@@ -890,14 +931,19 @@ function renderMonthlyReport() {
     getVisibleItemsByCycle('일일').forEach((it) => {
       let monthlyUse = 0;
       Object.keys(db.dailyRecords).filter((d) => d.startsWith(ym)).forEach((d) => {
-        const prev = latestQty(db.dailyRecords, it.id, prevDateISO(d));
-        const inbound = sumInbound(it.id, d);
-        const close = toNum(db.dailyRecords[d]?.[String(it.id)]?.qty);
-        monthlyUse += Math.max(prev + inbound - close, 0);
+        const stored = db.dailyRecords[d]?.[String(it.id)] || {};
+        if (PER_PATIENT_TARGETS.has(it.name)) {
+          monthlyUse += toNum(stored.use_qty);
+        } else {
+          const prev = latestQty(db.dailyRecords, it.id, prevDateISO(d));
+          const inbound = sumInbound(it.id, d);
+          const close = stored.qty === '' || stored.qty === undefined || stored.qty === null ? 0 : toNum(stored.qty);
+          monthlyUse += Math.max(prev + inbound - close, 0);
+        }
       });
       const note = PER_PATIENT_TARGETS.has(it.name)
         ? (patients > 0 ? `월 사용량 ÷ 월 환자수 = ${(monthlyUse / patients).toFixed(3)}` : '환자수 0으로 환자대비 계산 불가')
-        : '전일재고 + 당일입고 - 마감재고 기준';
+        : '전일재고 + 당일입고 - 퇴근재고 기준 자동 계산';
       tbody.appendChild(row(`${it.name} 월 사용량`, money(monthlyUse), note));
     });
 
