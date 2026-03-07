@@ -67,22 +67,22 @@ const CYCLE_OPTIONS = ['일일', '주간', '월간', '입고전용', '쿠팡', '
 
 const KEEP_CONFIG = {
   sheetmask: {
-    name: "시트팩(=겔시트팩) 선결제",
-    unit: "장",
+    name: '시트팩(=겔시트팩) 선결제',
+    unit: '장',
     defaultShipQty: 10,
     tiers: [
-      { tier: "300장", total_qty: 300, unit_cost: 1300 },
-      { tier: "500장", total_qty: 500, unit_cost: 1000 },
+      { tier: '300장', total_qty: 300, unit_cost: 1300 },
+      { tier: '500장', total_qty: 500, unit_cost: 1000 },
     ],
-    mapToItemName: "겔시트팩",
+    mapToItemName: '(더마소드) 겔시트팩',
   },
   modeling: {
-    name: "모델링 선결제",
-    unit: "kg",
+    name: '모델링 선결제',
+    unit: 'kg',
     defaultShipQty: 1,
-    tiers: [{ tier:"100kg", total_qty:100, unit_cost:10000 }],
-    mapToItemName: "모델링팩",
-  }
+    tiers: [{ tier: '100kg', total_qty: 100, unit_cost: 10000 }],
+    mapToItemName: '(하라셀) 모델링팩',
+  },
 };
 
 
@@ -831,109 +831,122 @@ function renderCoupang() {
 
 
 function renderPrepaid() {
-  const card = el("div", { class:"card" });
-  card.appendChild(el("h2", { html:"선결제(킵)" }));
-  card.appendChild(el("div", { class:"mini", html:"선결제 잔량 = 계약 총량 − 누적 출고량. 시스템에 필요한 것은 출고 기록뿐이며, 잔량은 자동 계산됩니다." }));
+  const card = el('div', { class: 'card' });
+  card.appendChild(el('h2', { html: '선결제(킵)' }));
+  card.appendChild(el('div', { class: 'mini', html: '선결제 잔량 = 계약 총량 − 누적 출고량. 시스템에 필요한 것은 출고 기록뿐이며 잔량은 자동 계산됩니다.' }));
 
-  const container = el("div", { class:"two-col" });
+  const container = el('div', { class: 'two-col' });
 
-  const makeKeepCard = (key) => {
+  function makeCard(key) {
     const cfg = KEEP_CONFIG[key];
-    const st = db.keep[key] || { tier: cfg.tiers[0].tier, shipped_total: 0 };
-    db.keep[key] = st;
+    if (!db.keep[key]) db.keep[key] = { tier: cfg.tiers[0].tier, shipped_total: 0, hospital_stock: 0 };
+    const st = db.keep[key];
 
-    const header = el("div", { html:`<b>${cfg.name}</b>` });
-    const sub = el("div", { class:"mini", html:
-      key === "sheetmask"
-        ? "계약 티어를 한 번 선택하고, 필요할 때마다 10장씩 출고요청합니다."
-        : "100kg 선결제 고정이며, 필요할 때마다 1kg씩 출고요청합니다."
+    const tierSel = el('select');
+    cfg.tiers.forEach((t) => {
+      const opt = document.createElement('option');
+      opt.value = t.tier;
+      opt.textContent = `${t.tier} (${money(t.unit_cost)}원/${cfg.unit})`;
+      tierSel.appendChild(opt);
+    });
+    tierSel.value = st.tier || cfg.tiers[0].tier;
+    if (key === 'modeling') tierSel.disabled = true;
+
+    const qtyInput = el('input', {
+      type: 'number',
+      value: String(cfg.defaultShipQty),
+      step: String(cfg.defaultShipQty),
+      min: String(cfg.defaultShipQty)
     });
 
-    const tierSel = el("select");
-    if (key === "sheetmask") {
-      cfg.tiers.forEach(t => {
-        const o = document.createElement("option");
-        o.value = t.tier;
-        o.textContent = `${t.tier} (${money(t.unit_cost)}원/${cfg.unit})`;
-        tierSel.appendChild(o);
-      });
-      tierSel.value = st.tier || cfg.tiers[0].tier;
-    } else {
-      const only = cfg.tiers[0];
-      const o = document.createElement("option");
-      o.value = only.tier;
-      o.textContent = `${only.tier} (${money(only.unit_cost)}원/${cfg.unit})`;
-      tierSel.appendChild(o);
-      tierSel.value = only.tier;
-      tierSel.disabled = true;
+    const summary = el('div', { class: 'kpi' });
+    const btn = el('button', { class: 'btn primary', type: 'button' });
+    btn.textContent = '출고요청';
+
+    function refresh() {
+      st.tier = tierSel.value;
+      const tier = cfg.tiers.find((x) => x.tier === st.tier) || cfg.tiers[0];
+      const shipped = toNum(st.shipped_total);
+      const remain = Math.max(toNum(tier.total_qty) - shipped, 0);
+
+      summary.innerHTML = '';
+      summary.appendChild(kpiBox('계약 총량', `${money(tier.total_qty)}${cfg.unit}`));
+      summary.appendChild(kpiBox('누적 출고', `${money(shipped)}${cfg.unit}`));
+      summary.appendChild(kpiBox('업체 잔량', `${money(remain)}${cfg.unit}`));
+      summary.appendChild(kpiBox('단가', `${money(tier.unit_cost)}원/${cfg.unit}`));
     }
 
-    const shipQty = el("input", { type:"number", value:String(cfg.defaultShipQty), step:String(cfg.defaultShipQty), min:String(cfg.defaultShipQty) });
-    const btn = el("button", { class:"btn primary", type:"button" });
-    btn.textContent = "출고요청";
-
-    const sum = el("div", { class:"kpi" });
-
-    const refresh = () => {
+    tierSel.onchange = () => {
       st.tier = tierSel.value;
-      const { tier, shipped, remain } = keepRemain(key);
-      sum.innerHTML = "";
-      sum.appendChild(kpiBox("계약 총량", `${money(tier.total_qty)}${cfg.unit}`));
-      sum.appendChild(kpiBox("누적 출고", `${money(shipped)}${cfg.unit}`));
-      sum.appendChild(kpiBox("업체 잔량", `${money(remain)}${cfg.unit}`));
-      sum.appendChild(kpiBox("단가", `${money(tier.unit_cost)}원/${cfg.unit}`));
+      save();
+      refresh();
     };
 
-    tierSel.onchange = () => { st.tier = tierSel.value; save(db); refresh(); };
-
     btn.onclick = () => {
-      const { tier, shipped, remain } = keepRemain(key);
-      const q = toNum(shipQty.value);
-      if (q <= 0) { alert("출고 수량은 0보다 커야 합니다."); return; }
-      if (key === "sheetmask" && q % 10 !== 0) { alert("시트팩은 10장 단위로 출고합니다."); return; }
-      if (key === "modeling" && q % 1 !== 0) { alert("모델링은 1kg 단위로 출고합니다."); return; }
-      if (q > remain) { alert("출고 수량이 업체 잔량보다 큽니다."); return; }
+      const tier = cfg.tiers.find((x) => x.tier === st.tier) || cfg.tiers[0];
+      const shipped = toNum(st.shipped_total);
+      const remain = Math.max(toNum(tier.total_qty) - shipped, 0);
+      const q = toNum(qtyInput.value);
+
+      if (q <= 0) {
+        alert('출고 수량은 0보다 커야 합니다.');
+        return;
+      }
+      if (key === 'sheetmask' && q % 10 !== 0) {
+        alert('시트팩은 10장 단위로 출고합니다.');
+        return;
+      }
+      if (key === 'modeling' && q % 1 !== 0) {
+        alert('모델링은 1kg 단위로 출고합니다.');
+        return;
+      }
+      if (q > remain) {
+        alert('출고 수량이 업체 잔량보다 큽니다.');
+        return;
+      }
 
       st.shipped_total = shipped + q;
 
-      const item = db.items.find(x => x.name === cfg.mapToItemName);
+      const item = db.items.find((x) => x.name === cfg.mapToItemName);
       if (item) {
         db.inbound.push({
-          id: (db.inbound.reduce((m, x) => Math.max(m, x.id || 0), 0) + 1),
+          id: db.inbound.reduce((m, x) => Math.max(m, toNum(x.id)), 0) + 1,
           date: todayISO(),
           item_id: item.id,
           qty: q,
           unit_cost: toNum(tier.unit_cost),
-          memo: "선결제(킵) 출고",
-          type: "prepaid_transfer",
+          memo: '선결제(킵) 출고',
+          type: 'prepaid_transfer',
         });
       }
 
-      save(db);
-      alert("출고요청 완료: 업체 잔량 자동 차감 + 입고 자동 생성");
+      save();
       refresh();
+      alert('출고요청 완료');
     };
 
-    const box = el("div", { class:"card" });
-    box.style.background = "rgba(17,26,44,.45)";
-    box.appendChild(header);
-    box.appendChild(sub);
-    box.appendChild(el("div", { class:"row" }, [
-      el("label", {}, [document.createTextNode("계약 티어"), tierSel]),
-      el("label", {}, [document.createTextNode(`출고 수량(${cfg.unit})`), shipQty]),
-      el("div", { class:"right", style:"margin-left:auto" }, [btn]),
+    const box = el('div', { class: 'card' });
+    box.style.background = 'rgba(17,26,44,.45)';
+    box.appendChild(el('div', { html: `<b>${cfg.name}</b>` }));
+    box.appendChild(el('div', { class: 'mini', html: key === 'sheetmask'
+      ? '300장/500장 중 계약 티어를 선택하고, 필요할 때마다 10장씩 출고요청합니다.'
+      : '100kg 선결제 고정이며, 필요할 때마다 1kg씩 출고요청합니다.' }));
+    box.appendChild(el('div', { class: 'row' }, [
+      el('label', {}, [document.createTextNode('계약 티어'), tierSel]),
+      el('label', {}, [document.createTextNode(`출고 수량(${cfg.unit})`), qtyInput]),
+      el('div', { class: 'right', style: 'margin-left:auto' }, [btn]),
     ]));
-    box.appendChild(sum);
+    box.appendChild(summary);
     refresh();
     return box;
-  };
+  }
 
-  container.appendChild(makeKeepCard("sheetmask"));
-  container.appendChild(makeKeepCard("modeling"));
+  container.appendChild(makeCard('sheetmask'));
+  container.appendChild(makeCard('modeling'));
   card.appendChild(container);
-  card.appendChild(el("div", { class:"mini", html:"출고요청을 누르면 1) 누적 출고 증가 2) 업체 잔량 자동 차감 3) 입고 기록 자동 생성이 동시에 처리됩니다." }));
   return card;
 }
+
 
 function renderMonthlyReport() {
 

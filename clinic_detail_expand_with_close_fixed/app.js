@@ -678,10 +678,14 @@ function getRecommendations(base){
 
 function renderDetail(){
   const d = qs('#detailBody');
+  const grid = qs('.grid');
   if(!selectedItem){
+    grid?.classList.remove('detail-open');
     d.innerHTML = `<div class="muted">왼쪽에서 프로그램/단품을 선택하면 상세가 표시됩니다.</div>`;
     return;
   }
+
+  grid?.classList.add('detail-open');
 
   if(selectedItem.type==='program'){
     const isLift = (selectedItem.section==='lifting') && isLiftingProgram(selectedItem);
@@ -695,7 +699,10 @@ function renderDetail(){
       <div class="card" style="background:rgba(15,19,32,.35)">
         <div class="cardRow">
           <div class="cardTitle">${escapeHtml(selectedItem.name)}</div>
-          <div class="price">${priceText}</div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="price">${priceText}</div>
+            <button class="smallBtn" id="closeDetail">닫기</button>
+          </div>
         </div>
         ${isLift ? `<div class="muted" style="margin-top:-4px">선택 원장: <b>${escapeHtml(doctorLabel)}</b></div>` : ''}
         <div class="muted">Effect</div>
@@ -745,7 +752,10 @@ function renderDetail(){
       <div class="card" style="background:rgba(15,19,32,.35)">
         <div class="cardRow">
           <div class="cardTitle">${escapeHtml(selectedItem.name)}</div>
-          <div class="price">${fmt(selectedItem.price)}원</div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="price">${fmt(selectedItem.price)}원</div>
+            <button class="smallBtn" id="closeDetail">닫기</button>
+          </div>
         </div>
         <div class="muted">비고</div>
         <div style="line-height:1.7">${escapeHtml(selectedItem.note||'')}</div>
@@ -1014,52 +1024,32 @@ qs('#saveConsult').onclick = ()=>{
   logAction('상담 저장');
 };
 
-function buildQuotePrintHtml(){
+function fillPrintArea(){
   const total = cart.reduce((a,c)=>a+(c.price*c.qty),0);
   const pay = total + adjValue;
   const dt = new Date();
   const meta = `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')} ${String(dt.getHours()).padStart(2,'0')}:${String(dt.getMinutes()).padStart(2,'0')}`;
-  const rows = ['<tr><th style="text-align:left;border-bottom:1px solid #ddd;padding:10px 8px">항목</th><th style="text-align:right;border-bottom:1px solid #ddd;padding:10px 8px">수량</th><th style="text-align:right;border-bottom:1px solid #ddd;padding:10px 8px">금액</th></tr>']
+
+  qs('#printMeta').textContent = meta;
+  qs('#printSubtotal').textContent = fmt(total);
+  qs('#printAdj').textContent = fmt(adjValue);
+  qs('#printTotal').textContent = fmt(pay);
+
+  qs('#printTable').innerHTML = ['<tr><th style="text-align:left;border-bottom:1px solid #ddd;padding:10px 8px">항목</th><th style="text-align:right;border-bottom:1px solid #ddd;padding:10px 8px">수량</th><th style="text-align:right;border-bottom:1px solid #ddd;padding:10px 8px">금액</th></tr>']
     .concat(cart.map(it=>`<tr><td style="padding:10px 8px;border-bottom:1px solid #eee">${escapeHtml(it.name)}</td><td style="padding:10px 8px;border-bottom:1px solid #eee;text-align:right">${it.qty}</td><td style="padding:10px 8px;border-bottom:1px solid #eee;text-align:right">${fmt(it.price*it.qty)}원</td></tr>`))
     .join('');
-  return `<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>상담 견적서</title><style>body{font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;color:#111;margin:0;background:#fff} .page{padding:28px 24px 36px} h1{margin:0 0 8px;font-size:22px} .meta{font-size:12px;color:#555} table{width:100%;border-collapse:collapse;font-size:13px;margin-top:14px} .sum{display:flex;justify-content:flex-end;gap:18px;flex-wrap:wrap;font-size:13px;margin-top:14px} .vat{margin-top:14px;font-size:12px;color:#444;font-weight:700} @media print{@page{size:auto;margin:14mm} body{print-color-adjust:exact;-webkit-print-color-adjust:exact}}</style></head><body><div class="page"><h1>상담 견적서</h1><div class="meta">${meta}</div><table>${rows}</table><div class="sum"><div>합계: <b>${fmt(total)}원</b></div><div>할인/추가: <b>${fmt(adjValue)}원</b></div><div>결제 금액: <b>${fmt(pay)}원</b></div></div><div class="vat">VAT 포함 / 현금·카드 동일가</div></div></body></html>`;
 }
 
 qs('#pdfQuote').onclick = ()=>{
   if(!cart.length){ toast('장바구니가 비어 있습니다'); return; }
-  const html = buildQuotePrintHtml();
+  fillPrintArea();
   logAction('PDF 출력');
-  const w = window.open('', '_blank', 'noopener,noreferrer');
-  if(w){
-    w.document.open();
-    w.document.write(html);
-    w.document.close();
-    const printNow = ()=>{
-      try{ w.focus(); w.print(); }catch(_){ }
-    };
-    if(w.document.readyState === 'complete') setTimeout(printNow, 250);
-    else w.onload = ()=> setTimeout(printNow, 250);
+  try{
+    window.print();
     toast('PDF 인쇄창을 엽니다');
-    return;
+  }catch(_){
+    toast('PDF 창 실행 실패');
   }
-  // fallback for popup-blocked environments
-  const frame = document.createElement('iframe');
-  frame.style.position = 'fixed';
-  frame.style.right = '0';
-  frame.style.bottom = '0';
-  frame.style.width = '0';
-  frame.style.height = '0';
-  frame.style.border = '0';
-  document.body.appendChild(frame);
-  const doc = frame.contentWindow.document;
-  doc.open();
-  doc.write(html);
-  doc.close();
-  setTimeout(()=>{
-    try{ frame.contentWindow.focus(); frame.contentWindow.print(); toast('PDF 인쇄창을 엽니다'); }
-    catch(_){ toast('PDF 창 실행 실패'); }
-    setTimeout(()=> frame.remove(), 2000);
-  }, 300);
 };
 
 
