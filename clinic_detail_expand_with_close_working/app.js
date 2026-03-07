@@ -676,16 +676,21 @@ function getRecommendations(base){
   return recs;
 }
 
+function closeDetailPanel(){
+  selectedItem = null;
+  renderDetail();
+}
+
 function renderDetail(){
   const d = qs('#detailBody');
   const grid = qs('.grid');
   if(!selectedItem){
-    grid?.classList.remove('detail-open');
+    if(grid) grid.classList.remove('detail-open');
     d.innerHTML = `<div class="muted">왼쪽에서 프로그램/단품을 선택하면 상세가 표시됩니다.</div>`;
     return;
   }
 
-  grid?.classList.add('detail-open');
+  if(grid) grid.classList.add('detail-open');
 
   if(selectedItem.type==='program'){
     const isLift = (selectedItem.section==='lifting') && isLiftingProgram(selectedItem);
@@ -699,9 +704,9 @@ function renderDetail(){
       <div class="card" style="background:rgba(15,19,32,.35)">
         <div class="cardRow">
           <div class="cardTitle">${escapeHtml(selectedItem.name)}</div>
-          <div style="display:flex;align-items:center;gap:8px">
+          <div style="display:flex;gap:8px;align-items:center">
             <div class="price">${priceText}</div>
-            <button class="smallBtn" id="closeDetail">닫기</button>
+            <button class="smallBtn detailCloseBtn" id="detailClose" type="button">닫기</button>
           </div>
         </div>
         ${isLift ? `<div class="muted" style="margin-top:-4px">선택 원장: <b>${escapeHtml(doctorLabel)}</b></div>` : ''}
@@ -739,6 +744,8 @@ function renderDetail(){
         }
       };
     });
+    const detailCloseBtn = qs('#detailClose', d);
+    if(detailCloseBtn) detailCloseBtn.onclick = closeDetailPanel;
     qs('#detailFav').onclick = ()=> toggleFavorite(selectedItem.id);
     qs('#detailCopy').onclick = ()=>{
       const txt = `[${selectedItem.name}]\n가격: ${priceText}\nEffect: ${(selectedItem.effects||[]).join(', ')}\n상세: ${selectedItem.details||''}`;
@@ -752,9 +759,9 @@ function renderDetail(){
       <div class="card" style="background:rgba(15,19,32,.35)">
         <div class="cardRow">
           <div class="cardTitle">${escapeHtml(selectedItem.name)}</div>
-          <div style="display:flex;align-items:center;gap:8px">
+          <div style="display:flex;gap:8px;align-items:center">
             <div class="price">${fmt(selectedItem.price)}원</div>
-            <button class="smallBtn" id="closeDetail">닫기</button>
+            <button class="smallBtn detailCloseBtn" id="detailClose" type="button">닫기</button>
           </div>
         </div>
         <div class="muted">비고</div>
@@ -767,6 +774,8 @@ function renderDetail(){
         </div>
       </div>
     `;
+    const detailCloseBtn = qs('#detailClose', d);
+    if(detailCloseBtn) detailCloseBtn.onclick = closeDetailPanel;
     qs('#detailAdd').onclick = ()=> addToCart(selectedItem.id, selectedItem.name, selectedItem.price);
     d.querySelectorAll('[data-act="recadd"]').forEach(btn=>{
       btn.onclick = ()=>{
