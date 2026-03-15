@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>피부팀 재고 관리</title>
+  <style>
+    :root{
+      --bg:#f7f6fb;
+      --card:#ffffff;
+      --card2:#faf9fe;
+      --line:#e7e3f1;
+      --text:#2f2f38;
+      --muted:#7e7891;
+      --primary:#8f8aae;
+      --primary-2:#b8b3d6;
+      --primary-3:#f1eff8;
+      --danger:#d85f73;
+      --danger-bg:#fff1f4;
+      --ok:#4e9b72;
+      --ok-bg:#eef8f2;
+      --shadow:0 8px 24px rgba(112,101,151,.08);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;background:var(--bg);color:var(--text)}
+    header{position:sticky;top:0;z-index:10;background:rgba(247,246,251,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+    .wrap{max-width:1280px;margin:0 auto;padding:16px}
+    .top{display:flex;gap:12px;justify-content:space-between;align-items:flex-start;flex-wrap:wrap}
+    .title h1{margin:0;font-size:20px;letter-spacing:-.3px}
+    .title .sub{margin-top:4px;color:var(--muted);font-size:12px}
+    .actions,.tabs{display:flex;gap:8px;flex-wrap:wrap}
+    .btn,.tab,input,select,textarea{font:inherit}
+    .btn,.tab{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:14px;cursor:pointer}
+    .btn{padding:11px 14px;min-height:44px}
+    .btn.primary{background:var(--primary);border-color:var(--primary);color:#fff}
+    .btn.light{background:var(--primary-3);border-color:var(--primary-2);color:#534d70}
+    .btn.danger{background:#fff;border-color:#f1ccd5;color:#b1495e}
+    .tabs{margin-top:14px}
+    .tab{padding:11px 14px;min-height:44px;display:flex;align-items:center;gap:8px;color:#5d5870;background:#fff}
+    .tab.active{background:var(--primary-3);border-color:var(--primary-2);color:#4d4768;font-weight:700}
+    main{max-width:1280px;margin:0 auto;padding:20px 16px 28px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:18px;margin-bottom:16px}
+    .card h2{margin:0 0 14px;font-size:17px;letter-spacing:-.2px}
+    .card h3{margin:0 0 12px;font-size:15px;letter-spacing:-.2px}
+    .row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}
+    .row.top{align-items:flex-start}
+    .field{display:flex;flex-direction:column;gap:6px;min-width:150px}
+    .field span{font-size:12px;color:var(--muted)}
+    input,select,textarea{width:100%;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;color:var(--text);min-height:46px;outline:none}
+    textarea{min-height:90px;resize:vertical}
+    input[type="number"]{text-align:right}
+    input:focus,select:focus,textarea:focus{border-color:var(--primary-2);box-shadow:0 0 0 3px rgba(143,138,174,.10)}
+    .kpi{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
+    .kpi .box{grid-column:span 4;background:var(--card2);border:1px solid var(--line);border-radius:18px;padding:16px}
+    .kpi .name{font-size:12px;color:var(--muted)}
+    .kpi .val{margin-top:8px;font-size:24px;font-weight:800;letter-spacing:-.4px}
+    .kpi .sub{margin-top:5px;font-size:12px;color:var(--muted)}
+    .section-title{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:14px}
+    .mini{font-size:12px;color:var(--muted)}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:18px;background:#fff}
+    table{width:100%;border-collapse:collapse;min-width:760px}
+    th,td{padding:13px 14px;border-bottom:1px solid #f0edf6;font-size:14px;vertical-align:middle}
+    th{background:#fbfafe;color:#69637c;text-align:left;position:sticky;top:0;z-index:1}
+    td.num,th.num{text-align:right}
+    tr:last-child td{border-bottom:none}
+    .badge{display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:999px;padding:6px 10px;font-size:12px;border:1px solid var(--line);background:#fff}
+    .badge.alert{background:var(--danger-bg);border-color:#f1ccd5;color:#b1495e}
+    .badge.ok{background:var(--ok-bg);border-color:#cde7d8;color:#3f7d5c}
+    .empty{padding:24px;border:1px dashed var(--line);border-radius:18px;background:#fcfbff;color:var(--muted);text-align:center}
+    .panel{background:var(--card2);border:1px solid var(--line);border-radius:18px;padding:16px}
+    .panel + .panel{margin-top:12px}
+    .stack{display:flex;flex-direction:column;gap:12px}
+    .fav{cursor:pointer;font-size:18px;color:#d4d0e6}
+    .fav.on{color:#d0a028}
+    .divider{height:1px;background:var(--line);margin:14px 0}
+    .report-head{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+    .report-block{border:1px solid var(--line);border-radius:18px;padding:16px;background:#fff}
+    .report-block h3{margin-bottom:10px}
+    .soft{background:var(--primary-3)}
+    @media (max-width: 1100px){
+      .kpi .box{grid-column:span 6}
+      .grid-2,.grid-3{grid-template-columns:1fr}
+    }
+    @media (max-width: 720px){
+      .kpi .box{grid-column:span 12}
+      .wrap,main{padding-left:12px;padding-right:12px}
+      .btn,.tab{padding:10px 12px}
+    }
+    @media print{
+      header,.actions,.tabs,.no-print{display:none !important}
+      body{background:#fff}
+      main{max-width:none;padding:0}
+      .card{box-shadow:none;border:none;padding:0;margin:0}
+      .report-block{break-inside:avoid}
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="top">
+      <div class="title">
+        <h1>피부팀 재고 관리</h1>
+        <div class="sub">화이트 배경 · 보라 포인트 · 태블릿 최적화 · 오프라인 저장</div>
+      </div>
+      <div class="actions no-print">
+        <button class="btn" id="btnExport">백업 내보내기</button>
+        <button class="btn" id="btnImport">백업 가져오기</button>
+        <button class="btn danger" id="btnReset">초기화</button>
+      </div>
+    </div>
+    <div class="tabs no-print" id="tabs"></div>
+  </div>
+</header>
+<main id="app"></main>
+<script src="./app.js"></script>
+</body>
+</html>
