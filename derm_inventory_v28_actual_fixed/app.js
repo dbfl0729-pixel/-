@@ -55,7 +55,7 @@ const DEFAULT_CATALOG = [
   { vendor: '피부미소', category: '관리실용품', name: '면봉', unit: '개', unit_price: 0, inventory_name: '면봉' },
 
   { vendor: '하라셀', category: '관리제품', name: '(하라셀) 소프트클렌징밀크 200ml', unit: '개', unit_price: 24000, inventory_name: '(하라셀) 클렌징 밀크' },
-  { vendor: '하라셀', category: '선결제', name: '(하라셀) 시트팩 선결제 300장', unit: '계약', unit_price: 390000 },
+  { vendor: '하라셀', category: '선결제', name: '(하라셀) 시트팩 선결제 300장', unit: '계약', unit_price: 300000 },
   { vendor: '하라셀', category: '선결제', name: '(하라셀) 시트팩 선결제 500장', unit: '계약', unit_price: 500000 },
   { vendor: '하라셀', category: '선결제', name: '(하라셀) 모델링팩 선결제 100kg', unit: '계약', unit_price: 1000000 },
   { vendor: '하라셀', category: '일일팩', name: '(하라셀) 시트팩', unit: '장', unit_price: 0, inventory_name: '(하라셀) 시트팩' },
@@ -167,7 +167,7 @@ function buildDefaultKeepPlans() {
       key: 'sheetmask', name: '(하라셀) 시트팩', unit: '장', item_name: '(하라셀) 시트팩', low_alert: 20,
       selected_option: '300장', default_ship_qty: 10,
       options: [
-        { label: '300장', total_qty: 300, total_price: 390000 },
+        { label: '300장', total_qty: 300, total_price: 300000 },
         { label: '500장', total_qty: 500, total_price: 500000 },
       ],
     },
@@ -473,6 +473,22 @@ function getMonthlyManagedPatients(month) {
   return { total, days: dates.length || 1, average: dates.length ? total / dates.length : 0, missingDates };
 }
 
+function getMonthDataStatus(month) {
+  const dates = Object.keys(db.dailyRecords).filter((d) => d.startsWith(month)).sort();
+  const nowMonth = monthISO();
+  const [y, m] = month.split('-').map(Number);
+  const daysInThisMonth = new Date(y, m, 0).getDate();
+  const expectedDays = month === nowMonth ? new Date().getDate() : daysInThisMonth;
+  const isPartial = dates.length < expectedDays;
+  const label = isPartial ? (dates.length ? '데이터 일부' : '기록 시작 월') : '정상 월 통계';
+  return {
+    recordDays: dates.length,
+    expectedDays,
+    isPartial,
+    label,
+  };
+}
+
 function getCurrentStockAlerts() {
   const s = getCurrentPackStock();
   const arr = [];
@@ -510,8 +526,8 @@ function buildSavedDateSelect(map, currentDate) {
   return sel;
 }
 function setDefaultValue(node, value) { node.value = value === undefined || value === null ? '' : String(value); }
-function makeKpi(name, val, sub = '') {
-  const box = el('div', { class: 'box' });
+function makeKpi(name, val, sub = '', extraClass = '') {
+  const box = el('div', { class: `box${extraClass ? ` ${extraClass}` : ''}` });
   box.appendChild(el('div', { class: 'name', text: name }));
   box.appendChild(el('div', { class: 'val', text: val }));
   if (sub) box.appendChild(el('div', { class: 'sub', text: sub }));
@@ -655,9 +671,35 @@ function field(label, node) {
   return f;
 }
 
+
+function addKeepPurchaseInbound(plan, opt, note) {
+  db.inbound.push({
+    id: uid(),
+    date: todayISO(),
+    vendor: '선결제',
+    category: '선결제',
+    item_name: plan.item_name,
+    qty_ordered: opt.total_qty,
+    qty_received: opt.total_qty,
+    unit: plan.unit,
+    unit_price: opt.total_price,
+    total_paid: opt.total_price,
+    promo_text: '',
+    memo: note || '선결제 구매',
+  });
+}
+
 function renderKeep() {
   const card = el('div', { class: 'card' });
   card.appendChild(el('h2', { text: '선결제' }));
+  const keepSummary = el('div', { class: 'panel soft', style: { marginBottom: '14px' } });
+  const keepGrid = el('div', { class: 'kpi' });
+  const sheetKeep = getKeepStats('sheetmask');
+  const modelKeep = getKeepStats('modeling');
+  keepGrid.appendChild(makeKpi('(하라셀) 시트팩 킵 잔량', `${qtyFmt(sheetKeep.remaining)}장`));
+  keepGrid.appendChild(makeKpi('(하라셀) 모델링팩 킵 잔량', `${qtyFmt(modelKeep.remaining)}kg`));
+  keepSummary.appendChild(keepGrid);
+  card.appendChild(keepSummary);
   const plans = db.keepPlans.slice().sort((a, b) => (a.key === 'sheetmask' ? -1 : a.key === 'modeling' ? -1 : 1));
   const grid = el('div', { class: 'grid-2' });
 
@@ -687,6 +729,7 @@ function renderKeep() {
     purchaseBtn.onclick = () => {
       const opt = plan.options.find((x) => x.label === optionSel.value) || plan.options[0];
       db.keepHistory.push({ id: uid(), date: todayISO(), key: plan.key, type: 'purchase', qty: opt.total_qty, cost: opt.total_price, option_label: opt.label, note: '선결제 구매' });
+      addKeepPurchaseInbound(plan, opt, '선결제 구매');
       save(); render();
     };
     processBtn.onclick = () => {
@@ -702,6 +745,7 @@ function renderKeep() {
         while (need > localRemaining) {
           const opt = plan.options.find((x) => x.label === optionSel.value) || plan.options[0];
           db.keepHistory.push({ id: uid(), date: todayISO(), key: plan.key, type: 'purchase', qty: opt.total_qty, cost: opt.total_price, option_label: opt.label, note: '자동 선결제 추가' });
+          addKeepPurchaseInbound(plan, opt, '자동 선결제 추가');
           localRemaining += opt.total_qty;
         }
         db.keepHistory.push({ id: uid(), date: todayISO(), key: plan.key, type: 'ship', qty: need, cost: 0, option_label: '', note: '필요 수량 처리' });
@@ -715,7 +759,7 @@ function renderKeep() {
     kpi.appendChild(makeKpi('누적 선결제', `${qtyFmt(stats.purchased)}${plan.unit}`));
     kpi.appendChild(makeKpi('누적 출고', `${qtyFmt(stats.shipped)}${plan.unit}`));
     kpi.appendChild(makeKpi('남은 킵 수량', `${qtyFmt(stats.remaining)}${plan.unit}`));
-    kpi.appendChild(makeKpi('현재 옵션', (() => { const o = plan.options.find((x) => x.label === optionSel.value) || plan.options[0]; return `${o.label} / ${money(o.total_price)}원`; })()));
+    kpi.appendChild(makeKpi('현재 옵션', (() => { const o = plan.options.find((x) => x.label === optionSel.value) || plan.options[0]; return `${o.label} / ${money(o.total_price)}원`; })(), '', 'compact'));
     panel.appendChild(kpi);
     grid.appendChild(panel);
   });
@@ -751,7 +795,7 @@ function renderDaily() {
   const dateInput = el('input', { type: 'date', value: todayISO() });
   let savedSel = buildSavedDateSelect(db.dailyRecords, dateInput.value);
   const row = getDailyRow(dateInput.value);
-  const patientInput = el('input', { type: 'number', min: '0' }); setDefaultValue(patientInput, row.managed_patients);
+  const patientInput = el('input', { type: 'number', min: '0', placeholder: '' }); setDefaultValue(patientInput, row.managed_patients);
   const sheetInput = el('input', { type: 'number', min: '0' }); setDefaultValue(sheetInput, row.sheet_stock);
   const gelInput = el('input', { type: 'number', min: '0' }); setDefaultValue(gelInput, row.gel_stock);
   const reviveInput = el('input', { type: 'number', min: '0' }); setDefaultValue(reviveInput, row.revive_stock);
@@ -769,13 +813,16 @@ function renderDaily() {
   savedSel.onchange = () => { if (savedSel.value) { dateInput.value = savedSel.value; refreshInputs(); } };
   dateInput.onchange = refreshInputs;
 
-  card.appendChild(el('div', { class: 'row top' }, [field('날짜', dateInput), field('저장된 날짜', savedSel)]));
+  card.appendChild(el('div', { class: 'row top' }, [
+    field('날짜', dateInput),
+    field('당일 관리환자수', patientInput),
+    field('저장된 날짜', savedSel),
+    saveBtn,
+  ]));
   card.appendChild(el('div', { class: 'grid-2', style: { marginTop: '14px' } }, [
-    panelInput('관리 환자수 / 3가지 팩 재고', [field('당일 관리환자수', patientInput), field(PACK_LABELS.sheet, sheetInput), field(PACK_LABELS.gel, gelInput), field(PACK_LABELS.revive, reviveInput)]),
+    panelInput('3가지 팩 재고', [field(PACK_LABELS.sheet, sheetInput), field(PACK_LABELS.gel, gelInput), field(PACK_LABELS.revive, reviveInput)]),
     panelInput('모델링팩', [field('미개봉 재고(kg)', modelingInput), field('오늘 사용 인원', modelUsers)]),
   ]));
-  card.appendChild(el('div', { class: 'row', style: { marginTop: '14px' } }, [saveBtn]));
-  card.appendChild(el('div', { class: 'mini', text: '관리 환자수는 원장님 보고용 통계에 사용됩니다. 시트팩/겔시트팩/리바이브팩은 전일 재고 차이로 사용량을 계산합니다. 모델링팩은 미개봉 재고와 사용 인원을 함께 기록합니다.' }));
 
   saveBtn.onclick = () => {
     if (patientInput.value === '' && !window.confirm('당일 관리환자수가 비어 있습니다. 계속 저장하시겠습니까?')) return;
@@ -818,59 +865,72 @@ function renderWeekly() {
   card.appendChild(el('h2', { text: '주간재고' }));
   const dateInput = el('input', { type: 'date', value: todayISO() });
   let savedSel = buildSavedDateSelect(db.weeklyRecords, dateInput.value);
-  const saveBtn = el('button', { class: 'btn primary', type: 'button', text: '저장' });
-  const searchInput = el('input', { type: 'text', placeholder: '품목 검색' });
+  const groupSel = el('select');
+  WEEKLY_GROUPS.forEach((g) => groupSel.appendChild(el('option', { value: g, text: g })));
+  const searchInput = el('input', { type: 'text', placeholder: '현재 그룹 내 품목 검색' });
+  const saveBtn = el('button', { class: 'btn primary', type: 'button', text: '현재 그룹 저장' });
 
-  card.appendChild(el('div', { class: 'row top' }, [field('날짜', dateInput), field('저장된 날짜', savedSel), field('검색', searchInput), saveBtn]));
+  card.appendChild(el('div', { class: 'row top' }, [field('날짜', dateInput), field('저장된 날짜', savedSel), field('그룹 선택', groupSel), field('검색', searchInput), saveBtn]));
   const container = el('div', { style: { marginTop: '14px' } });
   card.appendChild(container);
 
-  function renderGroups() {
-    container.innerHTML = '';
+  function currentGroupItems() {
+    let items = getWeeklyItems(groupSel.value);
     const keyword = searchInput.value.trim();
-    WEEKLY_GROUPS.forEach((group) => {
-      let items = getWeeklyItems(group);
-      if (keyword) items = items.filter((x) => x.name.includes(keyword));
-      const block = el('div', { class: 'panel' });
-      block.appendChild(el('h3', { text: group }));
-      if (!items.length) {
-        block.appendChild(el('div', { class: 'empty', text: '해당 그룹 품목이 없습니다.' }));
-        container.appendChild(block);
-        return;
-      }
-      const wrap = el('div', { class: 'table-wrap' });
-      const table = el('table');
-      table.innerHTML = '<thead><tr><th>즐겨찾기</th><th>품목</th><th class="num">현재 재고</th><th class="num">최근 재고</th><th>단위</th></tr></thead><tbody></tbody>';
-      const tbody = table.querySelector('tbody');
-      items.forEach((item) => {
-        const row = db.weeklyRecords[dateInput.value]?.[item.name];
-        const qtyInput = el('input', { type: 'number', min: '0', value: row === undefined ? '' : String(row) });
-        const star = el('span', { class: `fav${item.favorite ? ' on' : ''}`, text: item.favorite ? '★' : '☆', onclick: () => { item.favorite = !item.favorite; save(); renderGroups(); } });
-        const tr = el('tr');
-        tr.innerHTML = `<td></td><td>${item.name}</td><td class="num"></td><td class="num">${money(getLatestWeeklyQty(item.name))}</td><td>${item.unit}</td>`;
-        tr.children[0].appendChild(star);
-        tr.children[2].appendChild(qtyInput);
-        tbody.appendChild(tr);
-      });
-      wrap.appendChild(table); block.appendChild(wrap); container.appendChild(block);
-    });
+    if (keyword) items = items.filter((x) => x.name.includes(keyword));
+    return items;
   }
-  searchInput.oninput = renderGroups;
-  savedSel.onchange = () => { if (savedSel.value) { dateInput.value = savedSel.value; renderGroups(); } };
-  dateInput.onchange = renderGroups;
+
+  function renderGroup() {
+    container.innerHTML = '';
+    const group = groupSel.value;
+    const items = currentGroupItems();
+    const block = el('div', { class: 'panel' });
+    block.appendChild(el('div', { class: 'section-title' }, [
+      el('h3', { text: group }),
+      el('div', { class: 'mini', text: '그룹별로 따로 확인하고 저장합니다.' })
+    ]));
+    if (!items.length) {
+      block.appendChild(el('div', { class: 'empty', text: '해당 그룹 품목이 없습니다.' }));
+      container.appendChild(block);
+      return;
+    }
+    const wrap = el('div', { class: 'table-wrap', style: { maxHeight: '520px', overflow: 'auto' } });
+    const table = el('table');
+    table.innerHTML = '<thead><tr><th>즐겨찾기</th><th>품목</th><th class="num">현재 재고</th><th class="num">최근 재고</th><th>단위</th></tr></thead><tbody></tbody>';
+    const tbody = table.querySelector('tbody');
+    items.forEach((item) => {
+      const row = db.weeklyRecords[dateInput.value]?.[item.name];
+      const qtyInput = el('input', { type: 'number', min: '0', value: row === undefined ? '' : String(row) });
+      const star = el('span', { class: `fav${item.favorite ? ' on' : ''}`, text: item.favorite ? '★' : '☆', onclick: () => { item.favorite = !item.favorite; save(); renderGroup(); } });
+      const tr = el('tr');
+      tr.innerHTML = `<td></td><td>${item.name}</td><td class="num"></td><td class="num">${money(getLatestWeeklyQty(item.name))}</td><td>${item.unit}</td>`;
+      tr.children[0].appendChild(star);
+      tr.children[2].appendChild(qtyInput);
+      tbody.appendChild(tr);
+    });
+    wrap.appendChild(table);
+    block.appendChild(wrap);
+    container.appendChild(block);
+    saveBtn.textContent = `${group} 저장`;
+  }
+
+  searchInput.oninput = renderGroup;
+  groupSel.onchange = renderGroup;
+  savedSel.onchange = () => { if (savedSel.value) { dateInput.value = savedSel.value; renderGroup(); } };
+  dateInput.onchange = renderGroup;
 
   saveBtn.onclick = () => {
     if (!db.weeklyRecords[dateInput.value]) db.weeklyRecords[dateInput.value] = {};
-    container.querySelectorAll('.panel').forEach((panel) => {
-      panel.querySelectorAll('tbody tr').forEach((tr) => {
-        const name = tr.children[1].textContent;
-        const qty = tr.children[2].querySelector('input').value;
-        db.weeklyRecords[dateInput.value][name] = qty === '' ? '' : toNum(qty);
-      });
+    container.querySelectorAll('tbody tr').forEach((tr) => {
+      const name = tr.children[1].textContent;
+      const qty = tr.children[2].querySelector('input').value;
+      db.weeklyRecords[dateInput.value][name] = qty === '' ? '' : toNum(qty);
     });
-    save(); render();
+    save();
+    render();
   };
-  renderGroups();
+  renderGroup();
   return card;
 }
 
@@ -942,7 +1002,7 @@ function renderReport() {
     const data = buildReportData(month);
     const patients = getMonthlyManagedPatients(month);
     content.innerHTML = '';
-    content.appendChild(el('div', { class: 'section-title' }, [el('div', { html: `<div style="font-size:22px;font-weight:800">${month} 월간 보고</div><div class="mini">원장님 전달용</div>` })]));
+    content.appendChild(el('div', { class: 'section-title' }, [el('div', { html: `<div style="font-size:22px;font-weight:800">${month} 월간 보고</div>` })]));
 
     const block0 = el('div', { class: 'report-block' });
     block0.appendChild(el('h3', { text: '관리 환자수' }));
@@ -953,17 +1013,29 @@ function renderReport() {
       <tr><td>월 관리 환자수</td><td class="num">${money(patients.total)}명</td></tr>
       <tr><td>일 평균 관리 환자수</td><td class="num">${patients.average.toFixed(1)}명</td></tr>`;
     t0.appendChild(table0); block0.appendChild(t0);
+    const monthStatus = getMonthDataStatus(month);
+    const blockStatus = el('div', { class: 'report-block' });
+    blockStatus.appendChild(el('h3', { text: '통계 기준' }));
+    const ts = el('div', { class: 'table-wrap' });
+    const tableS = el('table');
+    tableS.innerHTML = '<thead><tr><th>항목</th><th class="num">값</th></tr></thead><tbody></tbody>';
+    tableS.querySelector('tbody').innerHTML = `
+      <tr><td>상태</td><td class="num">${monthStatus.label}</td></tr>
+      <tr><td>기록일</td><td class="num">${money(monthStatus.recordDays)}일</td></tr>
+      <tr><td>월 관리 환자수</td><td class="num">${money(patients.total)}명</td></tr>
+      <tr><td>기록일 기준 평균</td><td class="num">${patients.average.toFixed(1)}명</td></tr>`;
+    ts.appendChild(tableS); blockStatus.appendChild(ts);
 
     const block1 = el('div', { class: 'report-block' });
-    block1.appendChild(el('h3', { text: '팩 사용 요약' }));
+    block1.appendChild(el('h3', { text: '팩 사용 통계' }));
     const t1 = el('div', { class: 'table-wrap' });
     const table1 = el('table');
-    table1.innerHTML = '<thead><tr><th>팩</th><th class="num">월 사용</th><th class="num">주 평균</th><th class="num">일 평균</th><th class="num">사용 비율</th></tr></thead><tbody></tbody>';
+    table1.innerHTML = '<thead><tr><th>팩</th><th class="num">월 사용량</th><th class="num">사용 비율</th></tr></thead><tbody></tbody>';
     const tb1 = table1.querySelector('tbody');
     data.stats.rows.forEach((r) => {
       const unit = r.unit || (r.label === PACK_LABELS.sheet ? '장' : '개');
       const tr = el('tr');
-      tr.innerHTML = `<td>${r.label}</td><td class="num">${money(r.month)}${unit}</td><td class="num">${r.week.toFixed(1)}${unit}</td><td class="num">${r.day.toFixed(1)}${unit}</td><td class="num">${r.ratio.toFixed(1)}%</td>`;
+      tr.innerHTML = `<td>${r.label}</td><td class="num">${money(r.month)}${unit}</td><td class="num">${r.ratio.toFixed(1)}%</td>`;
       tb1.appendChild(tr);
     });
     t1.appendChild(table1); block1.appendChild(t1);
@@ -976,10 +1048,8 @@ function renderReport() {
     table2.querySelector('tbody').innerHTML = `
       <tr><td>월 사용 인원</td><td class="num">${money(data.stats.modelingUsers)}명</td></tr>
       <tr><td>주 평균 인원</td><td class="num">${(data.stats.modelingUsers / 4.3).toFixed(1)}명</td></tr>
-      <tr><td>일 평균 인원</td><td class="num">${(data.stats.modelingUsers / data.stats.days).toFixed(1)}명</td></tr>
-      <tr><td>월 재고 사용</td><td class="num">${money(data.stats.modelingKg)}kg</td></tr>
-      <tr><td>주 평균 재고 사용</td><td class="num">${(data.stats.modelingKg / 4.3).toFixed(1)}kg</td></tr>
-      <tr><td>일 평균 재고 사용</td><td class="num">${(data.stats.modelingKg / data.stats.days).toFixed(1)}kg</td></tr>`;
+      <tr><td>일 평균 인원</td><td class="num">${(data.stats.modelingUsers / Math.max(data.stats.days,1)).toFixed(1)}명</td></tr>
+      <tr><td>월 재고 사용</td><td class="num">${money(data.stats.modelingKg)}kg</td></tr>`;
     t2.appendChild(table2); block2.appendChild(t2);
 
     const block3 = el('div', { class: 'report-block' });
@@ -1019,7 +1089,7 @@ function renderReport() {
       block0.appendChild(warn);
     }
 
-    content.appendChild(block0); content.appendChild(block1); content.appendChild(block2); content.appendChild(block3); content.appendChild(block4);
+    content.appendChild(block0); content.appendChild(blockStatus); content.appendChild(block1); content.appendChild(block2); content.appendChild(block3); content.appendChild(block4);
   }
   function buildReportHTML(month) {
     const cloned = content.cloneNode(true);
@@ -1029,9 +1099,15 @@ function renderReport() {
     const month = monthInput.value;
     const blob = new Blob([buildReportHTML(month)], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href = url; a.download = `월간보고_${month}.html`; a.click(); URL.revokeObjectURL(url);
+    const a = document.createElement('a'); a.href = url; a.download = `월간보고_${month.replace('-', '_')}.html`; a.click(); URL.revokeObjectURL(url);
   };
-  printBtn.onclick = () => window.print();
+  printBtn.onclick = () => {
+    const prevTitle = document.title;
+    const fileMonth = monthInput.value ? monthInput.value.replace('-', '_') : monthISO().replace('-', '_');
+    document.title = `월간보고_${fileMonth}`;
+    window.print();
+    setTimeout(() => { document.title = prevTitle; }, 300);
+  };
   monthInput.onchange = renderReportContent;
   renderReportContent();
   return card;
