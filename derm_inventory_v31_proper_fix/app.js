@@ -67,7 +67,7 @@ const DEFAULT_CATALOG = [
   { vendor: '히스토랩', category: '관리제품', name: '(히스토랩) 알파클렌징폼 1200ml', unit: '개', unit_price: 40000, inventory_name: '(히스토랩) 알파클렌징폼 1200ml' },
 
   { vendor: '쎄라덤/더마소드', category: '관리제품', name: '(쎄라덤) 쿠컴버 토너 1000ml', unit: '개', unit_price: 46200, inventory_name: '(쎄라덤) 토너', promo: { type: 'tiered_free', rules: [{ min: 3, free: 1 }] } },
-  { vendor: '쎄라덤/더마소드', category: '관리제품', name: '(더마소드) 아미스테롤 크림 60ml', unit: '개', unit_price: 34000, inventory_name: '아미스테롤 크림 60ml' },
+  { vendor: '쎄라덤/더마소드', category: '관리제품', name: '아미스테롤 크림 60ml', unit: '개', unit_price: 34000, inventory_name: '아미스테롤 크림 60ml' },
   { vendor: '쎄라덤/더마소드', category: '관리제품', name: '(더마소드) 더마 클렌징겔 300ml', unit: '개', unit_price: 29000, inventory_name: '(더마소드) 클렌징 겔' },
   { vendor: '쎄라덤/더마소드', category: '일일팩', name: '(더마소드) 리바이브팩 1BOX(8ea)', unit: 'box', unit_price: 25000, inventory_name: '(더마소드) 리바이브팩', promo: { type: 'tiered_free', rules: [{ min: 10, free: 3 }, { min: 5, free: 1 }] } },
   { vendor: '쎄라덤/더마소드', category: '관리제품', name: '클렌징겔 샘플 100개', unit: '개', unit_price: 30000 },
@@ -85,10 +85,10 @@ const DEFAULT_CATALOG = [
   { vendor: '공통', category: '관리제품', name: '알라딘필링', unit: '개', unit_price: 0, inventory_name: '알라딘필링' },
   { vendor: '공통', category: '관리제품', name: '알라딘액티베이터', unit: '개', unit_price: 0, inventory_name: '알라딘액티베이터' },
   { vendor: '공통', category: '관리제품', name: '알라딘진정크림', unit: '개', unit_price: 0, inventory_name: '알라딘진정크림' },
-  { vendor: '셀퓨전씨', category: '관리제품', name: '(셀퓨전씨) 셀퓨전씨 크림', unit: '개', unit_price: 0, inventory_name: '셀퓨전씨 크림' },
-  { vendor: '셀퓨전씨', category: '관리제품', name: '(셀퓨전씨) 셀퓨전씨 로션', unit: '개', unit_price: 0, inventory_name: '셀퓨전씨 로션' },
-  { vendor: '아토베리아', category: '관리제품', name: '(아토베리아) 아토크림', unit: '개', unit_price: 0, inventory_name: '아토크림' },
-  { vendor: '아토베리아', category: '관리제품', name: '(아토베리아) 아토로션', unit: '개', unit_price: 0, inventory_name: '아토로션' },
+  { vendor: '공통', category: '관리제품', name: '셀퓨전씨 크림', unit: '개', unit_price: 0, inventory_name: '셀퓨전씨 크림' },
+  { vendor: '공통', category: '관리제품', name: '셀퓨전씨 로션', unit: '개', unit_price: 0, inventory_name: '셀퓨전씨 로션' },
+  { vendor: '공통', category: '관리제품', name: '아토크림', unit: '개', unit_price: 0, inventory_name: '아토크림' },
+  { vendor: '공통', category: '관리제품', name: '아토로션', unit: '개', unit_price: 0, inventory_name: '아토로션' },
   { vendor: '공통', category: '관리제품', name: '썬크림', unit: '개', unit_price: 0, inventory_name: '썬크림' },
 
   { vendor: '공통', category: '위생/세탁 소모품', name: '핸드티슈', unit: '개', unit_price: 0, inventory_name: '핸드티슈' },
@@ -137,11 +137,11 @@ const DEFAULT_ITEMS = [
   { name: '알라딘진정크림', scope: 'weekly', group: '관리제품', unit: '개' },
   { name: 'LDM겔', scope: 'weekly', group: '관리제품', unit: '개', favorite: true },
   { name: '(쎄라덤) 토너', scope: 'weekly', group: '관리제품', unit: '개', favorite: true },
-  { name: '(더마소드) 아미스테롤 크림 60ml', scope: 'weekly', group: '관리제품', unit: '개' },
-  { name: '(셀퓨전씨) 셀퓨전씨 크림', scope: 'weekly', group: '관리제품', unit: '개' },
-  { name: '(셀퓨전씨) 셀퓨전씨 로션', scope: 'weekly', group: '관리제품', unit: '개' },
-  { name: '(아토베리아) 아토크림', scope: 'weekly', group: '관리제품', unit: '개' },
-  { name: '(아토베리아) 아토로션', scope: 'weekly', group: '관리제품', unit: '개' },
+  { name: '아미스테롤 크림 60ml', scope: 'weekly', group: '관리제품', unit: '개' },
+  { name: '셀퓨전씨 크림', scope: 'weekly', group: '관리제품', unit: '개' },
+  { name: '셀퓨전씨 로션', scope: 'weekly', group: '관리제품', unit: '개' },
+  { name: '아토크림', scope: 'weekly', group: '관리제품', unit: '개' },
+  { name: '아토로션', scope: 'weekly', group: '관리제품', unit: '개' },
   { name: '썬크림', scope: 'weekly', group: '관리제품', unit: '개' },
   { name: '카프리가스', scope: 'weekly', group: '관리제품', unit: '개', favorite: true },
 
@@ -407,7 +407,21 @@ function getLatestWeeklyQty(itemName) {
   return 0;
 }
 function getDailyRow(date) {
-  return db.dailyRecords[date] || { sheet_stock: '', gel_stock: '', revive_stock: '', modeling_unopened: '', modeling_users: '', managed_patients: '' };
+  return db.dailyRecords[date] || { sheet_used: '', sheet_remain: '', gel_used: '', gel_remain: '', revive_used: '', revive_remain: '', modeling_unopened: '', modeling_users: '', managed_patients: '' };
+}
+
+function normalizeDailyRow(row = {}) {
+  return {
+    sheet_used: row.sheet_used ?? '',
+    sheet_remain: row.sheet_remain ?? row.sheet_stock ?? '',
+    gel_used: row.gel_used ?? '',
+    gel_remain: row.gel_remain ?? row.gel_stock ?? '',
+    revive_used: row.revive_used ?? '',
+    revive_remain: row.revive_remain ?? row.revive_stock ?? '',
+    modeling_unopened: row.modeling_unopened ?? '',
+    modeling_users: row.modeling_users ?? '',
+    managed_patients: row.managed_patients ?? '',
+  };
 }
 function getPreviousDailyRecord(date) {
   const prevDates = datesOf(db.dailyRecords).filter((d) => d < date).sort();
@@ -420,16 +434,12 @@ function getPackKeepShipQty(planKey, date) {
   return db.keepHistory.filter((h) => h.date === date && h.key === planKey && h.type === 'ship').reduce((a, h) => a + toNum(h.qty), 0);
 }
 function getDailyUsageForDate(date) {
-  const row = getDailyRow(date);
-  const prev = getPreviousDailyRecord(date) || {};
-  const sheetPrev = prev.sheet_stock === '' || prev.sheet_stock === undefined ? '' : toNum(prev.sheet_stock);
-  const gelPrev = prev.gel_stock === '' || prev.gel_stock === undefined ? '' : toNum(prev.gel_stock);
-  const revivePrev = prev.revive_stock === '' || prev.revive_stock === undefined ? '' : toNum(prev.revive_stock);
-  const modelingPrev = prev.modeling_unopened === '' || prev.modeling_unopened === undefined ? '' : toNum(prev.modeling_unopened);
-  const sheetUse = sheetPrev === '' || row.sheet_stock === '' || row.sheet_stock === undefined ? 0 : Math.max(sheetPrev + getPackInboundQty(PACK_LABELS.sheet, date) + getPackKeepShipQty('sheetmask', date) - toNum(row.sheet_stock), 0);
-  const gelUse = gelPrev === '' || row.gel_stock === '' || row.gel_stock === undefined ? 0 : Math.max(gelPrev + getPackInboundQty(PACK_LABELS.gel, date) - toNum(row.gel_stock), 0);
-  const reviveUse = revivePrev === '' || row.revive_stock === '' || row.revive_stock === undefined ? 0 : Math.max(revivePrev + getPackInboundQty(PACK_LABELS.revive, date) - toNum(row.revive_stock), 0);
-  const modelingKgUse = modelingPrev === '' || row.modeling_unopened === '' || row.modeling_unopened === undefined ? 0 : Math.max(modelingPrev + getPackKeepShipQty('modeling', date) + getPackInboundQty(PACK_LABELS.modeling, date) - toNum(row.modeling_unopened), 0);
+  const row = normalizeDailyRow(getDailyRow(date));
+  const prev = normalizeDailyRow(getPreviousDailyRecord(date) || {});
+  const sheetUse = row.sheet_used === '' || row.sheet_used === undefined ? (prev.sheet_remain === '' || row.sheet_remain === '' ? 0 : Math.max(toNum(prev.sheet_remain) + getPackInboundQty(PACK_LABELS.sheet, date) + getPackKeepShipQty('sheetmask', date) - toNum(row.sheet_remain), 0)) : toNum(row.sheet_used);
+  const gelUse = row.gel_used === '' || row.gel_used === undefined ? (prev.gel_remain === '' || row.gel_remain === '' ? 0 : Math.max(toNum(prev.gel_remain) + getPackInboundQty(PACK_LABELS.gel, date) - toNum(row.gel_remain), 0)) : toNum(row.gel_used);
+  const reviveUse = row.revive_used === '' || row.revive_used === undefined ? (prev.revive_remain === '' || row.revive_remain === '' ? 0 : Math.max(toNum(prev.revive_remain) + getPackInboundQty(PACK_LABELS.revive, date) - toNum(row.revive_remain), 0)) : toNum(row.revive_used);
+  const modelingKgUse = prev.modeling_unopened === '' || row.modeling_unopened === '' || row.modeling_unopened === undefined ? 0 : Math.max(toNum(prev.modeling_unopened) + getPackKeepShipQty('modeling', date) + getPackInboundQty(PACK_LABELS.modeling, date) - toNum(row.modeling_unopened), 0);
   return { sheetUse, gelUse, reviveUse, modelingKgUse, modelingUsers: toNum(row.modeling_users) };
 }
 function getMonthlyPackStats(month) {
@@ -460,9 +470,9 @@ function getMonthlyPackStats(month) {
 }
 function getCurrentPackStock() {
   const latestDate = datesOf(db.dailyRecords)[0];
-  const row = latestDate ? getDailyRow(latestDate) : {};
+  const row = latestDate ? normalizeDailyRow(getDailyRow(latestDate)) : normalizeDailyRow({});
   return {
-    sheet: toNum(row.sheet_stock), gel: toNum(row.gel_stock), revive: toNum(row.revive_stock), modeling: toNum(row.modeling_unopened), latestDate,
+    sheet: toNum(row.sheet_remain), gel: toNum(row.gel_remain), revive: toNum(row.revive_remain), modeling: toNum(row.modeling_unopened), latestDate,
   };
 }
 
@@ -499,8 +509,11 @@ function getCurrentStockAlerts() {
   return arr;
 }
 function getMonthlyCostSummary(month) {
-  const inbound = monthInboundRows(month).reduce((a, x) => a + toNum(x.total_paid), 0);
-  const keep = monthKeepPurchases(month).reduce((a, x) => a + toNum(x.cost), 0);
+  const rows = monthInboundRows(month);
+  const keepRows = rows.filter((x) => x.category === '선결제' || x.vendor === '선결제');
+  const regularRows = rows.filter((x) => !(x.category === '선결제' || x.vendor === '선결제'));
+  const inbound = regularRows.reduce((a, x) => a + toNum(x.total_paid), 0);
+  const keep = keepRows.reduce((a, x) => a + toNum(x.total_paid), 0);
   return { inbound, keep, total: inbound + keep };
 }
 function applyPromo(row, qtyOrdered) {
@@ -594,6 +607,38 @@ function renderDashboard() {
   return card;
 }
 
+
+function canCancelKeepPurchase(inboundRow) {
+  const linkedPurchase = db.keepHistory.find((h) => h.id === inboundRow.keep_purchase_id);
+  if (!linkedPurchase) return false;
+  const stats = getKeepStats(linkedPurchase.key);
+  return stats.remaining >= toNum(linkedPurchase.qty);
+}
+function cancelKeepPurchaseFromInbound(inboundRow) {
+  const linkedPurchase = db.keepHistory.find((h) => h.id === inboundRow.keep_purchase_id);
+  if (!linkedPurchase) {
+    alert('연결된 선결제 구매 기록을 찾을 수 없습니다.');
+    return;
+  }
+  if (!canCancelKeepPurchase(inboundRow)) {
+    alert('이미 일부 출고되어 취소할 수 없습니다. 현재 남은 킵 수량이 부족합니다.');
+    return;
+  }
+  if (!confirm('이 선결제 구매를 취소하시겠습니까?\n취소하면 입고 기록, 킵 잔량, 월 비용이 함께 수정됩니다.')) return;
+  db.keepHistory = db.keepHistory.filter((h) => h.id !== linkedPurchase.id);
+  db.inbound = db.inbound.filter((x) => x.id !== inboundRow.id);
+  save(); render();
+}
+function deleteInboundRow(inboundRow) {
+  if (inboundRow.category === '선결제' || inboundRow.vendor === '선결제') {
+    cancelKeepPurchaseFromInbound(inboundRow);
+    return;
+  }
+  if (!confirm('이 입고 기록을 삭제하시겠습니까?\n삭제하면 월 비용에도 반영됩니다.')) return;
+  db.inbound = db.inbound.filter((x) => x.id !== inboundRow.id);
+  save(); render();
+}
+
 function renderInbound() {
   const card = el('div', { class: 'card' });
   card.appendChild(el('h2', { text: '입고' }));
@@ -656,7 +701,7 @@ function renderInbound() {
     const tr = el('tr');
     const promo = r.promo_text ? ` · ${r.promo_text}` : '';
     tr.innerHTML = `<td>${r.date}</td><td>${r.display_name || r.item_name}<div class="mini">${r.vendor}${promo}</div></td><td class="num">${qtyFmt(r.qty_ordered)}</td><td class="num">${qtyFmt(r.qty_received)}</td><td class="num">${money(r.unit_price)}원</td><td class="num">${money(r.total_paid)}원</td><td>${r.note || ''}</td><td></td>`;
-    const del = el('button', { class: 'btn', type: 'button', text: '삭제', onclick: () => { db.inbound = db.inbound.filter((x) => x.id !== r.id); save(); render(); } });
+    const del = el('button', { class: 'btn', type: 'button', text: (r.category === '선결제' || r.vendor === '선결제') ? '선결제 취소' : '삭제', onclick: () => deleteInboundRow(r) });
     tr.children[7].appendChild(del);
     tbody.appendChild(tr);
   });
@@ -672,13 +717,14 @@ function field(label, node) {
 }
 
 
-function addKeepPurchaseInbound(plan, opt, note) {
+function addKeepPurchaseInbound(plan, opt, note, purchaseId) {
   db.inbound.push({
     id: uid(),
     date: todayISO(),
     vendor: '선결제',
     category: '선결제',
     item_name: plan.item_name,
+    display_name: plan.item_name,
     qty_ordered: opt.total_qty,
     qty_received: opt.total_qty,
     unit: plan.unit,
@@ -686,6 +732,7 @@ function addKeepPurchaseInbound(plan, opt, note) {
     total_paid: opt.total_price,
     promo_text: '',
     memo: note || '선결제 구매',
+    keep_purchase_id: purchaseId || '',
   });
 }
 
@@ -714,9 +761,9 @@ function renderKeep() {
 
     const needInput = el('input', { type: 'number', value: String(plan.default_ship_qty || 1), min: '1', step: String(plan.unit === 'kg' ? 1 : 1) });
     const quickInput = el('input', { type: 'number', value: String(plan.default_ship_qty || 1), min: '1' });
-    const shipBtn = el('button', { class: 'btn', type: 'button', text: '킵만 출고' });
-    const purchaseBtn = el('button', { class: 'btn light', type: 'button', text: '선결제권만 추가' });
-    const processBtn = el('button', { class: 'btn primary', type: 'button', text: '필요 수량 처리' });
+    const shipBtn = el('button', { class: 'btn', type: 'button', text: '수동 출고' });
+    const purchaseBtn = el('button', { class: 'btn light', type: 'button', text: '선결제 구매' });
+    const processBtn = el('button', { class: 'btn primary', type: 'button', text: '사용량 차감' });
 
     optionSel.onchange = () => { plan.selected_option = optionSel.value; save(); render(); };
     shipBtn.onclick = () => {
@@ -728,33 +775,38 @@ function renderKeep() {
     };
     purchaseBtn.onclick = () => {
       const opt = plan.options.find((x) => x.label === optionSel.value) || plan.options[0];
-      db.keepHistory.push({ id: uid(), date: todayISO(), key: plan.key, type: 'purchase', qty: opt.total_qty, cost: opt.total_price, option_label: opt.label, note: '선결제 구매' });
-      addKeepPurchaseInbound(plan, opt, '선결제 구매');
+      const purchaseId = uid();
+      db.keepHistory.push({ id: purchaseId, date: todayISO(), key: plan.key, type: 'purchase', qty: opt.total_qty, cost: opt.total_price, option_label: opt.label, note: '선결제 구매' });
+      addKeepPurchaseInbound(plan, opt, '선결제 구매', purchaseId);
       save(); render();
     };
     processBtn.onclick = () => {
       let need = toNum(needInput.value);
-      if (need <= 0) return alert('필요 수량을 입력하세요.');
+      if (need <= 0) return alert('차감할 사용량을 입력하세요.');
       let remaining = getKeepStats(plan.key).remaining;
       if (remaining >= need) {
-        db.keepHistory.push({ id: uid(), date: todayISO(), key: plan.key, type: 'ship', qty: need, cost: 0, option_label: '', note: '필요 수량 처리' });
+        db.keepHistory.push({ id: uid(), date: todayISO(), key: plan.key, type: 'ship', qty: need, cost: 0, option_label: '', note: '사용량 차감' });
       } else {
-        if (remaining > 0) db.keepHistory.push({ id: uid(), date: todayISO(), key: plan.key, type: 'ship', qty: remaining, cost: 0, option_label: '', note: '필요 수량 처리' });
+        if (remaining > 0) db.keepHistory.push({ id: uid(), date: todayISO(), key: plan.key, type: 'ship', qty: remaining, cost: 0, option_label: '', note: '사용량 차감' });
         need -= remaining;
         let localRemaining = 0;
         while (need > localRemaining) {
           const opt = plan.options.find((x) => x.label === optionSel.value) || plan.options[0];
-          db.keepHistory.push({ id: uid(), date: todayISO(), key: plan.key, type: 'purchase', qty: opt.total_qty, cost: opt.total_price, option_label: opt.label, note: '자동 선결제 추가' });
-          addKeepPurchaseInbound(plan, opt, '자동 선결제 추가');
+          const purchaseId = uid();
+          db.keepHistory.push({ id: purchaseId, date: todayISO(), key: plan.key, type: 'purchase', qty: opt.total_qty, cost: opt.total_price, option_label: opt.label, note: '자동 선결제 추가' });
+          addKeepPurchaseInbound(plan, opt, '자동 선결제 추가', purchaseId);
           localRemaining += opt.total_qty;
         }
-        db.keepHistory.push({ id: uid(), date: todayISO(), key: plan.key, type: 'ship', qty: need, cost: 0, option_label: '', note: '필요 수량 처리' });
+        db.keepHistory.push({ id: uid(), date: todayISO(), key: plan.key, type: 'ship', qty: need, cost: 0, option_label: '', note: '사용량 차감' });
       }
       save(); render();
     };
 
-    panel.appendChild(el('div', { class: 'row top' }, [field('선결제 옵션', optionSel), field(`킵만 출고(${plan.unit})`, quickInput), shipBtn]));
-    panel.appendChild(el('div', { class: 'row top', style: { marginTop: '10px' } }, [field(`필요 수량 처리(${plan.unit})`, needInput), purchaseBtn, processBtn]));
+    panel.appendChild(el('div', { class: 'row top' }, [field('선결제 옵션', optionSel), field(`사용량 차감(${plan.unit})`, needInput), processBtn]));
+    const adv = el('details', { style: { marginTop: '10px' } });
+    adv.appendChild(el('summary', { text: '고급 기능', style: { cursor: 'pointer', color: 'var(--muted)', marginBottom: '10px' } }));
+    adv.appendChild(el('div', { class: 'row top' }, [field(`수동 출고(${plan.unit})`, quickInput), shipBtn, purchaseBtn]));
+    panel.appendChild(adv);
     const kpi = el('div', { class: 'kpi', style: { marginTop: '14px' } });
     kpi.appendChild(makeKpi('누적 선결제', `${qtyFmt(stats.purchased)}${plan.unit}`));
     kpi.appendChild(makeKpi('누적 출고', `${qtyFmt(stats.shipped)}${plan.unit}`));
@@ -789,23 +841,36 @@ function renderKeep() {
   return card;
 }
 
+
 function renderDaily() {
   const card = el('div', { class: 'card' });
   card.appendChild(el('h2', { text: '일일재고' }));
   const dateInput = el('input', { type: 'date', value: todayISO() });
   let savedSel = buildSavedDateSelect(db.dailyRecords, dateInput.value);
-  const row = getDailyRow(dateInput.value);
+  const row = normalizeDailyRow(getDailyRow(dateInput.value));
+
   const patientInput = el('input', { type: 'number', min: '0', placeholder: '' }); setDefaultValue(patientInput, row.managed_patients);
-  const sheetInput = el('input', { type: 'number', min: '0' }); setDefaultValue(sheetInput, row.sheet_stock);
-  const gelInput = el('input', { type: 'number', min: '0' }); setDefaultValue(gelInput, row.gel_stock);
-  const reviveInput = el('input', { type: 'number', min: '0' }); setDefaultValue(reviveInput, row.revive_stock);
+
+  const sheetUsedInput = el('input', { type: 'number', min: '0' }); setDefaultValue(sheetUsedInput, row.sheet_used);
+  const sheetRemainInput = el('input', { type: 'number', min: '0' }); setDefaultValue(sheetRemainInput, row.sheet_remain);
+
+  const gelUsedInput = el('input', { type: 'number', min: '0' }); setDefaultValue(gelUsedInput, row.gel_used);
+  const gelRemainInput = el('input', { type: 'number', min: '0' }); setDefaultValue(gelRemainInput, row.gel_remain);
+
+  const reviveUsedInput = el('input', { type: 'number', min: '0' }); setDefaultValue(reviveUsedInput, row.revive_used);
+  const reviveRemainInput = el('input', { type: 'number', min: '0' }); setDefaultValue(reviveRemainInput, row.revive_remain);
+
   const modelingInput = el('input', { type: 'number', min: '0' }); setDefaultValue(modelingInput, row.modeling_unopened);
   const modelUsers = el('input', { type: 'number', min: '0' }); setDefaultValue(modelUsers, row.modeling_users);
-  const saveBtn = el('button', { class: 'btn primary', type: 'button', text: '저장' });
+  const saveBtn = el('button', { class: 'btn primary', type: 'button', text: '재고 최종 저장' });
 
   function refreshInputs() {
-    const r = getDailyRow(dateInput.value);
-    setDefaultValue(patientInput, r.managed_patients); setDefaultValue(sheetInput, r.sheet_stock); setDefaultValue(gelInput, r.gel_stock); setDefaultValue(reviveInput, r.revive_stock); setDefaultValue(modelingInput, r.modeling_unopened); setDefaultValue(modelUsers, r.modeling_users);
+    const r = normalizeDailyRow(getDailyRow(dateInput.value));
+    setDefaultValue(patientInput, r.managed_patients);
+    setDefaultValue(sheetUsedInput, r.sheet_used); setDefaultValue(sheetRemainInput, r.sheet_remain);
+    setDefaultValue(gelUsedInput, r.gel_used); setDefaultValue(gelRemainInput, r.gel_remain);
+    setDefaultValue(reviveUsedInput, r.revive_used); setDefaultValue(reviveRemainInput, r.revive_remain);
+    setDefaultValue(modelingInput, r.modeling_unopened); setDefaultValue(modelUsers, r.modeling_users);
     const replacement = buildSavedDateSelect(db.dailyRecords, dateInput.value);
     replacement.onchange = savedSel.onchange;
     savedSel.replaceWith(replacement); savedSel = replacement;
@@ -819,17 +884,43 @@ function renderDaily() {
     field('저장된 날짜', savedSel),
     saveBtn,
   ]));
-  card.appendChild(el('div', { class: 'grid-2', style: { marginTop: '14px' } }, [
-    panelInput('3가지 팩 재고', [field(PACK_LABELS.sheet, sheetInput), field(PACK_LABELS.gel, gelInput), field(PACK_LABELS.revive, reviveInput)]),
-    panelInput('모델링팩', [field('미개봉 재고(kg)', modelingInput), field('오늘 사용 인원', modelUsers)]),
+
+  const packsPanel = el('div', { class: 'panel' });
+  packsPanel.appendChild(el('h3', { text: '3가지 팩 관리' }));
+  const packsGrid = el('div', { class: 'grid-3' });
+  [
+    { title: PACK_LABELS.sheet, used: sheetUsedInput, remain: sheetRemainInput },
+    { title: PACK_LABELS.gel, used: gelUsedInput, remain: gelRemainInput },
+    { title: PACK_LABELS.revive, used: reviveUsedInput, remain: reviveRemainInput },
+  ].forEach((p) => {
+    const box = el('div', { class: 'panel soft' });
+    box.appendChild(el('h3', { text: p.title, style: { marginBottom: '10px' } }));
+    box.appendChild(el('div', { class: 'stack' }, [
+      field('오늘 사용량', p.used),
+      field('마감 재고', p.remain),
+    ]));
+    packsGrid.appendChild(box);
+  });
+  packsPanel.appendChild(packsGrid);
+
+  const modelPanel = el('div', { class: 'panel' });
+  modelPanel.appendChild(el('h3', { text: '모델링팩' }));
+  modelPanel.appendChild(el('div', { class: 'grid-2' }, [
+    field('미개봉 재고(kg)', modelingInput),
+    field('오늘 사용 인원', modelUsers),
   ]));
+
+  card.appendChild(el('div', { class: 'stack', style: { marginTop: '14px' } }, [packsPanel, modelPanel]));
 
   saveBtn.onclick = () => {
     if (patientInput.value === '' && !window.confirm('당일 관리환자수가 비어 있습니다. 계속 저장하시겠습니까?')) return;
     db.dailyRecords[dateInput.value] = {
-      sheet_stock: sheetInput.value === '' ? '' : toNum(sheetInput.value),
-      gel_stock: gelInput.value === '' ? '' : toNum(gelInput.value),
-      revive_stock: reviveInput.value === '' ? '' : toNum(reviveInput.value),
+      sheet_used: sheetUsedInput.value === '' ? '' : toNum(sheetUsedInput.value),
+      sheet_remain: sheetRemainInput.value === '' ? '' : toNum(sheetRemainInput.value),
+      gel_used: gelUsedInput.value === '' ? '' : toNum(gelUsedInput.value),
+      gel_remain: gelRemainInput.value === '' ? '' : toNum(gelRemainInput.value),
+      revive_used: reviveUsedInput.value === '' ? '' : toNum(reviveUsedInput.value),
+      revive_remain: reviveRemainInput.value === '' ? '' : toNum(reviveRemainInput.value),
       managed_patients: patientInput.value === '' ? '' : toNum(patientInput.value),
       modeling_unopened: modelingInput.value === '' ? '' : toNum(modelingInput.value),
       modeling_users: modelUsers.value === '' ? '' : toNum(modelUsers.value),
@@ -837,20 +928,19 @@ function renderDaily() {
     save(); render();
   };
 
-  const month = monthISO();
-  const stats = getMonthlyPackStats(month);
-  const statsWrap = el('div', { class: 'table-wrap', style: { marginTop: '16px' } });
+  const current = getCurrentPackStock();
+  const info = el('div', { class: 'panel soft', style: { marginTop: '16px' } });
+  info.appendChild(el('h3', { text: '현재 팩 재고' }));
+  const wrap = el('div', { class: 'table-wrap' });
   const table = el('table');
-  table.innerHTML = '<thead><tr><th>팩</th><th class="num">이번달 사용</th><th class="num">주 평균</th><th class="num">일 평균</th></tr></thead><tbody></tbody>';
-  const tbody = table.querySelector('tbody');
-  stats.rows.forEach((r) => {
-    const unit = r.unit || (r.label === PACK_LABELS.sheet ? '장' : r.label === PACK_LABELS.modeling ? '명' : '개');
-    const tr = el('tr');
-    tr.innerHTML = `<td>${r.label}</td><td class="num">${money(r.month)}${unit}</td><td class="num">${r.week.toFixed(1)}${unit}</td><td class="num">${r.day.toFixed(1)}${unit}</td>`;
-    tbody.appendChild(tr);
-  });
-  statsWrap.appendChild(table);
-  card.appendChild(statsWrap);
+  table.innerHTML = '<thead><tr><th>품목</th><th class="num">현재 재고</th></tr></thead><tbody></tbody>';
+  table.querySelector('tbody').innerHTML = `
+    <tr><td>${PACK_LABELS.sheet}</td><td class="num">${money(current.sheet)}장</td></tr>
+    <tr><td>${PACK_LABELS.gel}</td><td class="num">${money(current.gel)}개</td></tr>
+    <tr><td>${PACK_LABELS.revive}</td><td class="num">${money(current.revive)}개</td></tr>
+    <tr><td>${PACK_LABELS.modeling}</td><td class="num">${money(current.modeling)}kg</td></tr>`;
+  wrap.appendChild(table); info.appendChild(wrap);
+  card.appendChild(info);
   return card;
 }
 function panelInput(title, fields) {
