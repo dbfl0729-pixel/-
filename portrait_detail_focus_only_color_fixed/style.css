@@ -468,3 +468,21 @@ button[data-lifting-cat]{
 .detailCloseBtn:hover{
   background:#f7f7f9 !important;
 }
+
+
+/* ===== portrait detail focus mode (only when detail is open) ===== */
+@media (orientation: portrait) and (max-width: 1400px){
+  .grid.detail-open{
+    grid-template-columns:1fr !important;
+  }
+  .grid.detail-open > .panel:first-child{
+    display:none !important;
+  }
+  .grid.detail-open > .detailPanel{
+    display:block !important;
+    min-width:0;
+  }
+}
+
+.summaryText{color:var(--muted);font-size:13px;line-height:1.6;white-space:normal;max-width:100%;word-break:keep-all}
+.detailText{font-size:15px;color:var(--text)}

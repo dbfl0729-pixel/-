@@ -28,42 +28,169 @@ const programSections = [
         name:'스페셜 토닝 1',
         price:1320000,
         effects:['색소','톤 개선','피부결'],
-        details:'구성\n- 스타룩스 1540 + LED 재생레이저 + 수분진정팩 (1회)\n- 레블라이트 + 비타민관리 + 모델링팩 + 수분진정팩 (5회)\n- 피코토닝 + 비타민관리 + 모델링팩 + 수분진정팩 (5회)'
+        summary:[
+          '스타룩스 1540 + LED 재생레이저 + 수분진정팩 (1회)',
+          '레블라이트 + 비타민관리 + 모델링팩 + 수분진정팩 (5회)',
+          '피코토닝 + 비타민관리 + 모델링팩 + 수분진정팩 (5회)'
+        ],
+        details:`구성
+
+1회차
+• 스타룩스 1540 + LED 재생레이저 + 수분진정팩
+
+2–11회차
+• 레블라이트 + 비타민관리 + 모델링팩 + 수분진정팩
+• 피코토닝 + 비타민관리 + 모델링팩 + 수분진정팩
+→ 토닝 레이저 번갈아 진행 (피부 상태에 따라 순서가 조정될 수 있습니다)`
       },
       {
         id:'special-toning-2',
         name:'스페셜 토닝 2',
         price:1430000,
         effects:['색소','톤 개선','피부결'],
-        details:'구성\n- 맥스지·알렉스 + LED 재생레이저 + 수분진정팩 (2회)\n- 레블라이트 + 비타민관리 + 모델링팩 + 수분진정팩 (4회)\n- 피코토닝 + 비타민관리 + 모델링팩 + 수분진정팩 (4회)'
+        summary:[
+          '맥스지·알렉스 + LED 재생레이저 + 수분진정팩 (2회)',
+          '레블라이트 + 비타민관리 + 모델링팩 + 수분진정팩 (4회)',
+          '피코토닝 + 비타민관리 + 모델링팩 + 수분진정팩 (4회)'
+        ],
+        details:`구성
+
+1회차
+• 맥스지·알렉스 + LED 재생레이저 + 수분진정팩
+
+2–5회차
+• 레블라이트 + 비타민관리 + 모델링팩 + 수분진정팩
+• 피코토닝 + 비타민관리 + 모델링팩 + 수분진정팩
+→ 토닝 레이저 번갈아 진행 (피부 상태에 따라 순서가 조정될 수 있습니다)
+
+6회차
+• 맥스지·알렉스 + LED 재생레이저 + 수분진정팩
+
+7–10회차
+• 레블라이트 + 비타민관리 + 모델링팩 + 수분진정팩
+• 피코토닝 + 비타민관리 + 모델링팩 + 수분진정팩
+→ 토닝 레이저 번갈아 진행 (피부 상태에 따라 순서가 조정될 수 있습니다)`
       },
       {
         id:'special-toning-3',
         name:'스페셜 토닝 3',
         price:1650000,
         effects:['색소','톤 개선','피부결'],
-        details:'구성\n- 스타룩스 1540 + LED 재생레이저 + 수분진정팩 (1회)\n- 맥스지·알렉스 + LED 재생레이저 + 수분진정팩 (2회)\n- 레블라이트 + 비타민관리 + 모델링팩 + 수분진정팩 (4회)\n- 피코토닝 + 비타민관리 + 모델링팩 + 수분진정팩 (4회)\n- 얼굴 전체 CO2 병변 제거 (2회)'
+        summary:[
+          '스타룩스 1540 + LED 재생레이저 + 수분진정팩 (1회)',
+          '맥스지·알렉스 + LED 재생레이저 + 수분진정팩 (2회)',
+          'CO2 병변 제거 (2회)',
+          '레블라이트 + 비타민관리 + 모델링팩 + 수분진정팩 (4회)',
+          '피코토닝 + 비타민관리 + 모델링팩 + 수분진정팩 (4회)'
+        ],
+        details:`구성
+
+1회차
+• 스타룩스 1540 + LED 재생레이저 + 수분진정팩
+
+2회차
+• 맥스지·알렉스 + LED 재생레이저 + 수분진정팩
++ CO2 병변 제거 (2회 중 1회차)
+
+3–6회차
+• 레블라이트 + 비타민관리 + 모델링팩 + 수분진정팩
+• 피코토닝 + 비타민관리 + 모델링팩 + 수분진정팩
+→ 토닝 레이저 번갈아 진행 (피부 상태에 따라 순서가 조정될 수 있습니다)
+
+7회차
+• 맥스지·알렉스 + LED 재생레이저 + 수분진정팩
++ CO2 병변 제거 (2회 중 2회차)
+
+8–11회차
+• 레블라이트 + 비타민관리 + 모델링팩 + 수분진정팩
+• 피코토닝 + 비타민관리 + 모델링팩 + 수분진정팩
+→ 토닝 레이저 번갈아 진행 (피부 상태에 따라 순서가 조정될 수 있습니다)`
       },
       {
         id:'special-toning-4',
         name:'스페셜 토닝 4',
         price:1650000,
         effects:['색소','톤 개선','피부결'],
-        details:'구성\n- 맥스지·PICO 1064 + LED 재생레이저 + 수분진정팩 (2회)\n- 레블라이트 + 비타민관리 + 모델링팩 + 수분진정팩 (4회)\n- 피코토닝 + 비타민관리 + 모델링팩 + 수분진정팩 (4회)\n- 얼굴 전체 CO2 병변 제거 (2회)\n\n옵션(현장 추가/변경)\n- 비타민관리 → LDM관리 변경 +55,000원\n- 알러지 케어(원장님 진료 후 가능) +55,000원\n- 진정관리 혹은 비타민관리 추가 +55,000원'
+        summary:[
+          '맥스지 + 피코 532 + LED 재생레이저 + 수분진정팩 (2회)',
+          'CO2 병변 제거 (2회)',
+          '레블라이트 + 비타민관리 + 모델링팩 + 수분진정팩 (4회)',
+          '피코토닝 + 비타민관리 + 모델링팩 + 수분진정팩 (4회)'
+        ],
+        details:`구성
+
+1회차
+• 맥스지 + 피코 532 + LED 재생레이저 + 수분진정팩
++ CO2 병변 제거 (2회 중 1회차)
+
+2–5회차
+• 레블라이트 + 비타민관리 + 모델링팩 + 수분진정팩
+• 피코토닝 + 비타민관리 + 모델링팩 + 수분진정팩
+→ 토닝 레이저 번갈아 진행 (피부 상태에 따라 순서가 조정될 수 있습니다)
+
+6회차
+• 맥스지 + 피코 532 + LED 재생레이저 + 수분진정팩
++ CO2 병변 제거 (2회 중 2회차)
+
+7–10회차
+• 레블라이트 + 비타민관리 + 모델링팩 + 수분진정팩
+• 피코토닝 + 비타민관리 + 모델링팩 + 수분진정팩
+→ 토닝 레이저 번갈아 진행 (피부 상태에 따라 순서가 조정될 수 있습니다)`
       },
       {
         id:'dual-toning-ldm',
         name:'듀얼 토닝 프로그램',
         price:1980000,
         effects:['색소','진정','장벽'],
-        details:'구성\n- 맥스지·알렉스 + LED 재생레이저 + 수분진정팩 (1회)\n- 레블라이트 + 제네시스토닝 + LDM관리 + 하이드로겔팩 (5회)\n- 피코토닝 + LDM관리 + 하이드로겔팩 (5회)'
+        summary:[
+          '맥스지·알렉스 + LED 재생레이저 + 수분진정팩 (1회)',
+          '레블라이트 + 제네시스토닝 + LDM관리 + 하이드로겔팩 (5회)',
+          '피코토닝 + LDM관리 + 하이드로겔팩 (5회)'
+        ],
+        details:`구성
+
+1회차
+• 맥스지·알렉스 + LED 재생레이저 + 수분진정팩
+
+2–11회차
+• 레블라이트 + 제네시스토닝 + LDM관리 + 하이드로겔팩
+• 피코토닝 + LDM관리 + 하이드로겔팩
+→ 토닝 레이저 번갈아 진행 (피부 상태에 따라 순서가 조정될 수 있습니다)`
       },
       {
         id:'triple-toning-ldm',
         name:'트리플 토닝 프로그램',
-        price:1650000,
+        price:2310000,
         effects:['색소','진정','장벽'],
-        details:'구성\n- 스타룩스 1540 + LED 재생레이저 + 수분진정팩 (1회)\n- 맥스지·알렉스 + LED 재생레이저 + 수분진정팩 (5회)\n- 레블라이트 + 제네시스토닝 + LDM관리 + 하이드로겔팩 (5회)\n- 피코토닝 + 이래비티 + LDM관리 + 하이드로겔팩 (5회)\n- 얼굴 전체 CO2 병변 제거 (2회)'
+        summary:[
+          '스타룩스 1540 + LED 재생레이저 + 수분진정팩 (1회)',
+          '맥스지·알렉스 + LED 재생레이저 + 수분진정팩 (2회)',
+          'CO2 병변 제거 (2회)',
+          '레블라이트 + 제네시스토닝 + LDM관리 + 하이드로겔팩 (5회)',
+          '피코토닝 + 이래비티 + LDM관리 + 하이드로겔팩 (5회)'
+        ],
+        details:`구성
+
+1회차
+• 스타룩스 1540 + LED 재생레이저 + 수분진정팩
+
+2회차
+• 맥스지·알렉스 + LED 재생레이저 + 수분진정팩
++ CO2 병변 제거 (2회 중 1회차)
+
+3–5회차
+• 레블라이트 + 제네시스토닝 + LDM관리 + 하이드로겔팩
+• 피코토닝 + 이래비티 + LDM관리 + 하이드로겔팩
+→ 토닝 레이저 번갈아 진행 (피부 상태에 따라 순서가 조정될 수 있습니다)
+
+6회차
+• 맥스지·알렉스 + LED 재생레이저 + 수분진정팩
++ CO2 병변 제거 (2회 중 2회차)
+
+7–11회차
+• 레블라이트 + 제네시스토닝 + LDM관리 + 하이드로겔팩
+• 피코토닝 + 이래비티 + LDM관리 + 하이드로겔팩
+→ 토닝 레이저 번갈아 진행 (피부 상태에 따라 순서가 조정될 수 있습니다)`
       }
     ]
   },
@@ -201,6 +328,15 @@ const singleLaserItems = [
    유틸
 ========================= */
 const fmt = (n)=> new Intl.NumberFormat('ko-KR').format(Number(n||0));
+
+function renderCardSummary(p){
+  const items = Array.isArray(p?.summary) ? p.summary : [];
+  if(!items.length) return 'Effect 요약';
+  return items.map(x => `• ${escapeHtml(x)}`).join('<br>');
+}
+function formatDetailText(text){
+  return escapeHtml(text||'').split('\n').join('<br>');
+}
 const qs = (s,el=document)=> el.querySelector(s);
 const qsa = (s,el=document)=> Array.from(el.querySelectorAll(s));
 
@@ -524,7 +660,7 @@ function renderLeft(){
         </div>
         <div class="tags">${(p.effects||[]).map(e=>`<span class="tag">${escapeHtml(e)}</span>`).join('')}</div>
         <div class="cardRow">
-          <div class="muted">Effect 요약</div>
+          <div class="summaryText">${renderCardSummary(p)}</div>
           <div style="display:flex;gap:8px">
             <button class="smallBtn" data-act="detail">상세</button>
             <button class="smallBtn" data-act="add">추가</button>
@@ -716,7 +852,7 @@ function renderDetail(){
         <div class="muted">Program Details</div>
         ${hasVariantPricing(selectedItem)
           ? `<div style="line-height:1.7">${renderVariantPriceGroups(selectedItem)}</div>`
-          : `<div style="line-height:1.7">${escapeHtml(selectedItem.details||'')}</div>`}
+          : `<div class="detailText" style="line-height:1.8;white-space:normal">${formatDetailText(selectedItem.details||'')}</div>`}
         ${selectedItem.isEvent ? '' : `<div class="notice microNotice"><div class="dot"></div><div><b>${VAT_NOTICE}</b></div></div>`}
         <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap">
           ${hasVariantPricing(selectedItem) ? '' : `<button class="btn primary" id="detailAdd">장바구니 추가</button>`}
