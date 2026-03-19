@@ -190,7 +190,7 @@ kbd{border:1px solid var(--border-strong);border-radius:8px;padding:2px 6px;colo
   .layout,.drawerBackdrop,.drawer,.modalBackdrop,.toast,.bottomBar{display:none !important}
   #printArea{display:block !important}
 }
-@media (max-width: 980px){
+@media (max-width: 1180px){
   .layout{grid-template-columns:1fr}
   .sidebar{height:auto;position:relative;border-right:none;border-bottom:1px solid var(--border)}
   .grid{grid-template-columns:1fr}
@@ -266,7 +266,7 @@ kbd{border:1px solid var(--border-strong);border-radius:8px;padding:2px 6px;colo
   box-shadow:0 8px 18px rgba(229,183,59,.18);
 }
 
-@media (max-width: 980px){
+@media (max-width: 1180px){
   .categoryTabs .categoryTabBtn{min-height:46px;padding:0 18px !important;font-size:15px}
   .optionTabs .optionTabBtn{min-height:48px;padding:0 18px !important}
 }
@@ -380,7 +380,7 @@ kbd{border:1px solid var(--border-strong);border-radius:8px;padding:2px 6px;colo
   padding:2px 0 0;
 }
 
-@media (max-width: 980px){
+@media (max-width: 1180px){
   .grid{grid-template-columns:1fr}
   .categoryTabs .categoryTabBtn{min-height:40px;padding:0 15px !important;font-size:12.5px}
   .optionTabs .optionTabBtn{min-height:42px;padding:0 15px !important;font-size:12.5px}
@@ -469,9 +469,25 @@ button[data-lifting-cat]{
   background:#f7f7f9 !important;
 }
 
+.summaryList{display:flex;flex-direction:column;gap:4px;margin-top:2px}
+.summaryLine{font-size:12px;color:var(--muted);line-height:1.45}
+.detailText{line-height:1.8;white-space:normal}
+.detailPhase{margin:8px 0 2px;font-size:inherit;color:var(--text)}
+.detailLine{line-height:1.8;color:var(--text)}
+.detailGap{height:10px}
 
-/* ===== portrait detail focus mode (only when detail is open) ===== */
-@media (orientation: portrait) and (max-width: 1400px){
+
+/* iPad portrait full-screen fix */
+@media (max-width: 1180px){
+  .grid,
+  .grid.detail-open{
+    grid-template-columns:1fr !important;
+  }
+}
+
+
+/* portrait detail mode: hide price panel when detail is open */
+@media (max-width: 1180px){
   .grid.detail-open{
     grid-template-columns:1fr !important;
   }
@@ -480,6 +496,5 @@ button[data-lifting-cat]{
   }
   .grid.detail-open > .detailPanel{
     display:block !important;
-    min-width:0;
   }
 }

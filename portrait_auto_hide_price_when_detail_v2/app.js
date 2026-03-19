@@ -79,9 +79,9 @@ const programSections = [
         summary:[
           '스타룩스 1540 + LED 재생레이저 + 수분진정팩 (1회)',
           '맥스지·알렉스 + LED 재생레이저 + 수분진정팩 (2회)',
-          'CO2 병변 제거 (2회)',
           '레블라이트 + 비타민관리 + 모델링팩 + 수분진정팩 (4회)',
-          '피코토닝 + 비타민관리 + 모델링팩 + 수분진정팩 (4회)'
+          '피코토닝 + 비타민관리 + 모델링팩 + 수분진정팩 (4회)',
+          'CO2 병변 제거 (2회)'
         ],
         details:`구성
 
@@ -112,10 +112,10 @@ const programSections = [
         price:1650000,
         effects:['색소','톤 개선','피부결'],
         summary:[
-          '맥스지 + 피코 532 + LED 재생레이저 + 수분진정팩 (2회)',
-          'CO2 병변 제거 (2회)',
+          '맥스지·PICO 1064 + LED 재생레이저 + 수분진정팩 (2회)',
           '레블라이트 + 비타민관리 + 모델링팩 + 수분진정팩 (4회)',
-          '피코토닝 + 비타민관리 + 모델링팩 + 수분진정팩 (4회)'
+          '피코토닝 + 비타민관리 + 모델링팩 + 수분진정팩 (4회)',
+          'CO2 병변 제거 (2회)'
         ],
         details:`구성
 
@@ -165,9 +165,9 @@ const programSections = [
         summary:[
           '스타룩스 1540 + LED 재생레이저 + 수분진정팩 (1회)',
           '맥스지·알렉스 + LED 재생레이저 + 수분진정팩 (2회)',
-          'CO2 병변 제거 (2회)',
           '레블라이트 + 제네시스토닝 + LDM관리 + 하이드로겔팩 (5회)',
-          '피코토닝 + 이래비티 + LDM관리 + 하이드로겔팩 (5회)'
+          '피코토닝 + 이래비티 + LDM관리 + 하이드로겔팩 (5회)',
+          'CO2 병변 제거 (2회)'
         ],
         details:`구성
 
@@ -328,14 +328,40 @@ const singleLaserItems = [
    유틸
 ========================= */
 const fmt = (n)=> new Intl.NumberFormat('ko-KR').format(Number(n||0));
+const DETAIL_ORIGINAL_PRICE = 2200000;
 
+
+const LASER_TERMS = [
+  '맥스지·알렉스','스타룩스 1540','맥스지·PICO 1064','맥스지 + 피코 532','맥스지 + PICO 1064',
+  '레블라이트','피코토닝','제네시스토닝','이래비티','LED 재생레이저','LDM관리','CO2 병변 제거',
+  '맥스지','피코 532'
+];
+function highlightLasers(text){
+  let out = text;
+  [...LASER_TERMS].sort((a,b)=>b.length-a.length).forEach(term=>{
+    const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    out = out.replace(new RegExp(escaped, 'g'), `<b>${term}</b>`);
+  });
+  return out;
+}
 function renderCardSummary(p){
   const items = Array.isArray(p?.summary) ? p.summary : [];
-  if(!items.length) return 'Effect 요약';
-  return items.map(x => `• ${escapeHtml(x)}`).join('<br>');
+  if(!items.length) return '';
+  return `<div class="summaryList">` + items.map(x => `<div class="summaryLine">• ${escapeHtml(x)}</div>`).join('') + `</div>`;
 }
 function formatDetailText(text){
-  return escapeHtml(text||'').split('\n').join('<br>');
+  const raw = String(text||'').replace(/^구성\s*\n?/, '').trim();
+  if(!raw) return '';
+  const lines = raw.split('\n');
+  return lines.map(line=>{
+    const trimmed = line.trim();
+    if(!trimmed) return '<div class="detailGap"></div>';
+    const safe = escapeHtml(trimmed);
+    if(/^[0-9]+(?:[–-][0-9]+)?회차$/.test(trimmed)){
+      return `<div class="detailPhase"><b>${safe}</b></div>`;
+    }
+    return `<div class="detailLine">${highlightLasers(safe)}</div>`;
+  }).join('');
 }
 const qs = (s,el=document)=> el.querySelector(s);
 const qsa = (s,el=document)=> Array.from(el.querySelectorAll(s));
@@ -658,9 +684,9 @@ function renderLeft(){
             <div class="price">${displayPriceText}</div>
           </div>
         </div>
-        <div class="tags">${(p.effects||[]).map(e=>`<span class="tag">${escapeHtml(e)}</span>`).join('')}</div>
+        ${renderCardSummary(p)}
         <div class="cardRow">
-          <div class="summaryText">${renderCardSummary(p)}</div>
+          <div></div>
           <div style="display:flex;gap:8px">
             <button class="smallBtn" data-act="detail">상세</button>
             <button class="smallBtn" data-act="add">추가</button>
@@ -841,18 +867,19 @@ function renderDetail(){
         <div class="cardRow">
           <div class="cardTitle">${escapeHtml(selectedItem.name)}</div>
           <div style="display:flex;gap:8px;align-items:center">
-            <div class="price">${priceText}</div>
+            <div class="detailPriceBlock">
+              <div class="detailOriginalPrice">${fmt(DETAIL_ORIGINAL_PRICE)}원</div>
+              <div class="price">${priceText}</div>
+            </div>
             <button class="smallBtn detailCloseBtn" id="detailClose" type="button">닫기</button>
           </div>
         </div>
         ${isLift ? `<div class="muted" style="margin-top:-4px">선택 원장: <b>${escapeHtml(doctorLabel)}</b></div>` : ''}
-        <div class="muted">Effect</div>
-        <div class="tags">${(selectedItem.effects||[]).map(e=>`<span class="tag">${escapeHtml(e)}</span>`).join('')}</div>
         <hr class="sep"/>
         <div class="muted">Program Details</div>
         ${hasVariantPricing(selectedItem)
           ? `<div style="line-height:1.7">${renderVariantPriceGroups(selectedItem)}</div>`
-          : `<div class="detailText" style="line-height:1.8;white-space:normal">${formatDetailText(selectedItem.details||'')}</div>`}
+          : `<div class="detailText">${formatDetailText(selectedItem.details||'')}</div>`}
         ${selectedItem.isEvent ? '' : `<div class="notice microNotice"><div class="dot"></div><div><b>${VAT_NOTICE}</b></div></div>`}
         <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap">
           ${hasVariantPricing(selectedItem) ? '' : `<button class="btn primary" id="detailAdd">장바구니 추가</button>`}
